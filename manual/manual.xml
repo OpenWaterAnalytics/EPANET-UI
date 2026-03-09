@@ -1,0 +1,44 @@
+<doc>
+    <titleimg></titleimg>
+    <title>EPANET-UI</title>
+    <url>https://github.com/openwateranalytics/epanet</url>
+    <version></version>
+    <theme>manual.css</theme>
+    <lang>en</lang>
+    <rslt>Search Results</rslt>
+    <home>Home</home>
+    <link>Permalink to this headline</link>
+    <info>Important</info>
+    <hint>Hint</hint>
+    <note>Note</note>
+    <also>See Also</also>
+    <todo>To Do</todo>
+    <args>Arguments</args>
+    <rval>Return Value</rval>
+    <warn>Warning</warn>
+    <prev>Previous</prev>
+    <next>Next</next>
+    <copy>2025</copy>
+</doc>
+<include intro.md>
+<include workspace.md>
+<include projects.md>
+<include objects.md>
+<include map.md>
+<include basemap.md>
+<include importing.md>
+<include controls.md>
+<include demands.md>
+<include quality.md>
+<include analysis.md>
+<include results.md>
+<include fireflow.md>
+<include faq.md>
+<cap>REFERENCE</cap>
+<include nodes.md>
+<include links.md>
+<include labels.md>
+<include dialogs.md>
+<include tables.md>
+<include units.md>
+<include errors.md>
