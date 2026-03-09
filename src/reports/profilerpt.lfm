@@ -1,0 +1,162 @@
+object ProfileRptFrame: TProfileRptFrame
+  Left = 0
+  Height = 450
+  Top = 0
+  Width = 635
+  Align = alClient
+  ClientHeight = 450
+  ClientWidth = 635
+  LCLVersion = '4.4.0.0'
+  ParentBackground = False
+  TabOrder = 0
+  DesignLeft = 1266
+  DesignTop = 533
+  object Panel1: TPanel
+    Left = 16
+    Height = 418
+    Top = 16
+    Width = 603
+    Align = alClient
+    BorderSpacing.Around = 16
+    BevelOuter = bvNone
+    BorderStyle = bsSingle
+    ClientHeight = 418
+    ClientWidth = 603
+    TabOrder = 0
+    object Chart1: TChart
+      Left = 0
+      Height = 414
+      Top = 0
+      Width = 599
+      AntialiasingMode = amOn
+      AxisList = <      
+        item
+          Grid.Color = cl3DLight
+          Grid.Style = psSolid
+          Intervals.Options = [aipUseCount, aipUseNiceSteps]
+          Marks.LabelBrush.Style = bsClear
+          Minors = <>
+          Title.LabelFont.Orientation = 900
+          Title.Visible = True
+          Title.Caption = 'Feet'
+          Title.LabelBrush.Style = bsClear
+        end      
+        item
+          Grid.Color = cl3DLight
+          Grid.Style = psSolid
+          Grid.Visible = False
+          Alignment = calBottom
+          Marks.LabelBrush.Style = bsClear
+          Marks.OverlapPolicy = opHideNeighbour
+          Minors = <>
+          Title.Visible = True
+          Title.Caption = 'Distance'
+          Title.LabelBrush.Style = bsClear
+        end>
+      BackColor = clDefault
+      Foot.Alignment = taRightJustify
+      Foot.Font.CharSet = ANSI_CHARSET
+      Foot.Font.Color = clBlue
+      Foot.Font.Pitch = fpVariable
+      Foot.Font.Quality = fqDraft
+      Foot.Font.Style = [fsBold]
+      Foot.Visible = True
+      GUIConnector = ChartGUIConnectorBGRA1
+      Legend.Alignment = laTopCenter
+      Legend.ColumnCount = 2
+      Legend.Frame.Visible = False
+      Legend.Visible = True
+      MarginsExternal.Right = 8
+      Title.Brush.Style = bsClear
+      Title.Font.CharSet = ANSI_CHARSET
+      Title.Font.Color = clBlue
+      Title.Font.Pitch = fpVariable
+      Title.Font.Quality = fqDraft
+      Title.Font.Style = [fsBold]
+      Title.Text.Strings = (
+        'System Flow Volumes'
+      )
+      Title.Visible = True
+      Align = alClient
+      Color = clNone
+      object Chart1AreaSeries1: TAreaSeries
+        Legend.Multiplicity = lmStyle
+        Transparency = 128
+        OnGetMark = Chart1AreaSeries1GetMark
+        AreaLinesPen.Style = psClear
+        Marks.Clipped = False
+        Marks.Distance = 0
+        Marks.LabelFont.CharSet = ANSI_CHARSET
+        Marks.LabelFont.Color = clBlack
+        Marks.LabelFont.Height = -11
+        Marks.LabelFont.Pitch = fpVariable
+        Marks.LabelFont.Quality = fqDraft
+        Marks.Format = '%2:s'
+        Marks.LabelBrush.Color = clDefault
+        Marks.LinkPen.Visible = False
+        Marks.OverlapPolicy = opHideNeighbour
+        Marks.Style = smsLabel
+        Marks.YIndex = 1
+        Source = ListChartSource1
+        Styles = ChartStyles1
+      end
+    end
+  end
+  object ChartGUIConnectorBGRA1: TChartGUIConnectorBGRA
+    Left = 544
+    Top = 16
+  end
+  object ExportMenu: TPopupMenu
+    Images = mainForm.PopupImageList
+    ImagesWidth = 16
+    Left = 440
+    Top = 16
+    object MnuElevProfile: TMenuItem
+      Caption = 'Show Elevation Profile'
+      OnClick = MnuElevProfileClick
+    end
+    object MnuNodeLabels: TMenuItem
+      Caption = 'Show Node Labels'
+      Checked = True
+      OnClick = MnuNodeLabelsClick
+    end
+    object MnuProfilePath: TMenuItem
+      Caption = 'Select Profile Path'
+      ImageIndex = 12
+      OnClick = MnuProfilePathClick
+    end
+    object Separator1: TMenuItem
+      Caption = '-'
+    end
+    object MnuCopy: TMenuItem
+      Caption = 'Copy to Clipboard'
+      ImageIndex = 17
+      OnClick = MnuCopyClick
+    end
+    object MnuSave: TMenuItem
+      Caption = 'Save to File'
+      ImageIndex = 18
+      OnClick = MnuSaveClick
+    end
+  end
+  object ListChartSource1: TListChartSource
+    YCount = 2
+    Left = 116
+    Top = 172
+  end
+  object ChartStyles1: TChartStyles
+    Styles = <    
+      item
+        Brush.Color = clOlive
+        Pen.Width = 2
+        Text = 'Ground Elevation'
+      end    
+      item
+        Brush.Color = 15640961
+        Pen.Width = 2
+        Text = 'Hydraulic Grade'
+      end>
+    Left = 220
+    Top = 172
+  end
+end

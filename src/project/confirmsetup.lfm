@@ -1,0 +1,251 @@
+object ConfirmSetupForm: TConfirmSetupForm
+  Left = 312
+  Height = 322
+  Top = 250
+  Width = 414
+  BorderStyle = bsDialog
+  Caption = 'EPANET-UI'
+  ClientHeight = 322
+  ClientWidth = 414
+  Position = poOwnerFormCenter
+  LCLVersion = '4.4.0.0'
+  object Panel1: TPanel
+    Left = 0
+    Height = 274
+    Top = 0
+    Width = 414
+    Align = alClient
+    BevelOuter = bvNone
+    ClientHeight = 274
+    ClientWidth = 414
+    Color = clWindow
+    ParentBackground = False
+    ParentColor = False
+    TabOrder = 0
+    object TitlePanel: TPanel
+      Left = 0
+      Height = 48
+      Top = 0
+      Width = 414
+      Align = alTop
+      BevelOuter = bvNone
+      ClientHeight = 48
+      ClientWidth = 414
+      Color = clWindow
+      ParentBackground = False
+      ParentColor = False
+      TabOrder = 0
+      object Image1: TImage
+        Left = 12
+        Height = 32
+        Top = 8
+        Width = 32
+        Center = True
+        Picture.Data = {
+          1754506F727461626C654E6574776F726B477261706869630404000089504E47
+          0D0A1A0A0000000D4948445200000020000000200806000000737A7AF4000000
+          097048597300000EC300000EC301C76FA8640000001974455874536F66747761
+          7265007777772E696E6B73636170652E6F72679BEE3C1A000003914944415458
+          85B5974F685C5514C67FE7CDEB9F4CE3245928A1A49A882336194C9AB4011759
+          344815A74215B5AE6657045D14DC5490E4659A561B17B5AEDCE8C67F11C4BFD8
+          6A042B08A563A1B549C6B4124C84A4ED486BC9D84CDA4EC23B2EDE242F6332F3
+          DEBCC40F2E9C7BDFBDDFF7F138F79E7B4555F1836892C8269B3842B70AAD028D
+          0AB50002330A7F2A5C044EDB739CBC3CC02D3FBCE265607B92870DE510F02210
+          F6E516E64418B4171818EB673C90816DAF5215A9A11FE52060FA14FE0F3BF302
+          2772D03B6971C7B781E61EA212E20B2016487825523ACFB36347B9E669A0A597
+          1D126248957BD7497C11D386101FB5182969A0B987A86172E67F105F3221C2AE
+          B445668581A6249BC39042692DC720C09E16D8D706B1AD50178699DB30FE17FC
+          30065F5E843BF365D60BE7B359BAA68E731B962557188E7889576D84B79F87AE
+          68F1785D183A9B9C96780C5E198489EBAB73A8D21189F01A602DFD81C256FB0D
+          8F6C7F673F3CBEDDEDA7AFC01F37606B0D743C008638E3992CEC7B176EAD9AF7
+          00CC8A104D5B644C80C23E2F2BBEABD1155785D7BF82AF87DDEFAD0DF05E02C2
+          1BA1BE065EE880F7CF94A4AB067A81978D689208CE2153164F34BBF1B7A3C5E2
+          00C3D3F061CAEDB76D2BCFA79078E410F7989B6CE22ADE27DC8529D81082863A
+          F8FCC2EA73AECEB871C8F02054B6189B79CA44E8F612073835EAB47268BFDF8D
+          2F654ACF5B8408DD864AF9CCF78BE7DAE1E902D35C1E06CFF95AF6A889D2B456
+          F1FD3BA1270E224E82F69F841BB3BE963E680091B5883FB3A358FCAD21F866D8
+          7B1D00424DB02A57C043F781B5D7153FF63D7CF44B651C06F04F50032F75393B
+          03E08354E5E22859036132A8819D8D6EFCD9F940141346E11A1508B5556E7C2D
+          1B8040183681D3C08120068E7EE7544780BB652A6049D8FC282D7D5AAD9041D9
+          12C444600839817A236D312BF069108E863AB7550A854FD216B32680BDC08098
+          24503654423274D08D5BFA2AD2CF9B700C9C6DC8583FE302272AA2581B8E8F58
+          4C2C1900C839F5395572C93A4184B3F99BF42DF5975F4A6349EA15CEA17854F3
+          C0B8BAB040E7EF47B8B2385054B5D3161903F602D3EB2E2D4CD9364F2E175F61
+          0060D462249FA71DF879DDB485B3029D970EB3E246B1EABD65FC0DAEE76FB207
+          388C905B83761EE1CDBB7FB37BF95BA0C89CD7E33496A41EE85548F83EAC841C
+          CAC721616031DB4B4EF5FB3C8F25A9B66DE262B01B682B5C646A0B9F67102651
+          7E45F849E054DAC2D795E45F3D8E2EAB0498DB180000000049454E44AE426082
+        }
+        Transparent = True
+      end
+      object Label1: TLabel
+        Left = 52
+        Height = 21
+        Top = 12
+        Width = 156
+        Caption = 'Confirm Setup Actions'
+        Font.Color = clBlue
+        Font.Height = -16
+        ParentFont = False
+      end
+    end
+    object FlowPanel: TPanel
+      Left = 0
+      Height = 50
+      Top = 48
+      Width = 414
+      Align = alTop
+      BevelOuter = bvNone
+      ClientHeight = 50
+      ClientWidth = 414
+      ParentBackground = False
+      TabOrder = 1
+      object FlowCheckBox: TCheckBox
+        Left = 52
+        Height = 19
+        Top = 21
+        Width = 408
+        AutoSize = False
+        Caption = 'Convert all flow values to lpm and all other data to SI units'
+        Checked = True
+        State = cbChecked
+        TabOrder = 0
+      end
+      object FlowLabel: TLabel
+        Left = 52
+        Height = 15
+        Top = 2
+        Width = 172
+        Caption = 'Flow units were changed to lpm.'
+      end
+    end
+    object PressPanel: TPanel
+      Left = 0
+      Height = 50
+      Top = 98
+      Width = 414
+      Align = alTop
+      BevelOuter = bvNone
+      ClientHeight = 50
+      ClientWidth = 414
+      ParentBackground = False
+      TabOrder = 2
+      object PressCheckBox: TCheckBox
+        Left = 52
+        Height = 19
+        Top = 21
+        Width = 408
+        AutoSize = False
+        Caption = 'Convert all pressure values to meters.'
+        Checked = True
+        State = cbChecked
+        TabOrder = 0
+      end
+      object Label4: TLabel
+        Left = 80
+        Height = 15
+        Top = 56
+        Width = 34
+        Caption = 'Label4'
+      end
+      object PressLabel: TLabel
+        Left = 52
+        Height = 15
+        Top = 2
+        Width = 206
+        Caption = 'Pressure units were changed to meters.'
+      end
+    end
+    object RoughPanel: TPanel
+      Left = 0
+      Height = 118
+      Top = 148
+      Width = 414
+      Align = alTop
+      BevelOuter = bvNone
+      ClientHeight = 118
+      ClientWidth = 414
+      ParentBackground = False
+      TabOrder = 3
+      object RoughLabel: TLabel
+        Left = 52
+        Height = 15
+        Top = 2
+        Width = 330
+        Caption = 'The project head loss formula was changed from H-W to D-W.'
+      end
+      object Label6: TLabel
+        Left = 52
+        Height = 15
+        Top = 19
+        Width = 254
+        Caption = 'How should pipe roughness values be changed?'
+      end
+      object RadioButton1: TRadioButton
+        Left = 52
+        Height = 19
+        Top = 42
+        Width = 194
+        Caption = 'Use a built-in conversion formula'
+        Checked = True
+        TabOrder = 2
+        TabStop = True
+      end
+      object RadioButton2: TRadioButton
+        Left = 52
+        Height = 19
+        Top = 66
+        Width = 203
+        Caption = 'Use the default roughness value of '
+        TabOrder = 0
+      end
+      object RadioButton3: TRadioButton
+        Left = 52
+        Height = 19
+        Top = 91
+        Width = 213
+        Caption = 'Do not make any roughness changes'
+        TabOrder = 1
+      end
+    end
+  end
+  object Panel2: TPanel
+    Left = 0
+    Height = 48
+    Top = 274
+    Width = 414
+    Align = alBottom
+    BevelOuter = bvNone
+    ClientHeight = 48
+    ClientWidth = 414
+    ParentBackground = False
+    TabOrder = 1
+    object AcceptBtn: TButton
+      Left = 242
+      Height = 25
+      Top = 10
+      Width = 75
+      Caption = 'Accept'
+      ModalResult = 1
+      TabOrder = 0
+    end
+    object CancelBtn: TButton
+      Left = 326
+      Height = 25
+      Top = 10
+      Width = 75
+      Cancel = True
+      Caption = 'Cancel'
+      ModalResult = 2
+      TabOrder = 1
+    end
+    object ResultsLabel: TLabel
+      Left = 12
+      Height = 15
+      Top = 15
+      Width = 184
+      Caption = 'Simulation results will be removed.'
+      Visible = False
+    end
+  end
+end

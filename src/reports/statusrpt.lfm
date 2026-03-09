@@ -1,0 +1,53 @@
+object StatusRptFrame: TStatusRptFrame
+  Left = 0
+  Height = 395
+  Top = 0
+  Width = 497
+  ClientHeight = 395
+  ClientWidth = 497
+  LCLVersion = '4.4.0.0'
+  TabOrder = 0
+  DesignLeft = 792
+  DesignTop = 327
+  object Panel1: TPanel
+    Left = 16
+    Height = 363
+    Top = 16
+    Width = 465
+    Align = alClient
+    BorderSpacing.Around = 16
+    BevelOuter = bvNone
+    BorderStyle = bsSingle
+    ClientHeight = 363
+    ClientWidth = 465
+    TabOrder = 0
+    object Memo1: TMemo
+      Left = 0
+      Height = 359
+      Top = 0
+      Width = 461
+      Align = alClient
+      BorderStyle = bsNone
+      ReadOnly = True
+      ScrollBars = ssAutoBoth
+      TabOrder = 0
+      WordWrap = False
+    end
+  end
+  object ExportMenu: TPopupMenu
+    Images = mainForm.PopupImageList
+    ImagesWidth = 16
+    Left = 108
+    Top = 111
+    object MnuCopy: TMenuItem
+      Caption = 'Copy to Clipboard'
+      ImageIndex = 17
+      OnClick = MnuCopyClick
+    end
+    object MnuSave: TMenuItem
+      Caption = 'Save to File'
+      ImageIndex = 18
+      OnClick = MnuSaveClick
+    end
+  end
+end

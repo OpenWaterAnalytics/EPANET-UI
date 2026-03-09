@@ -1,0 +1,355 @@
+object FireFlowFrame: TFireFlowFrame
+  Left = 0
+  Height = 371
+  Top = 0
+  Width = 510
+  Align = alClient
+  ClientHeight = 371
+  ClientWidth = 510
+  LCLVersion = '4.4.0.0'
+  TabOrder = 0
+  DesignLeft = 846
+  DesignTop = 349
+  object PageControl1: TPageControl
+    Left = 0
+    Height = 371
+    Top = 0
+    Width = 510
+    ActivePage = TabSheet2
+    Align = alClient
+    Style = tsFlatButtons
+    TabIndex = 1
+    TabOrder = 0
+    object TabSheet1: TTabSheet
+      Caption = 'Summary'
+      ClientHeight = 340
+      ClientWidth = 502
+      object Panel1: TPanel
+        Left = 0
+        Height = 37
+        Top = 0
+        Width = 502
+        Align = alTop
+        BevelOuter = bvNone
+        Caption = 'Fire Flow Summary'
+        TabOrder = 0
+      end
+      object SummaryGrid: TStringGrid
+        Left = 103
+        Height = 200
+        Top = 48
+        Width = 300
+        Anchors = [akTop]
+        AutoAdvance = aaNone
+        AutoEdit = False
+        ColCount = 2
+        DefaultRowHeight = 28
+        ExtendedSelect = False
+        FixedCols = 0
+        FixedRows = 0
+        Flat = True
+        Options = [goFixedVertLine, goFixedHorzLine, goSmoothScroll]
+        RowCount = 7
+        TabOrder = 1
+        TabStop = False
+        UseXORFeatures = True
+        OnSelectCell = SummaryGridSelectCell
+        ColWidths = (
+          150
+          149
+        )
+      end
+    end
+    object TabSheet2: TTabSheet
+      Caption = 'Details'
+      ClientHeight = 340
+      ClientWidth = 502
+      object Panel2: TPanel
+        Left = 0
+        Height = 34
+        Top = 306
+        Width = 502
+        Align = alBottom
+        Alignment = taLeftJustify
+        Caption = '    Click a column header to sort it'
+        TabOrder = 0
+      end
+      object DetailsGrid: TDrawGrid
+        Left = 16
+        Height = 306
+        Top = 0
+        Width = 470
+        Align = alClient
+        AutoFillColumns = True
+        BorderSpacing.Left = 16
+        BorderSpacing.Right = 16
+        ColCount = 7
+        ColumnClickSorts = True
+        DefaultColWidth = 112
+        DefaultRowHeight = 24
+        ExtendedSelect = False
+        FixedColor = clDefault
+        Flat = True
+        GridLineColor = cl3DLight
+        Options = [goFixedVertLine, goFixedHorzLine, goHorzLine, goColSizing, goThumbTracking, goSmoothScroll, goFixedColSizing]
+        ParentColor = True
+        RowCount = 1
+        TabOrder = 1
+        OnClick = DetailsGridClick
+        OnDrawCell = DetailsGridDrawCell
+        OnHeaderClick = DetailsGridHeaderClick
+        OnPrepareCanvas = DetailsGridPrepareCanvas
+        ColWidths = (
+          67
+          67
+          67
+          67
+          67
+          67
+          67
+        )
+      end
+    end
+    object TabSheet3: TTabSheet
+      Caption = 'Map'
+      ClientHeight = 340
+      ClientWidth = 502
+      OnResize = MapSheetResize
+      object Panel3: TPanel
+        Left = 0
+        Height = 340
+        Top = 0
+        Width = 502
+        Align = alClient
+        BorderStyle = bsSingle
+        ClientHeight = 336
+        ClientWidth = 498
+        TabOrder = 0
+        object LegendPanel: TPanel
+          Left = 1
+          Height = 334
+          Top = 1
+          Width = 90
+          Align = alLeft
+          BevelOuter = bvNone
+          ClientHeight = 334
+          ClientWidth = 90
+          ParentBackground = False
+          TabOrder = 0
+          object Shape1: TShape
+            Left = 6
+            Height = 17
+            Top = 51
+            Width = 26
+            Brush.Color = clRed
+            Shape = stCircle
+          end
+          object Label1: TLabel
+            Left = 6
+            Height = 30
+            Top = 9
+            Width = 61
+            Caption = 'Percent of'#13#10'Target Flow'
+          end
+          object Shape2: TShape
+            Left = 6
+            Height = 17
+            Top = 79
+            Width = 26
+            Brush.Color = clYellow
+            Shape = stCircle
+          end
+          object Shape3: TShape
+            Left = 6
+            Height = 17
+            Top = 107
+            Width = 26
+            Brush.Color = clLime
+            Shape = stCircle
+          end
+          object Shape4: TShape
+            Left = 6
+            Height = 17
+            Top = 135
+            Width = 26
+            Brush.Color = clAqua
+            Shape = stCircle
+          end
+          object Shape5: TShape
+            Left = 6
+            Height = 17
+            Top = 163
+            Width = 26
+            Brush.Color = clBlue
+            Shape = stCircle
+          end
+          object Label2: TLabel
+            Left = 36
+            Height = 15
+            Top = 153
+            Width = 18
+            Caption = '100'
+          end
+          object Label3: TLabel
+            Left = 42
+            Height = 15
+            Top = 124
+            Width = 12
+            Caption = '75'
+          end
+          object Label4: TLabel
+            Left = 42
+            Height = 15
+            Top = 92
+            Width = 12
+            Caption = '50'
+          end
+          object Label5: TLabel
+            Left = 42
+            Height = 15
+            Top = 68
+            Width = 12
+            Caption = '25'
+          end
+          object Label6: TLabel
+            Left = 6
+            Height = 15
+            Top = 197
+            Width = 41
+            Caption = 'Targets:'
+          end
+          object FlowLabel: TLabel
+            Left = 6
+            Height = 15
+            Top = 219
+            Width = 48
+            Caption = '7000 lpm'
+          end
+          object PressLabel: TLabel
+            Left = 6
+            Height = 15
+            Top = 240
+            Width = 40
+            Caption = '145 kPa'
+          end
+        end
+        object MapPanel: TPanel
+          Left = 91
+          Height = 334
+          Top = 1
+          Width = 406
+          Align = alClient
+          BevelOuter = bvNone
+          BorderStyle = bsSingle
+          ClientHeight = 334
+          ClientWidth = 406
+          TabOrder = 1
+          object PaintBox1: TPaintBox
+            Left = 0
+            Height = 330
+            Top = 0
+            Width = 402
+            Align = alClient
+            OnMouseDown = PaintBox1MouseDown
+            OnMouseMove = PaintBox1MouseMove
+            OnMouseUp = PaintBox1MouseUp
+            OnMouseWheelDown = PaintBox1MouseWheelDown
+            OnMouseWheelUp = PaintBox1MouseWheelUp
+            OnPaint = PaintBox1Paint
+          end
+          object ToolBar1: TToolBar
+            Left = 362
+            Height = 70
+            Top = -1
+            Width = 28
+            Align = alNone
+            Anchors = [akTop, akRight]
+            AutoSize = True
+            Caption = 'ToolBar1'
+            EdgeBorders = [ebLeft, ebTop, ebRight, ebBottom]
+            Images = mainForm.MaterialToolbarList
+            ImagesWidth = 16
+            List = True
+            TabOrder = 0
+            object ZoomInBtn: TToolButton
+              Left = 3
+              Hint = 'Zoom In'
+              Top = 2
+              Caption = 'ZoomInBtn'
+              ImageIndex = 3
+              ParentShowHint = False
+              ShowHint = True
+              OnClick = ZoomInBtnClick
+            end
+            object ZoomOutBtn: TToolButton
+              Left = 3
+              Hint = 'Zoom Out'
+              Top = 24
+              Caption = 'ZoomOutBtn'
+              ImageIndex = 4
+              ParentShowHint = False
+              ShowHint = True
+              OnClick = ZoomOutBtnClick
+            end
+            object FullExtentBtn: TToolButton
+              Left = 3
+              Hint = 'Full Extent'
+              Top = 46
+              Caption = 'FullExtentBtn'
+              ImageIndex = 5
+              ParentShowHint = False
+              ShowHint = True
+              OnClick = FullExtentBtnClick
+            end
+          end
+        end
+      end
+    end
+    object TabSheet4: TTabSheet
+      Caption = 'Error Log'
+      ClientHeight = 340
+      ClientWidth = 502
+      object LogMemo: TMemo
+        Left = 0
+        Height = 340
+        Top = 0
+        Width = 502
+        Align = alClient
+        Font.CharSet = ANSI_CHARSET
+        Font.Name = 'Monospace'
+        Font.Pitch = fpFixed
+        Font.Quality = fqDraft
+        Lines.Strings = (
+          'LogMemo'
+        )
+        ParentFont = False
+        ScrollBars = ssAutoVertical
+        TabOrder = 0
+      end
+    end
+  end
+  object ExportMenu: TPopupMenu
+    Images = mainForm.PopupImageList
+    ImagesWidth = 16
+    Left = 296
+    Top = 8
+    object MnuSettings: TMenuItem
+      Caption = 'Change Settings'
+      ImageIndex = 8
+      OnClick = MnuSettingsClick
+    end
+    object Separator1: TMenuItem
+      Caption = '-'
+    end
+    object MnuCopy: TMenuItem
+      Caption = 'Copy to Clipboard'
+      ImageIndex = 17
+      OnClick = MnuCopyClick
+    end
+    object MnuSave: TMenuItem
+      Caption = 'Save to File'
+      ImageIndex = 18
+      OnClick = MnuSaveClick
+    end
+  end
+end

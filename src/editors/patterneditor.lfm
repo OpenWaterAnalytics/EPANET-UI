@@ -1,0 +1,306 @@
+object PatternEditorForm: TPatternEditorForm
+  Left = 912
+  Height = 460
+  Top = 51
+  Width = 480
+  BorderStyle = bsDialog
+  Caption = 'Time Pattern Selector'
+  ClientHeight = 460
+  ClientWidth = 480
+  Position = poMainFormCenter
+  LCLVersion = '4.4.0.0'
+  OnClose = FormClose
+  OnCreate = FormCreate
+  object Notebook1: TNotebook
+    Left = 0
+    Height = 460
+    Top = 0
+    Width = 480
+    PageIndex = 0
+    Align = alClient
+    TabOrder = 0
+    object Page1: TPage
+      object Label1: TLabel
+        Left = 16
+        Height = 23
+        Top = 16
+        Width = 307
+        Caption = 'Select a Time Pattern from the list below:'
+      end
+      object PatternsGrid: TStringGrid
+        Left = 16
+        Height = 250
+        Top = 41
+        Width = 360
+        AutoEdit = False
+        ColCount = 2
+        Columns = <        
+          item
+            Title.Caption = 'Name'
+            Width = 120
+          end        
+          item
+            Title.Caption = 'Description'
+            Width = 220
+          end>
+        FixedCols = 0
+        Flat = True
+        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRowSelect, goThumbTracking, goSmoothScroll]
+        RowCount = 11
+        ScrollBars = ssVertical
+        TabOrder = 0
+        OnClick = PatternsGridClick
+        OnPrepareCanvas = PatternsGridPrepareCanvas
+      end
+      object AddBtn: TButton
+        Left = 392
+        Height = 25
+        Top = 41
+        Width = 75
+        Caption = 'Add'
+        TabOrder = 1
+        OnClick = AddBtnClick
+      end
+      object EditBtn: TButton
+        Left = 392
+        Height = 25
+        Top = 82
+        Width = 75
+        Caption = 'Edit'
+        TabOrder = 2
+        OnClick = EditBtnClick
+      end
+      object DeleteBtn: TButton
+        Left = 392
+        Height = 25
+        Top = 122
+        Width = 75
+        Caption = 'Delete'
+        TabOrder = 3
+        OnClick = DeleteBtnClick
+      end
+      object OkBtn: TButton
+        Left = 392
+        Height = 25
+        Top = 230
+        Width = 75
+        Caption = 'OK'
+        TabOrder = 4
+        OnClick = OkBtnClick
+      end
+      object CancelBtn1: TButton
+        Left = 392
+        Height = 25
+        Top = 266
+        Width = 75
+        Caption = 'Cancel'
+        TabOrder = 5
+        OnClick = CancelBtn1Click
+      end
+      object HelpBtn1: TButton
+        Left = 392
+        Height = 25
+        Top = 193
+        Width = 75
+        Caption = 'Help'
+        TabOrder = 6
+        OnClick = HelpBtn1Click
+      end
+      object Chart1: TChart
+        Left = 16
+        Height = 134
+        Top = 310
+        Width = 451
+        AxisList = <        
+          item
+            Grid.Visible = False
+            Marks.Visible = False
+            Marks.LabelBrush.Style = bsClear
+            Marks.Style = smsNone
+            Minors = <>
+            Title.LabelFont.Orientation = 900
+            Title.LabelBrush.Style = bsClear
+          end        
+          item
+            Grid.Visible = False
+            Alignment = calBottom
+            Marks.Visible = False
+            Marks.LabelBrush.Style = bsClear
+            Marks.Style = smsNone
+            Minors = <>
+            Title.LabelBrush.Style = bsClear
+          end>
+        Title.Text.Strings = (
+          'TAChart'
+        )
+        object Chart1AreaSeries: TAreaSeries
+          AreaBrush.Color = 8421631
+          ConnectType = ctStepXY
+        end
+      end
+    end
+    object Page2: TPage
+      object DataGrid: TStringGrid
+        Left = 16
+        Height = 72
+        Top = 80
+        Width = 448
+        ColCount = 14
+        DefaultColWidth = 64
+        DefaultRowHeight = 24
+        Flat = True
+        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goThumbTracking, goSmoothScroll]
+        RowCount = 2
+        ScrollBars = ssHorizontal
+        TabAdvance = aaRight
+        TabOrder = 2
+        OnKeyDown = DataGridKeyDown
+        OnValidateEntry = DataGridValidateEntry
+      end
+      object AcceptBtn: TButton
+        Left = 306
+        Height = 25
+        Top = 417
+        Width = 75
+        Caption = 'Accept'
+        TabOrder = 7
+        OnClick = AcceptBtnClick
+      end
+      object CancelBtn2: TButton
+        Left = 389
+        Height = 25
+        Top = 417
+        Width = 75
+        Caption = 'Cancel'
+        TabOrder = 9
+        OnClick = CancelBtn2Click
+      end
+      object Chart2: TChart
+        Left = 24
+        Height = 200
+        Top = 180
+        Width = 440
+        AxisList = <        
+          item
+            Grid.Color = clSilver
+            Grid.Style = psSolid
+            Marks.LabelFont.Height = -12
+            Marks.LabelFont.Name = 'Noto Sans'
+            Marks.LabelBrush.Style = bsClear
+            Minors = <>
+            Title.LabelFont.Height = -12
+            Title.LabelFont.Name = 'Noto Sans'
+            Title.LabelFont.Orientation = 900
+            Title.LabelBrush.Style = bsClear
+          end        
+          item
+            Grid.Visible = False
+            Alignment = calBottom
+            Marks.LabelFont.Height = -12
+            Marks.LabelFont.Name = 'Noto Sans'
+            Marks.LabelBrush.Style = bsClear
+            Minors = <>
+            Title.LabelFont.Height = -12
+            Title.LabelFont.Name = 'Noto Sans'
+            Title.Visible = True
+            Title.LabelBrush.Style = bsClear
+          end>
+        Foot.Brush.Color = clBtnFace
+        Foot.Font.Color = clBlue
+        Title.Brush.Color = clBtnFace
+        Title.Font.Color = clBlue
+        Title.Text.Strings = (
+          'TAChart'
+        )
+        ParentColor = True
+        object Chart2AreaSeries: TAreaSeries
+          AreaBrush.Color = 8421631
+          ConnectType = ctStepXY
+        end
+      end
+      object Label2: TLabel
+        Left = 16
+        Height = 23
+        Top = 16
+        Width = 77
+        Caption = 'Pattern ID'
+      end
+      object Label3: TLabel
+        Left = 177
+        Height = 23
+        Top = 16
+        Width = 86
+        Caption = 'Description'
+      end
+      object IdEdit: TEdit
+        Left = 16
+        Height = 31
+        Top = 38
+        Width = 120
+        MaxLength = 31
+        TabOrder = 0
+        OnChange = IdEditChange
+      end
+      object DescripEdit: TEdit
+        Left = 177
+        Height = 31
+        Top = 38
+        Width = 279
+        MaxLength = 255
+        TabOrder = 1
+        OnChange = IdEditChange
+      end
+      object LoadBtn: TButton
+        Left = 81
+        Height = 25
+        Top = 417
+        Width = 55
+        Caption = 'Load'
+        TabOrder = 4
+        OnClick = LoadBtnClick
+      end
+      object SaveBtn: TButton
+        Left = 146
+        Height = 25
+        Top = 417
+        Width = 55
+        Caption = 'Save'
+        TabOrder = 5
+        OnClick = SaveBtnClick
+      end
+      object HelpBtn2: TButton
+        Left = 16
+        Height = 25
+        Top = 417
+        Width = 55
+        Caption = 'Help'
+        ModalResult = 1
+        TabOrder = 3
+        OnClick = HelpBtn1Click
+      end
+      object DiurnalPatLabel: TLabel
+        Cursor = crHandPoint
+        Left = 251
+        Height = 23
+        Top = 16
+        Width = 199
+        Alignment = taRightJustify
+        Anchors = [akTop, akRight]
+        Caption = 'Use typical diurnal pattern'
+        Font.Color = clBlue
+        Font.Style = [fsUnderline]
+        ParentFont = False
+        OnClick = DiurnalPatLabelClick
+      end
+      object ClearBtn: TButton
+        Left = 211
+        Height = 25
+        Top = 417
+        Width = 55
+        Caption = 'Clear'
+        TabOrder = 6
+        OnClick = ClearBtnClick
+      end
+    end
+  end
+end

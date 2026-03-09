@@ -1,0 +1,22 @@
+object LabelEditorForm: TLabelEditorForm
+  Left = 390
+  Height = 28
+  Top = 155
+  Width = 120
+  BorderIcons = []
+  BorderStyle = bsNone
+  ClientHeight = 28
+  ClientWidth = 120
+  LCLVersion = '4.4.0.0'
+  OnClose = FormClose
+  OnCreate = FormCreate
+  object Edit1: TEdit
+    Left = 0
+    Height = 28
+    Top = 0
+    Width = 120
+    Align = alClient
+    TabOrder = 0
+    OnKeyPress = Edit1KeyPress
+  end
+end

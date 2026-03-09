@@ -1,0 +1,235 @@
+object TimeSeriesFrame: TTimeSeriesFrame
+  Left = 0
+  Height = 382
+  Top = 0
+  Width = 715
+  Align = alClient
+  ClientHeight = 382
+  ClientWidth = 715
+  LCLVersion = '4.4.0.0'
+  TabOrder = 0
+  DesignLeft = 1167
+  DesignTop = 270
+  object PageControl1: TPageControl
+    Left = 0
+    Height = 382
+    Top = 0
+    Width = 715
+    ActivePage = ChartTabSheet
+    Align = alClient
+    Style = tsFlatButtons
+    TabIndex = 0
+    TabOrder = 0
+    object ChartTabSheet: TTabSheet
+      Caption = 'Chart'
+      ClientHeight = 351
+      ClientWidth = 707
+      object Panel1: TPanel
+        Left = 16
+        Height = 335
+        Top = 0
+        Width = 675
+        Align = alClient
+        BorderSpacing.Left = 16
+        BorderSpacing.Right = 16
+        BorderSpacing.Bottom = 16
+        BevelOuter = bvNone
+        BorderStyle = bsSingle
+        ClientHeight = 335
+        ClientWidth = 675
+        TabOrder = 0
+        object Chart1: TChart
+          Left = 0
+          Height = 331
+          Top = 0
+          Width = 671
+          AntialiasingMode = amOn
+          AxisList = <          
+            item
+              Grid.Color = cl3DLight
+              Grid.Style = psSolid
+              Marks.LabelBrush.Style = bsClear
+              Minors = <>
+              Title.Distance = 10
+              Title.LabelFont.Orientation = 900
+              Title.Visible = True
+              Title.LabelBrush.Style = bsClear
+              Transformations = LeftChartAxisTransformations
+            end          
+            item
+              Grid.Color = cl3DLight
+              Grid.Style = psSolid
+              Alignment = calBottom
+              Margin = 10
+              Marks.Format = '%2:s'
+              Marks.LabelBrush.Style = bsClear
+              Marks.OverlapPolicy = opHideNeighbour
+              Marks.Source = DateTimeIntervalChartSource1
+              Marks.Style = smsLabel
+              Minors = <>
+              Title.Caption = 'Hour'
+              Title.LabelBrush.Style = bsClear
+            end          
+            item
+              Grid.Color = cl3DLight
+              Grid.Style = psSolid
+              Grid.Visible = False
+              Alignment = calRight
+              Marks.LabelBrush.Style = bsClear
+              Minors = <>
+              Title.LabelFont.Orientation = -900
+              Title.Visible = True
+              Title.LabelBrush.Style = bsClear
+              Transformations = RightChartAxisTransformations
+            end>
+          BackColor = clWhite
+          Foot.Brush.Color = clBtnFace
+          Foot.Font.Color = clBlue
+          GUIConnector = ChartGUIConnectorBGRA1
+          Legend.Alignment = laTopCenter
+          Legend.BackgroundBrush.Style = bsClear
+          Legend.ColumnCount = 3
+          Legend.Frame.Visible = False
+          Legend.SymbolFrame.Visible = False
+          Legend.Visible = True
+          Title.Brush.Color = clBtnFace
+          Title.Brush.Style = bsClear
+          Title.Font.CharSet = ANSI_CHARSET
+          Title.Font.Color = clBlue
+          Title.Font.Height = -16
+          Title.Font.Name = 'Segoe UI'
+          Title.Font.Pitch = fpVariable
+          Title.Font.Quality = fqDraft
+          Title.Font.Style = [fsBold]
+          Title.Text.Strings = (
+            ''
+          )
+          Title.Visible = True
+          Align = alClient
+          Color = clWindow
+          object Chart1LineSeries1: TLineSeries
+            Active = False
+            LinePen.Color = 12489328
+            LinePen.Width = 2
+          end
+          object Chart1LineSeries2: TLineSeries
+            Active = False
+            LinePen.Color = 1959605
+            LinePen.Width = 2
+          end
+          object Chart1LineSeries3: TLineSeries
+            Active = False
+            LinePen.Color = 2588671
+            LinePen.Width = 2
+          end
+          object Chart1LineSeries4: TLineSeries
+            Active = False
+            LinePen.Color = 15391129
+            LinePen.Width = 2
+          end
+          object Chart1LineSeries5: TLineSeries
+            Active = False
+            LinePen.Color = 969215
+            LinePen.Width = 2
+          end
+          object Chart1LineSeries6: TLineSeries
+            Active = False
+            LinePen.Width = 2
+          end
+        end
+      end
+    end
+    object TableTabSheet: TTabSheet
+      Caption = 'Table'
+      ClientHeight = 351
+      ClientWidth = 707
+      object DataGrid: TDrawGrid
+        Left = 16
+        Height = 335
+        Top = 0
+        Width = 675
+        Align = alClient
+        AlternateColor = clDefault
+        AutoFillColumns = True
+        BorderSpacing.Left = 16
+        BorderSpacing.Right = 16
+        BorderSpacing.Bottom = 16
+        ColCount = 8
+        DefaultColWidth = 64
+        DefaultRowHeight = 24
+        ExtendedSelect = False
+        FixedColor = clWindow
+        FixedCols = 0
+        Flat = True
+        GridLineColor = cl3DLight
+        Options = [goFixedHorzLine, goHorzLine, goThumbTracking, goSmoothScroll]
+        TabOrder = 0
+        OnDrawCell = DataGridDrawCell
+        OnPrepareCanvas = DataGridPrepareCanvas
+        ColWidths = (
+          85
+          85
+          84
+          84
+          84
+          84
+          84
+          84
+        )
+      end
+    end
+  end
+  object ChartGUIConnectorBGRA1: TChartGUIConnectorBGRA
+    Left = 328
+    Top = 83
+  end
+  object PopupMenu1: TPopupMenu
+    Images = mainForm.PopupImageList
+    ImagesWidth = 16
+    Left = 132
+    Top = 192
+    object DataMenuItem: TMenuItem
+      Caption = 'Series Data'
+      ImageIndex = 25
+      OnClick = DataMenuItemClick
+    end
+    object SettingsMenuItem: TMenuItem
+      Caption = 'Chart Settings'
+      ImageIndex = 8
+      OnClick = SettingsMenuItemClick
+    end
+    object Separator1: TMenuItem
+      Caption = '-'
+    end
+    object CopyMenuItem: TMenuItem
+      Caption = 'Copy to Clipboard'
+      ImageIndex = 17
+      OnClick = CopyMenuItemClick
+    end
+    object SaveMenuItem: TMenuItem
+      Caption = 'Save to File'
+      ImageIndex = 18
+      OnClick = SaveMenuItemClick
+    end
+  end
+  object DateTimeIntervalChartSource1: TDateTimeIntervalChartSource
+    Params.Count = 8
+    DateTimeFormat = 'h:nn am/pm'
+    DateTimeStepFormat.HourFormat = 'h:nn'
+    Steps = [dtsHour, dtsMinute]
+    Left = 132
+    Top = 83
+  end
+  object LeftChartAxisTransformations: TChartAxisTransformations
+    Left = 273
+    Top = 180
+    object LeftChartAxisTransformationsAutoScaleAxisTransform: TAutoScaleAxisTransform
+    end
+  end
+  object RightChartAxisTransformations: TChartAxisTransformations
+    Left = 456
+    Top = 180
+    object RightChartAxisTransformationsAutoScaleAxisTransform: TAutoScaleAxisTransform
+    end
+  end
+end

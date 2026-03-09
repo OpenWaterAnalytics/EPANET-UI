@@ -1,0 +1,287 @@
+object ProjectFrame: TProjectFrame
+  Left = 0
+  Height = 618
+  Top = 0
+  Width = 241
+  ClientHeight = 618
+  ClientWidth = 241
+  LCLVersion = '4.4.0.0'
+  TabOrder = 0
+  DesignLeft = 1594
+  DesignTop = 172
+  object Panel1: TPanel
+    Left = 0
+    Height = 618
+    Top = 0
+    Width = 241
+    Align = alClient
+    BevelOuter = bvNone
+    ClientHeight = 618
+    ClientWidth = 241
+    TabOrder = 0
+    object ExplorerPanel: TPanel
+      Left = 0
+      Height = 230
+      Top = 0
+      Width = 241
+      Align = alTop
+      BevelOuter = bvNone
+      ClientHeight = 230
+      ClientWidth = 241
+      TabOrder = 0
+      object TopPanel: TPanel
+        Left = 0
+        Height = 28
+        Top = 0
+        Width = 241
+        Align = alTop
+        BevelOuter = bvNone
+        BorderStyle = bsSingle
+        Caption = '  Project Explorer'
+        Font.Style = [fsBold]
+        ParentFont = False
+        TabOrder = 0
+      end
+      object ProjectTreeView: TTreeView
+        Left = 0
+        Height = 202
+        Top = 28
+        Width = 241
+        Align = alClient
+        BackgroundColor = clDefault
+        Color = clDefault
+        DefaultItemHeight = 22
+        ExpandSignType = tvestPlusMinus
+        ReadOnly = True
+        ScrollBars = ssAutoBoth
+        TabOrder = 1
+        Options = [tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
+        Items.Data = {
+          F9FFFFFF020008000000FFFFFFFF00000000FFFFFFFFFFFFFFFF000000000000
+          0000000D0000005469746C65202F204E6F746573FFFFFFFF01000000FFFFFFFF
+          FFFFFFFF05000000000000000110000000416E616C79736973204F7074696F6E
+          73FFFFFFFF0A000000FFFFFFFFFFFFFFFF0000000000000000000A0000004879
+          647261756C696373FFFFFFFF0B000000FFFFFFFFFFFFFFFF0000000000000000
+          000700000044656D616E6473FFFFFFFF0C000000FFFFFFFFFFFFFFFF00000000
+          0000000000070000005175616C697479FFFFFFFF0D000000FFFFFFFFFFFFFFFF
+          0000000000000000000500000054696D6573FFFFFFFF0E000000FFFFFFFFFFFF
+          FFFF00000000000000000006000000456E65726779FFFFFFFF02000000FFFFFF
+          FFFFFFFFFF0000000000000000000D0000004E6574776F726B204E6F646573FF
+          FFFFFF03000000FFFFFFFFFFFFFFFF0000000000000000000D0000004E657477
+          6F726B204C696E6B73FFFFFFFF06000000FFFFFFFFFFFFFFFF00000000000000
+          00000D00000054696D65205061747465726E73FFFFFFFF07000000FFFFFFFFFF
+          FFFFFF0000000000000000000B0000004461746120437572766573FFFFFFFF04
+          000000FFFFFFFFFFFFFFFF0200000000000000010F000000436F6E74726F6C20
+          416374696F6E73FFFFFFFF15000000FFFFFFFFFFFFFFFF000000000000000000
+          0F00000053696D706C6520436F6E74726F6C73FFFFFFFF16000000FFFFFFFFFF
+          FFFFFF0000000000000000001300000052756C652D426173656420436F6E7472
+          6F6C73FFFFFFFF05000000FFFFFFFFFFFFFFFF0000000000000000000A000000
+          4D6170204C6162656C73
+        }
+        OnChange = ProjectTreeViewChange
+        OnClick = ProjectTreeViewClick
+      end
+    end
+    object FrameSplitter: TSplitter
+      Cursor = crVSplit
+      Left = 0
+      Height = 8
+      Top = 230
+      Width = 241
+      Align = alTop
+      ResizeAnchor = akTop
+      ResizeStyle = rsLine
+    end
+    object Panel2: TPanel
+      Left = 0
+      Height = 380
+      Top = 238
+      Width = 241
+      Align = alClient
+      BevelOuter = bvNone
+      ClientHeight = 380
+      ClientWidth = 241
+      TabOrder = 2
+      object Notebook1: TNotebook
+        Left = 0
+        Height = 352
+        Top = 28
+        Width = 241
+        PageIndex = 0
+        Align = alClient
+        TabOrder = 0
+        object TitlePage: TPage
+          Color = clWindow
+          object TitleBox: TGroupBox
+            Left = 8
+            Height = 120
+            Top = 8
+            Width = 225
+            Align = alTop
+            BorderSpacing.Around = 8
+            Caption = 'Title'
+            ClientHeight = 100
+            ClientWidth = 221
+            ParentBackground = False
+            TabOrder = 0
+            object TitleLabel: TLabel
+              Left = 4
+              Height = 92
+              Top = 4
+              Width = 213
+              Align = alClient
+              AutoSize = False
+              BorderSpacing.Around = 4
+              WordWrap = True
+            end
+          end
+          object NotesBox: TGroupBox
+            Left = 8
+            Height = 208
+            Top = 136
+            Width = 225
+            Align = alClient
+            Anchors = [akTop, akLeft, akRight]
+            BorderSpacing.Around = 8
+            Caption = 'Notes'
+            ClientHeight = 188
+            ClientWidth = 221
+            ParentBackground = False
+            TabOrder = 1
+            object NotesLabel: TLabel
+              Left = 4
+              Height = 180
+              Top = 4
+              Width = 213
+              Align = alClient
+              BorderSpacing.Around = 4
+              WordWrap = True
+            end
+          end
+        end
+        object PropertyPage: TPage
+          object PropertyPanel: TPanel
+            Left = 0
+            Height = 352
+            Top = 0
+            Width = 241
+            Align = alClient
+            BevelOuter = bvNone
+            ClientHeight = 352
+            ClientWidth = 241
+            TabOrder = 0
+            object PropEditor: TValueListEditor
+              Left = 0
+              Height = 306
+              Top = 0
+              Width = 241
+              Align = alClient
+              AutoAdvance = aaNone
+              BorderStyle = bsNone
+              Color = clDefault
+              DefaultColWidth = 120
+              DefaultRowHeight = 25
+              FixedColor = clDefault
+              Flat = True
+              RowCount = 2
+              TabOrder = 0
+              TitleFont.CharSet = ANSI_CHARSET
+              OnButtonClick = PropEditorButtonClick
+              OnEditingDone = PropEditorEditingDone
+              OnPrepareCanvas = PropEditorPrepareCanvas
+              OnSelectCell = PropEditorSelectCell
+              OnValidateEntry = PropEditorValidateEntry
+              Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goColSizing, goEditing, goThumbTracking, goFixedColSizing]
+              TitleCaptions.Strings = (
+                'Property'
+                'Value'
+              )
+              ColWidths = (
+                120
+                121
+              )
+            end
+            object HintPanel: TPanel
+              Left = 0
+              Height = 46
+              Top = 306
+              Width = 241
+              Align = alBottom
+              Alignment = taLeftJustify
+              BevelOuter = bvNone
+              BorderStyle = bsSingle
+              Caption = ' Press Enter to record an edit, F1 for Help'
+              Color = 14745599
+              ParentBackground = False
+              ParentColor = False
+              TabOrder = 1
+              Wordwrap = True
+            end
+          end
+        end
+      end
+      object ItemPanel: TPanel
+        Left = 0
+        Height = 28
+        Top = 0
+        Width = 241
+        Align = alTop
+        BevelOuter = bvNone
+        BorderStyle = bsSingle
+        Caption = '  Project Title / Notes'
+        ClientHeight = 28
+        ClientWidth = 241
+        Font.Style = [fsBold]
+        ParentBackground = False
+        ParentFont = False
+        TabOrder = 1
+        object EditTitleBtn: TSpeedButton
+          Left = 191
+          Height = 24
+          Hint = 'Edit'
+          Top = 0
+          Width = 23
+          Align = alRight
+          Images = mainForm.WindowImageList
+          ImageIndex = 10
+          ShowCaption = False
+          ShowHint = True
+          ParentShowHint = False
+          OnClick = EditTitleBtnClick
+        end
+        object NextItemBtn: TSpeedButton
+          Tag = 1
+          Left = 214
+          Height = 24
+          Hint = 'Next Item'
+          Top = 0
+          Width = 23
+          Align = alRight
+          Flat = True
+          Images = mainForm.WindowImageList
+          ImageIndex = 16
+          ShowCaption = False
+          ShowHint = True
+          ParentShowHint = False
+          OnClick = ItemBtnsClick
+        end
+        object PrevItemBtn: TSpeedButton
+          Tag = -1
+          Left = 0
+          Height = 24
+          Hint = 'Previous Item'
+          Top = 0
+          Width = 23
+          Align = alLeft
+          Flat = True
+          Images = mainForm.WindowImageList
+          ImageIndex = 17
+          ShowCaption = False
+          ShowHint = True
+          ParentShowHint = False
+          OnClick = ItemBtnsClick
+        end
+      end
+    end
+  end
+end

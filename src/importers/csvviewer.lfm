@@ -1,0 +1,31 @@
+object CsvViewerForm: TCsvViewerForm
+  Left = 756
+  Height = 411
+  Top = 301
+  Width = 678
+  Caption = 'CSV File Viewer'
+  ClientHeight = 411
+  ClientWidth = 678
+  Position = poMainFormCenter
+  LCLVersion = '4.4.0.0'
+  OnCreate = FormCreate
+  object StringGrid1: TStringGrid
+    Left = 0
+    Height = 411
+    Top = 0
+    Width = 678
+    Align = alClient
+    AutoEdit = False
+    AutoFillColumns = True
+    FixedCols = 0
+    Flat = True
+    TabOrder = 0
+    ColWidths = (
+      136
+      136
+      135
+      135
+      135
+    )
+  end
+end

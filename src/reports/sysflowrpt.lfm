@@ -1,0 +1,190 @@
+object SysFlowFrame: TSysFlowFrame
+  Left = 0
+  Height = 369
+  Top = 0
+  Width = 637
+  Align = alClient
+  ClientHeight = 369
+  ClientWidth = 637
+  LCLVersion = '4.4.0.0'
+  TabOrder = 0
+  DesignLeft = 1238
+  DesignTop = 41
+  object PageControl1: TPageControl
+    Left = 0
+    Height = 369
+    Top = 0
+    Width = 637
+    ActivePage = TabSheet1
+    Align = alClient
+    Style = tsFlatButtons
+    TabIndex = 0
+    TabOrder = 0
+    object TabSheet1: TTabSheet
+      Caption = 'Chart'
+      ClientHeight = 338
+      ClientWidth = 629
+      object Panel1: TPanel
+        Left = 16
+        Height = 322
+        Top = 0
+        Width = 597
+        Align = alClient
+        BorderSpacing.Left = 16
+        BorderSpacing.Right = 16
+        BorderSpacing.Bottom = 16
+        BevelOuter = bvNone
+        BorderStyle = bsSingle
+        Caption = 'Panel1'
+        ClientHeight = 322
+        ClientWidth = 597
+        TabOrder = 0
+        object Chart1: TChart
+          Left = 0
+          Height = 318
+          Top = 0
+          Width = 593
+          AntialiasingMode = amOn
+          AxisList = <          
+            item
+              Grid.Color = cl3DLight
+              Grid.Style = psSolid
+              Intervals.Options = [aipUseCount, aipUseNiceSteps]
+              Marks.LabelBrush.Style = bsClear
+              Minors = <>
+              Title.LabelFont.Orientation = 900
+              Title.Visible = True
+              Title.Caption = 'Volume'
+              Title.LabelBrush.Style = bsClear
+            end          
+            item
+              Grid.Color = cl3DLight
+              Grid.Style = psSolid
+              Alignment = calBottom
+              Marks.Format = '%2:s'
+              Marks.LabelBrush.Style = bsClear
+              Marks.OverlapPolicy = opHideNeighbour
+              Marks.Source = DateTimeIntervalChartSource1
+              Marks.Style = smsLabel
+              Minors = <>
+              Title.Caption = 'Hour'
+              Title.LabelBrush.Style = bsClear
+            end>
+          GUIConnector = ChartGUIConnectorBGRA1
+          Legend.Alignment = laTopCenter
+          Legend.BackgroundBrush.Style = bsClear
+          Legend.ColumnCount = 3
+          Legend.Frame.Visible = False
+          Legend.Visible = True
+          MarginsExternal.Right = 8
+          Title.Brush.Style = bsClear
+          Title.Font.CharSet = ANSI_CHARSET
+          Title.Font.Color = clBlack
+          Title.Font.Pitch = fpVariable
+          Title.Font.Quality = fqDraft
+          Title.Text.Strings = (
+            'System Flow Volumes'
+          )
+          Align = alClient
+          Color = clWindow
+          object Chart1AreaSeries1: TAreaSeries
+            Legend.Multiplicity = lmStyle
+            Transparency = 128
+            AreaLinesPen.Style = psClear
+            Source = ListChartSource1
+            Styles = ChartStyles1
+          end
+        end
+      end
+    end
+    object TabSheet2: TTabSheet
+      Caption = 'Table'
+      ClientHeight = 338
+      ClientWidth = 629
+      object DataGrid: TDrawGrid
+        Left = 16
+        Height = 322
+        Top = 0
+        Width = 597
+        Align = alClient
+        AutoFillColumns = True
+        BorderSpacing.Left = 16
+        BorderSpacing.Right = 16
+        BorderSpacing.Bottom = 16
+        DefaultRowHeight = 24
+        ExtendedSelect = False
+        FixedColor = clWindow
+        FixedCols = 0
+        Flat = True
+        GridLineColor = cl3DLight
+        Options = [goFixedHorzLine, goHorzLine, goRangeSelect, goThumbTracking, goSmoothScroll]
+        TabOrder = 0
+        OnDrawCell = DataGridDrawCell
+        OnPrepareCanvas = DataGridPrepareCanvas
+        ColWidths = (
+          120
+          119
+          119
+          119
+          119
+        )
+      end
+    end
+  end
+  object ListChartSource1: TListChartSource
+    YCount = 3
+    Left = 88
+    Top = 144
+  end
+  object ChartStyles1: TChartStyles
+    Styles = <    
+      item
+        Brush.Color = 12020027
+        Text = 'Stored'
+      end    
+      item
+        Brush.Color = 15640961
+        Text = 'Produced'
+      end    
+      item
+        Brush.Color = 16503739
+        Text = 'Consumed'
+      end>
+    Left = 192
+    Top = 144
+  end
+  object ChartGUIConnectorBGRA1: TChartGUIConnectorBGRA
+    Left = 320
+    Top = 144
+  end
+  object ExportMenu: TPopupMenu
+    Images = mainForm.PopupImageList
+    ImagesWidth = 16
+    Left = 88
+    Top = 80
+    object MnuTimeOfDay: TMenuItem
+      Caption = 'Plot Time of Day'
+      Checked = True
+      ShowAlwaysCheckable = True
+      OnClick = MnuTimeOfDayClick
+    end
+    object Separator1: TMenuItem
+      Caption = '-'
+    end
+    object MnuCopy: TMenuItem
+      Caption = 'Copy to Clipboard'
+      ImageIndex = 17
+      OnClick = MnuCopyClick
+    end
+    object MnuSave: TMenuItem
+      Caption = 'Save to File'
+      ImageIndex = 18
+      OnClick = MnuSaveClick
+    end
+  end
+  object DateTimeIntervalChartSource1: TDateTimeIntervalChartSource
+    DateTimeFormat = 'h:nn am/pm'
+    Left = 320
+    Top = 88
+  end
+end

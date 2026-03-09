@@ -1,0 +1,270 @@
+object RulesEditorForm: TRulesEditorForm
+  Left = 1379
+  Height = 510
+  Top = 199
+  Width = 441
+  BorderIcons = []
+  BorderStyle = bsSizeToolWin
+  Caption = 'Rule-Based Controls Editor'
+  ClientHeight = 510
+  ClientWidth = 441
+  Constraints.MaxWidth = 441
+  FormStyle = fsStayOnTop
+  ParentFont = True
+  LCLVersion = '4.4.0.0'
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  OnShow = FormShow
+  object TopPanel: TPanel
+    Left = 16
+    Height = 260
+    Top = 16
+    Width = 409
+    Align = alClient
+    BorderSpacing.Left = 16
+    BorderSpacing.Top = 16
+    BorderSpacing.Right = 16
+    BevelOuter = bvNone
+    BorderStyle = bsSingle
+    ClientHeight = 260
+    ClientWidth = 409
+    TabOrder = 0
+    object RuleGrid: TStringGrid
+      Left = 0
+      Height = 225
+      Top = 0
+      Width = 405
+      Align = alClient
+      ColCount = 2
+      Columns = <      
+        item
+          ButtonStyle = cbsCheckboxColumn
+          Title.Alignment = taCenter
+          Title.Caption = 'Use'
+          Width = 48
+        end      
+        item
+          ReadOnly = True
+          Title.Alignment = taCenter
+          Title.Caption = '  Rule ID'
+          Width = 335
+        end>
+      DefaultRowHeight = 25
+      FixedCols = 0
+      Flat = True
+      GridLineColor = cl3DLight
+      Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goEditing, goThumbTracking, goSmoothScroll]
+      RowCount = 2
+      ScrollBars = ssVertical
+      TabOrder = 0
+      OnCheckboxToggled = RuleGridCheckboxToggled
+      OnPrepareCanvas = RuleGridPrepareCanvas
+      OnSelection = RuleGridSelection
+      ColWidths = (
+        48
+        335
+      )
+    end
+    object CommandPanel: TPanel
+      Left = 0
+      Height = 31
+      Top = 225
+      Width = 405
+      Align = alBottom
+      BevelOuter = bvNone
+      ClientHeight = 31
+      ClientWidth = 405
+      TabOrder = 1
+      object InsertBtn: TBitBtn
+        Left = 0
+        Height = 31
+        Hint = 'Insert a new rule'
+        Top = 0
+        Width = 92
+        Caption = 'Insert'
+        GlyphShowMode = gsmAlways
+        Images = mainForm.EditingImageList
+        ImageIndex = 0
+        ParentShowHint = False
+        ShowHint = True
+        Spacing = 2
+        TabOrder = 0
+        OnClick = InsertBtnClick
+      end
+      object EditBtn: TBitBtn
+        Left = 96
+        Height = 31
+        Hint = 'Edit the rule'
+        Top = 0
+        Width = 92
+        Caption = 'Edit'
+        GlyphShowMode = gsmAlways
+        Images = mainForm.EditingImageList
+        ImageIndex = 2
+        ParentShowHint = False
+        ShowHint = True
+        Spacing = 2
+        TabOrder = 1
+        OnClick = EditBtnClick
+      end
+      object DeleteBtn: TBitBtn
+        Left = 192
+        Height = 31
+        Hint = 'Delete the rule'
+        Top = 0
+        Width = 92
+        Caption = 'Delete'
+        GlyphShowMode = gsmAlways
+        Images = mainForm.EditingImageList
+        ImageIndex = 1
+        ParentShowHint = False
+        ShowHint = True
+        Spacing = 2
+        TabOrder = 2
+        OnClick = DeleteBtnClick
+      end
+      object MoveUpBtn: TBitBtn
+        Left = 288
+        Height = 31
+        Hint = 'Move the rule up'
+        Top = 0
+        Width = 48
+        GlyphShowMode = gsmAlways
+        Images = mainForm.EditingImageList
+        ImageIndex = 3
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 3
+        OnClick = MoveUpBtnClick
+      end
+      object MoveDnBtn: TBitBtn
+        Left = 340
+        Height = 31
+        Hint = 'Move the rule down'
+        Top = 0
+        Width = 48
+        GlyphShowMode = gsmAlways
+        Images = mainForm.EditingImageList
+        ImageIndex = 4
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 4
+        OnClick = MoveDnBtnClick
+      end
+    end
+  end
+  object EditorPanel: TPanel
+    Left = 16
+    Height = 180
+    Top = 276
+    Width = 409
+    Align = alBottom
+    BorderSpacing.Left = 16
+    BorderSpacing.Right = 16
+    BevelOuter = bvNone
+    BorderStyle = bsSingle
+    ClientHeight = 180
+    ClientWidth = 409
+    TabOrder = 1
+    object RuleMemo: TMemo
+      Left = 0
+      Height = 145
+      Top = 0
+      Width = 405
+      Align = alClient
+      Anchors = [akTop, akLeft, akRight]
+      ScrollBars = ssVertical
+      TabOrder = 0
+      WordWrap = False
+      OnChange = RuleMemoChange
+    end
+    object AcceptPanel: TPanel
+      Left = 0
+      Height = 31
+      Top = 145
+      Width = 405
+      Align = alBottom
+      BevelOuter = bvNone
+      ClientHeight = 31
+      ClientWidth = 405
+      TabOrder = 1
+      object AcceptEditsBtn: TButton
+        Left = 154
+        Height = 31
+        Top = 0
+        Width = 103
+        Caption = 'Accept Edits'
+        TabOrder = 1
+        OnClick = AcceptEditsBtnClick
+      end
+      object CancelEditsBtn: TButton
+        Left = 261
+        Height = 31
+        Top = 0
+        Width = 103
+        Caption = 'Cancel Edits'
+        TabOrder = 2
+        OnClick = CancelEditsBtnClick
+      end
+      object RuleFormatBtn: TButton
+        Left = 47
+        Height = 31
+        Top = 0
+        Width = 103
+        Caption = '? Rule Format'
+        TabOrder = 0
+        OnClick = RuleFormatBtnClick
+      end
+    end
+  end
+  object BottomPanel: TPanel
+    Left = 0
+    Height = 54
+    Top = 456
+    Width = 441
+    Align = alBottom
+    BevelOuter = bvNone
+    ClientHeight = 54
+    ClientWidth = 441
+    TabOrder = 2
+    object HelpBtn: TButton
+      Left = 16
+      Height = 25
+      Top = 14
+      Width = 75
+      Caption = 'Help'
+      TabOrder = 0
+      OnClick = HelpBtnClick
+    end
+    object BottomBtnPanel: TPanel
+      Left = 160
+      Height = 54
+      Top = 0
+      Width = 281
+      Align = alRight
+      BevelOuter = bvNone
+      ClientHeight = 54
+      ClientWidth = 281
+      TabOrder = 1
+      object OkBtn: TButton
+        Left = 100
+        Height = 25
+        Top = 14
+        Width = 75
+        Caption = 'OK'
+        TabOrder = 0
+        OnClick = OkBtnClick
+      end
+      object CancelBtn: TButton
+        Left = 190
+        Height = 25
+        Top = 14
+        Width = 75
+        Caption = 'Cancel'
+        ModalResult = 2
+        TabOrder = 1
+        OnClick = CancelBtnClick
+      end
+    end
+  end
+end

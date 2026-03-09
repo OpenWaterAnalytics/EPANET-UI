@@ -1,0 +1,275 @@
+object CurveEditorForm: TCurveEditorForm
+  Left = 1300
+  Height = 384
+  Top = 400
+  Width = 570
+  BorderStyle = bsDialog
+  Caption = 'Data Curve Selector'
+  ClientHeight = 384
+  ClientWidth = 570
+  KeyPreview = True
+  Position = poMainFormCenter
+  LCLVersion = '4.4.0.0'
+  OnCreate = FormCreate
+  object Notebook1: TNotebook
+    Left = 0
+    Height = 384
+    Top = 0
+    Width = 570
+    PageIndex = 0
+    Align = alClient
+    TabOrder = 0
+    object Page1: TPage
+      object Label1: TLabel
+        Left = 16
+        Height = 23
+        Top = 16
+        Width = 294
+        Caption = 'Select a Data Curve from the list below:'
+      end
+      object CurvesGrid: TStringGrid
+        Left = 16
+        Height = 317
+        Top = 43
+        Width = 444
+        AutoEdit = False
+        ColCount = 3
+        Columns = <        
+          item
+            Title.Caption = 'Name'
+            Width = 120
+          end        
+          item
+            Title.Caption = 'Type'
+          end        
+          item
+            Title.Caption = 'Description'
+            Width = 240
+          end>
+        FixedCols = 0
+        Flat = True
+        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRowSelect, goThumbTracking, goSmoothScroll]
+        RowCount = 2
+        ScrollBars = ssVertical
+        TabOrder = 0
+        OnClick = CurvesGridClick
+        OnPrepareCanvas = CurvesGridPrepareCanvas
+      end
+      object AddBtn: TButton
+        Left = 476
+        Height = 25
+        Top = 43
+        Width = 75
+        Caption = 'Add'
+        TabOrder = 1
+        OnClick = AddBtnClick
+      end
+      object EditBtn: TButton
+        Left = 476
+        Height = 25
+        Top = 80
+        Width = 75
+        Caption = 'Edit'
+        TabOrder = 2
+        OnClick = EditBtnClick
+      end
+      object OkBtn: TButton
+        Left = 476
+        Height = 25
+        Top = 296
+        Width = 75
+        Caption = 'OK'
+        TabOrder = 5
+        OnClick = OkBtnClick
+      end
+      object CancelBtn1: TButton
+        Left = 476
+        Height = 25
+        Top = 335
+        Width = 75
+        Caption = 'Cancel'
+        TabOrder = 6
+        OnClick = CancelBtn1Click
+      end
+      object DeleteBtn: TButton
+        Left = 476
+        Height = 25
+        Top = 118
+        Width = 75
+        Caption = 'Delete'
+        TabOrder = 3
+        OnClick = DeleteBtnClick
+      end
+      object HelpBtn1: TButton
+        Left = 476
+        Height = 25
+        Top = 255
+        Width = 75
+        Caption = 'Help'
+        TabOrder = 4
+        OnClick = HelpBtn1Click
+      end
+    end
+    object Page2: TPage
+      object DataGrid: TStringGrid
+        Left = 16
+        Height = 240
+        Top = 82
+        Width = 166
+        AutoEdit = False
+        AutoFillColumns = True
+        ColCount = 2
+        DefaultColWidth = 72
+        DefaultRowHeight = 24
+        FixedCols = 0
+        Flat = True
+        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goAutoAddRows, goThumbTracking, goSmoothScroll]
+        RowCount = 2
+        ScrollBars = ssAutoVertical
+        TabAdvance = aaRight
+        TabOrder = 3
+        OnValidateEntry = DataGridValidateEntry
+        ColWidths = (
+          83
+          82
+        )
+      end
+      object PreviewChart: TChart
+        Left = 210
+        Height = 248
+        Top = 82
+        Width = 350
+        AntialiasingMode = amOn
+        AxisList = <        
+          item
+            Grid.Color = clSilver
+            Grid.Style = psSolid
+            Marks.LabelFont.Height = -12
+            Marks.LabelFont.Name = 'Noto Sans'
+            Marks.LabelBrush.Style = bsClear
+            Minors = <>
+            Title.LabelFont.Height = -12
+            Title.LabelFont.Name = 'Noto Sans'
+            Title.LabelFont.Orientation = 900
+            Title.Visible = True
+            Title.LabelBrush.Style = bsClear
+          end        
+          item
+            Grid.Visible = False
+            Intervals.Options = [aipUseCount, aipUseNiceSteps]
+            Alignment = calBottom
+            Marks.LabelFont.Height = -12
+            Marks.LabelFont.Name = 'Noto Sans'
+            Marks.LabelBrush.Style = bsClear
+            Minors = <>
+            Title.LabelFont.Height = -12
+            Title.LabelFont.Name = 'Noto Sans'
+            Title.Visible = True
+            Title.LabelBrush.Style = bsClear
+          end>
+        Foot.Brush.Color = clBtnFace
+        Foot.Font.Color = clBlue
+        Title.Brush.Color = clBtnFace
+        Title.Font.Color = clBlue
+        Title.Text.Strings = (
+          'TAChart'
+        )
+        ParentColor = True
+        object DataSeries1: TLineSeries
+          LinePen.Color = clSkyBlue
+          LinePen.Width = 4
+          Pointer.Style = psCircle
+          Pointer.Visible = True
+          ShowPoints = True
+        end
+      end
+      object AcceptBtn: TButton
+        Left = 389
+        Height = 25
+        Top = 347
+        Width = 79
+        Anchors = [akTop, akRight]
+        Caption = 'Accept'
+        TabOrder = 6
+        OnClick = AcceptBtnClick
+      end
+      object CancelBtn2: TButton
+        Left = 481
+        Height = 25
+        Top = 347
+        Width = 79
+        Anchors = [akTop, akRight]
+        Caption = 'Cancel'
+        TabOrder = 8
+        OnClick = CancelBtn2Click
+      end
+      object Label2: TLabel
+        Left = 16
+        Height = 23
+        Top = 16
+        Width = 65
+        Caption = 'Curve ID'
+      end
+      object IdEdit: TEdit
+        Left = 16
+        Height = 31
+        Top = 38
+        Width = 128
+        MaxLength = 31
+        TabOrder = 0
+        OnChange = IdEditChange
+      end
+      object Label3: TLabel
+        Left = 172
+        Height = 23
+        Top = 16
+        Width = 84
+        Caption = 'Curve Type'
+      end
+      object TypeCombo: TComboBox
+        Left = 172
+        Height = 31
+        Top = 38
+        Width = 102
+        ItemHeight = 17
+        Style = csOwnerDrawFixed
+        TabOrder = 1
+        OnChange = TypeComboChange
+      end
+      object Label4: TLabel
+        Left = 304
+        Height = 23
+        Top = 16
+        Width = 86
+        Caption = 'Description'
+      end
+      object DescripEdit: TEdit
+        Left = 304
+        Height = 31
+        Top = 38
+        Width = 256
+        MaxLength = 255
+        TabOrder = 2
+        OnChange = IdEditChange
+      end
+      object HelpBtn2: TButton
+        Left = 16
+        Height = 25
+        Top = 347
+        Width = 75
+        Caption = 'Help'
+        TabOrder = 4
+        OnClick = HelpBtn1Click
+      end
+      object ClearBtn: TButton
+        Left = 107
+        Height = 25
+        Top = 347
+        Width = 75
+        Caption = 'Clear'
+        TabOrder = 5
+        OnClick = ClearBtnClick
+      end
+    end
+  end
+end

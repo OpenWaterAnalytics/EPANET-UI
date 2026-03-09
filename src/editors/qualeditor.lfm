@@ -1,0 +1,319 @@
+object QualEditorForm: TQualEditorForm
+  Left = 999
+  Height = 460
+  Top = 274
+  Width = 357
+  BorderStyle = bsDialog
+  Caption = 'Single Species Water Quality Editor'
+  ClientHeight = 460
+  ClientWidth = 357
+  ParentFont = True
+  Position = poMainFormCenter
+  LCLVersion = '4.4.0.0'
+  OnCreate = FormCreate
+  OnShow = FormShow
+  object BtnPanel: TPanel
+    Left = 0
+    Height = 58
+    Top = 402
+    Width = 357
+    Align = alBottom
+    BevelOuter = bvNone
+    ClientHeight = 58
+    ClientWidth = 357
+    TabOrder = 0
+    object OkBtn: TButton
+      Left = 173
+      Height = 25
+      Top = 16
+      Width = 76
+      Anchors = [akLeft, akRight, akBottom]
+      Caption = 'OK'
+      TabOrder = 1
+      OnClick = OkBtnClick
+    end
+    object CancelBtn: TButton
+      Left = 261
+      Height = 25
+      Top = 16
+      Width = 76
+      Anchors = [akLeft, akRight, akBottom]
+      Cancel = True
+      Caption = 'Cancel'
+      ModalResult = 2
+      TabOrder = 2
+    end
+    object HelpBtn: TButton
+      Left = 19
+      Height = 25
+      Top = 16
+      Width = 76
+      Anchors = [akLeft, akRight, akBottom]
+      Caption = 'Help'
+      TabOrder = 0
+      OnClick = HelpBtnClick
+    end
+  end
+  object MainPanel: TPanel
+    Left = 17
+    Height = 380
+    Top = 16
+    Width = 323
+    BevelOuter = bvNone
+    BorderStyle = bsSingle
+    ClientHeight = 380
+    ClientWidth = 323
+    Color = clWindow
+    ParentBackground = False
+    ParentColor = False
+    TabOrder = 1
+    object GeneralOptionsPanel: TPanel
+      Left = 0
+      Height = 136
+      Top = 0
+      Width = 319
+      Align = alTop
+      BevelOuter = bvNone
+      ClientHeight = 136
+      ClientWidth = 319
+      ParentBackground = False
+      TabOrder = 0
+      object QualNameEdit: TEdit
+        Tag = 1
+        Left = 180
+        Height = 23
+        Top = 57
+        Width = 116
+        TabOrder = 1
+        OnChange = QualNameEditChange
+      end
+      object Label1: TLabel
+        Left = 17
+        Height = 15
+        Top = 24
+        Width = 126
+        Caption = 'Type of Quality Analysis'
+      end
+      object QualTypeCombo: TComboBox
+        Left = 180
+        Height = 24
+        Top = 15
+        Width = 116
+        ItemHeight = 18
+        Style = csOwnerDrawFixed
+        TabOrder = 0
+        OnChange = QualTypeComboChange
+      end
+      object Label2: TLabel
+        Left = 16
+        Height = 15
+        Top = 65
+        Width = 97
+        Caption = 'Constituent Name'
+        ParentShowHint = False
+        ShowHint = True
+      end
+      object Label3: TLabel
+        Cursor = crHelp
+        Left = 16
+        Height = 15
+        Hint = 'The concentration difference below which two parcels'#13#10'of water are considered to have the same quality.'
+        Top = 104
+        Width = 92
+        Caption = 'Quality Tolerance'
+        ParentShowHint = False
+        ShowHint = True
+      end
+      object QualTolEdit: TFloatSpinEditEx
+        Left = 180
+        Height = 23
+        Top = 96
+        Width = 116
+        Alignment = taLeftJustify
+        MaxLength = 0
+        SpinButtonWidth = 17
+        TabOrder = 2
+        OnChange = QualNameEditChange
+        ArrowKeys = False
+        DecimalPlaces = 4
+        MaxValue = 100
+        MinValue = 0.0001
+        UpDownVisible = False
+        Value = 0.01
+      end
+    end
+    object ChemOptionsPanel: TPanel
+      Left = 0
+      Height = 240
+      Top = 136
+      Width = 319
+      Align = alClient
+      BevelOuter = bvNone
+      ClientHeight = 240
+      ClientWidth = 319
+      ParentBackground = False
+      TabOrder = 1
+      object Label10: TLabel
+        Cursor = crHelp
+        Left = 16
+        Height = 15
+        Hint = 'The diffusivity of the chemical with respect to chlorine at 20 deg C.'#13#10'Enter 0 to ignore mass transfer limitations for pipe wall reactions.'
+        Top = 212
+        Width = 97
+        Caption = 'Specific Diffusivity'
+        ParentShowHint = False
+        ShowHint = True
+      end
+      object Label5: TLabel
+        Cursor = crHelp
+        Left = 17
+        Height = 15
+        Hint = 'The power to which concentration is raised for a chemical''''s reaction'#13#10'rate in the bulk flow. The default is 1 (i.e., a first-order reaction).'
+        Top = 51
+        Width = 105
+        Caption = 'Bulk Reaction Order'
+        ParentShowHint = False
+        ShowHint = True
+      end
+      object Label7: TLabel
+        Cursor = crHelp
+        Left = 16
+        Height = 15
+        Hint = 'Select zero-order if the wall reaction rate is independent of'#13#10'concentration or 1st-order if it varies linearly with concentration.'
+        Top = 131
+        Width = 105
+        Caption = 'Wall Reaction Order'
+        ParentShowHint = False
+        ShowHint = True
+      end
+      object WallOrderCombo: TComboBox
+        Tag = 6
+        Left = 180
+        Height = 24
+        Top = 122
+        Width = 116
+        ItemHeight = 18
+        ItemIndex = 1
+        Items.Strings = (
+          '0-order'
+          '1st-order'
+        )
+        Style = csOwnerDrawFixed
+        TabOrder = 3
+        Text = '1st-order'
+        OnChange = QualNameEditChange
+      end
+      object Label9: TLabel
+        Cursor = crHelp
+        Left = 16
+        Height = 15
+        Hint = 'The smallest concentration a chemical can decay'#13#10'to or the largest concentration it can grow to.'
+        Top = 172
+        Width = 123
+        Caption = 'Limiting Concentration'
+        ParentShowHint = False
+        ShowHint = True
+      end
+      object Label4: TLabel
+        Left = 17
+        Height = 15
+        Top = 10
+        Width = 106
+        Caption = 'Concentration Units'
+      end
+      object UnitsCombo: TComboBox
+        Tag = 3
+        Left = 180
+        Height = 24
+        Top = 1
+        Width = 116
+        ItemHeight = 18
+        ItemIndex = 0
+        Items.Strings = (
+          'mg/L'
+          'ug/L'
+        )
+        Style = csOwnerDrawFixed
+        TabOrder = 0
+        Text = 'mg/L'
+        OnChange = QualNameEditChange
+      end
+      object UnitsLabel: TLabel
+        Left = 64
+        Height = 15
+        Top = 29
+        Width = 55
+        Caption = 'UnitsLabel'
+      end
+      object Label8: TLabel
+        Left = 16
+        Height = 15
+        Top = 91
+        Width = 107
+        Caption = 'Tank Reaction Order'
+      end
+      object BulkOrderEdit: TFloatSpinEditEx
+        Left = 180
+        Height = 23
+        Top = 43
+        Width = 116
+        Alignment = taLeftJustify
+        MaxLength = 0
+        SpinButtonWidth = 17
+        TabOrder = 1
+        OnChange = QualNameEditChange
+        ArrowKeys = False
+        DecimalPlaces = 4
+        MaxValue = 10
+        UpDownVisible = False
+        Value = 1
+      end
+      object TankOrderEdit: TFloatSpinEditEx
+        Left = 180
+        Height = 23
+        Top = 83
+        Width = 116
+        Alignment = taLeftJustify
+        MaxLength = 0
+        SpinButtonWidth = 17
+        TabOrder = 2
+        OnChange = QualNameEditChange
+        ArrowKeys = False
+        DecimalPlaces = 4
+        MaxValue = 10
+        UpDownVisible = False
+        Value = 1
+      end
+      object ConcenLimitEdit: TFloatSpinEditEx
+        Left = 180
+        Height = 23
+        Top = 164
+        Width = 116
+        Alignment = taLeftJustify
+        MaxLength = 0
+        SpinButtonWidth = 17
+        TabOrder = 4
+        OnChange = QualNameEditChange
+        ArrowKeys = False
+        DecimalPlaces = 4
+        MaxValue = 10000
+        UpDownVisible = False
+      end
+      object DiffusEdit: TFloatSpinEditEx
+        Left = 180
+        Height = 23
+        Top = 204
+        Width = 116
+        Alignment = taLeftJustify
+        MaxLength = 0
+        SpinButtonWidth = 17
+        TabOrder = 5
+        OnChange = QualNameEditChange
+        ArrowKeys = False
+        DecimalPlaces = 4
+        MaxValue = 1000
+        UpDownVisible = False
+      end
+    end
+  end
+end

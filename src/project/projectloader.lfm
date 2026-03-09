@@ -1,0 +1,26 @@
+object ProjectLoaderForm: TProjectLoaderForm
+  Left = 1669
+  Height = 66
+  Top = 533
+  Width = 192
+  BorderStyle = bsNone
+  ClientHeight = 66
+  ClientWidth = 192
+  Color = clWindow
+  Position = poMainFormCenter
+  LCLVersion = '4.4.0.0'
+  OnActivate = FormActivate
+  OnCreate = FormCreate
+  object Panel1: TPanel
+    Left = 0
+    Height = 66
+    Top = 0
+    Width = 192
+    Align = alClient
+    BevelOuter = bvNone
+    BorderStyle = bsSingle
+    Caption = 'Loading Project . . .'
+    ParentBackground = False
+    TabOrder = 0
+  end
+end

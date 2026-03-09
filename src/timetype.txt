@@ -1,0 +1,8 @@
+{$MACRO ON}
+{$ifdef UNIX}
+  {$DEFINE TimeType:=Int64}
+{$ELSE}
+  {$DEFINE TimeType:=Integer}
+{$ENDIF}
+
+

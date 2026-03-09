@@ -1,0 +1,1389 @@
+object MainMenuFrame: TMainMenuFrame
+  Left = 0
+  Height = 100
+  Top = 0
+  Width = 1140
+  ClientHeight = 100
+  ClientWidth = 1140
+  LCLVersion = '4.4.0.0'
+  TabOrder = 0
+  TabStop = True
+  DesignLeft = 790
+  DesignTop = 635
+  object Panel1: TPanel
+    Left = 0
+    Height = 100
+    Top = 0
+    Width = 1140
+    Align = alClient
+    BevelOuter = bvNone
+    ClientHeight = 100
+    ClientWidth = 1140
+    TabOrder = 0
+    TabStop = True
+    object Panel2: TPanel
+      Left = 0
+      Height = 100
+      Top = 0
+      Width = 1140
+      Align = alClient
+      BevelOuter = bvNone
+      ClientHeight = 100
+      ClientWidth = 1140
+      TabOrder = 0
+      TabStop = True
+      object MenuBarPanel: TPanel
+        Left = 0
+        Height = 35
+        Top = 0
+        Width = 1140
+        Align = alTop
+        BevelOuter = bvNone
+        ClientHeight = 35
+        ClientWidth = 1140
+        Color = 6829839
+        Font.CharSet = ANSI_CHARSET
+        Font.Color = clWhite
+        Font.Pitch = fpVariable
+        Font.Quality = fqDraft
+        Font.Style = [fsBold]
+        ParentBackground = False
+        ParentColor = False
+        ParentFont = False
+        TabOrder = 0
+        TabStop = True
+        object MenuPanel1: TPanel
+          Left = 0
+          Height = 35
+          Top = 0
+          Width = 72
+          Align = alLeft
+          BevelOuter = bvNone
+          Caption = 'File'
+          ParentBackground = False
+          TabOrder = 0
+          TabStop = True
+          OnClick = MenuPanelClick
+          OnMouseEnter = MenuPanel1MouseEnter
+          OnMouseLeave = MenuPanel1MouseLeave
+        end
+        object MenuPanel2: TPanel
+          Tag = 1
+          Left = 72
+          Height = 35
+          Top = 0
+          Width = 72
+          Align = alLeft
+          BevelOuter = bvNone
+          Caption = 'Edit'
+          ParentBackground = False
+          TabOrder = 1
+          TabStop = True
+          OnClick = MenuPanelClick
+          OnMouseEnter = MenuPanel1MouseEnter
+          OnMouseLeave = MenuPanel1MouseLeave
+        end
+        object MenuPanel3: TPanel
+          Tag = 2
+          Left = 144
+          Height = 35
+          Top = 0
+          Width = 72
+          Align = alLeft
+          BevelOuter = bvNone
+          Caption = 'View'
+          ParentBackground = False
+          TabOrder = 2
+          TabStop = True
+          OnClick = MenuPanelClick
+          OnMouseEnter = MenuPanel1MouseEnter
+          OnMouseLeave = MenuPanel1MouseLeave
+        end
+        object MenuPanel4: TPanel
+          Tag = 3
+          Left = 216
+          Height = 35
+          Top = 0
+          Width = 72
+          Align = alLeft
+          BevelOuter = bvNone
+          Caption = 'Map'
+          ParentBackground = False
+          TabOrder = 3
+          TabStop = True
+          OnClick = MenuPanelClick
+          OnMouseEnter = MenuPanel1MouseEnter
+          OnMouseLeave = MenuPanel1MouseLeave
+        end
+        object MenuPanel5: TPanel
+          Tag = 4
+          Left = 288
+          Height = 35
+          Top = 0
+          Width = 72
+          Align = alLeft
+          BevelOuter = bvNone
+          Caption = 'Project'
+          ParentBackground = False
+          TabOrder = 4
+          TabStop = True
+          OnClick = MenuPanelClick
+          OnMouseEnter = MenuPanel1MouseEnter
+          OnMouseLeave = MenuPanel1MouseLeave
+        end
+        object MenuPanel6: TPanel
+          Tag = 5
+          Left = 360
+          Height = 35
+          Top = 0
+          Width = 72
+          Align = alLeft
+          BevelOuter = bvNone
+          Caption = 'Help'
+          ParentBackground = False
+          TabOrder = 5
+          TabStop = True
+          OnClick = MenuPanelClick
+          OnMouseEnter = MenuPanel1MouseEnter
+          OnMouseLeave = MenuPanel1MouseLeave
+        end
+        object SpeedPanel: TPanel
+          Left = 926
+          Height = 23
+          Top = 6
+          Width = 208
+          Align = alRight
+          AutoSize = True
+          BorderSpacing.Around = 6
+          BevelOuter = bvNone
+          ClientHeight = 23
+          ClientWidth = 208
+          Color = 15918295
+          ParentBackground = False
+          ParentColor = False
+          TabOrder = 6
+          object SpeedBar: TToolBar
+            Left = 0
+            Height = 23
+            Top = 0
+            Width = 208
+            Align = alClient
+            AutoSize = True
+            Caption = 'SpeedBar'
+            EdgeBorders = []
+            Images = mainForm.MaterialToolbarList
+            ImagesWidth = 16
+            TabOrder = 0
+            Transparent = True
+            object ToolButton1: TToolButton
+              Tag = 1
+              Left = 1
+              Hint = 'New'
+              Top = 0
+              Caption = 'ToolButton1'
+              ImageIndex = 0
+              ParentShowHint = False
+              ShowCaption = False
+              ShowHint = True
+              OnClick = ToolButton1Click
+            end
+            object ToolButton2: TToolButton
+              Tag = 2
+              Left = 24
+              Hint = 'Open'
+              Top = 0
+              Caption = 'ToolButton2'
+              ImageIndex = 1
+              ParentShowHint = False
+              ShowCaption = False
+              ShowHint = True
+              OnClick = ToolButton1Click
+            end
+            object ToolButton3: TToolButton
+              Tag = 3
+              Left = 47
+              Hint = 'Save'
+              Top = 0
+              Caption = 'ToolButton3'
+              ImageIndex = 2
+              ParentShowHint = False
+              ShowCaption = False
+              ShowHint = True
+              OnClick = ToolButton1Click
+            end
+            object ToolButton4: TToolButton
+              Tag = 4
+              Left = 116
+              Hint = 'Full Extent'
+              Top = 0
+              Caption = 'ToolButton4'
+              ImageIndex = 5
+              ParentShowHint = False
+              ShowCaption = False
+              ShowHint = True
+              OnClick = ToolButton1Click
+            end
+            object ToolButton5: TToolButton
+              Tag = 5
+              Left = 139
+              Hint = 'Analyze'
+              Top = 0
+              Caption = 'ToolButton5'
+              ImageIndex = 6
+              ParentShowHint = False
+              ShowCaption = False
+              ShowHint = True
+              OnClick = ToolButton1Click
+            end
+            object ToolButton6: TToolButton
+              Tag = 6
+              Left = 162
+              Hint = 'Report'
+              Top = 0
+              Caption = 'ToolButton6'
+              DropdownMenu = ReportMenu
+              ImageIndex = 7
+              ParentShowHint = False
+              ShowCaption = False
+              ShowHint = True
+            end
+            object ToolButton7: TToolButton
+              Tag = 7
+              Left = 185
+              Hint = 'Help'
+              Top = 0
+              Caption = 'ToolButton7'
+              ImageIndex = 8
+              ParentShowHint = False
+              ShowCaption = False
+              ShowHint = True
+              OnClick = ToolButton1Click
+            end
+            object ToolButton8: TToolButton
+              Tag = 8
+              Left = 70
+              Hint = 'Zoom In'
+              Top = 0
+              Caption = 'ToolButton8'
+              ImageIndex = 3
+              ParentShowHint = False
+              ShowCaption = False
+              ShowHint = True
+              OnClick = ToolButton1Click
+            end
+            object ToolButton9: TToolButton
+              Tag = 9
+              Left = 93
+              Hint = 'Zoom Out'
+              Top = 0
+              Caption = 'ToolButton9'
+              ImageIndex = 4
+              ParentShowHint = False
+              ShowCaption = False
+              ShowHint = True
+              OnClick = ToolButton1Click
+            end
+          end
+        end
+      end
+      object MenuNotebook: TNotebook
+        Left = 0
+        Height = 65
+        Top = 35
+        Width = 1140
+        PageIndex = 0
+        Align = alClient
+        TabOrder = 1
+        TabStop = True
+        object Page1: TPage
+          object FilePanel: TPanel
+            Left = 0
+            Height = 65
+            Top = 0
+            Width = 1140
+            Align = alClient
+            BevelOuter = bvNone
+            ClientHeight = 65
+            ClientWidth = 1140
+            ParentBackground = False
+            TabOrder = 0
+            object FileToolBar: TToolBar
+              Left = 0
+              Height = 65
+              Top = 0
+              Width = 1140
+              Align = alClient
+              ButtonHeight = 62
+              ButtonWidth = 100
+              EdgeBorders = []
+              Images = mainForm.MaterialImageList
+              ImagesWidth = 24
+              ShowCaptions = True
+              TabOrder = 0
+              Transparent = True
+              object FileNewBtn: TToolButton
+                Left = 1
+                Hint = ' '#13#10' Start a new project  '#13#10'  '
+                Top = 0
+                AllowAllUp = True
+                Caption = 'New'
+                Grouped = True
+                ImageIndex = 28
+                ParentShowHint = False
+                ShowHint = True
+                OnClick = FileNewBtnClick
+              end
+              object FileOpenBtn: TToolButton
+                Left = 101
+                Hint = '  '#13#10'  Open a previously saved project. Click'#13#10'  the arrow for a list of recently used files.    '#13#10'  '
+                Top = 0
+                AllowAllUp = True
+                Caption = 'Open'
+                DropdownMenu = MruMenu
+                ImageIndex = 29
+                ParentShowHint = False
+                ShowHint = True
+                Style = tbsDropDown
+                OnClick = FileOpenBtnClick
+              end
+              object FileSaveBtn: TToolButton
+                Left = 218
+                Hint = '  '#13#10'  Save the project under its current name  '#13#10'  '
+                Top = 0
+                AllowAllUp = True
+                Caption = 'Save'
+                ImageIndex = 30
+                ParentShowHint = False
+                ShowHint = True
+                OnClick = FileSaveBtnClick
+              end
+              object FileSep1: TToolButton
+                Left = 213
+                Height = 5
+                Top = 0
+                Caption = 'EditSep1'
+                Style = tbsDivider
+              end
+              object FileSep2: TToolButton
+                Left = 418
+                Height = 5
+                Top = 0
+                Caption = 'EditSep2'
+                Style = tbsDivider
+              end
+              object FileImportBtn: TToolButton
+                Left = 423
+                Hint = '  '#13#10'  Import project data in other formats  '#13#10'  '
+                Top = 0
+                AllowAllUp = True
+                Caption = 'Import'
+                DropdownMenu = ImportMenu
+                ImageIndex = 36
+                ParentShowHint = False
+                ShowHint = True
+                Style = tbsButtonDrop
+              end
+              object FilePreferencesBtn: TToolButton
+                Left = 533
+                Hint = '  '#13#10'  Set program preferences  '#13#10'  '
+                Top = 0
+                Caption = 'Preferences'
+                ImageIndex = 38
+                ParentShowHint = False
+                ShowHint = True
+                OnClick = FilePreferencesBtnClick
+              end
+              object FileSaveAsBtn: TToolButton
+                Left = 318
+                Hint = '  '#13#10'  Save the project under a new name  '#13#10'  '
+                Top = 0
+                Caption = 'Save As'
+                ImageIndex = 34
+                ParentShowHint = False
+                ShowHint = True
+                OnClick = FileSaveAsBtnClick
+              end
+              object FileQuitBtn: TToolButton
+                Left = 638
+                Hint = '  '#13#10'  Exit the program  '#13#10'  '
+                Top = 0
+                Caption = 'Quit'
+                ImageIndex = 37
+                ParentShowHint = False
+                ShowHint = True
+                OnClick = FileQuitBtnClick
+              end
+              object FileSep3: TToolButton
+                Left = 633
+                Height = 5
+                Top = 0
+                Caption = 'FileSep3'
+                Style = tbsDivider
+              end
+            end
+          end
+        end
+        object Page2: TPage
+          object EditToolBar: TToolBar
+            Left = 0
+            Height = 65
+            Top = 0
+            Width = 1140
+            Align = alClient
+            ButtonHeight = 62
+            ButtonWidth = 100
+            EdgeBorders = []
+            Images = mainForm.MaterialImageList
+            ImagesWidth = 24
+            ShowCaptions = True
+            TabOrder = 0
+            Transparent = True
+            object EditCopyBtn: TToolButton
+              Left = 1
+              Hint = ' '#13#10' Copy the selected object''s  '#13#10'  properties to the clipboard  '#13#10'  '
+              Top = 0
+              AllowAllUp = True
+              Caption = 'Copy'
+              Enabled = False
+              Grouped = True
+              ImageIndex = 1
+              OnClick = EditCopyBtnClick
+            end
+            object EditPasteBtn: TToolButton
+              Left = 101
+              Hint = '  '#13#10'  Paste properties copied to the  '#13#10'  clipboard into the selected object  '#13#10'  '
+              Top = 0
+              AllowAllUp = True
+              Caption = 'Paste'
+              Enabled = False
+              ImageIndex = 2
+              OnClick = EditPasteBtnClick
+            end
+            object EditReverseBtn: TToolButton
+              Left = 306
+              Hint = '  '#13#10'  Reverse the direction of a link  '#13#10'  '
+              Top = 0
+              AllowAllUp = True
+              Caption = 'Reverse Link'
+              Enabled = False
+              ImageIndex = 4
+              OnClick = EditReverseBtnClick
+            end
+            object EditVertexBtn: TToolButton
+              Left = 206
+              Hint = '  '#13#10'  Edit vertices used to shape a link  '#13#10'  '
+              Top = 0
+              AllowAllUp = True
+              Caption = 'Reshape Link'
+              Enabled = False
+              ImageIndex = 3
+              OnClick = EditVertexBtnClick
+            end
+            object EditSep1: TToolButton
+              Left = 201
+              Height = 5
+              Top = 0
+              Caption = 'EditSep1'
+              Style = tbsDivider
+            end
+            object EditSep2: TToolButton
+              Left = 516
+              Height = 5
+              Top = 0
+              Caption = 'EditSep2'
+              Style = tbsDivider
+            end
+            object GroupEditBtn: TToolButton
+              Left = 521
+              Hint = '  '#13#10'  Edit a property for a group of objects  '#13#10'  '
+              Top = 0
+              AllowAllUp = True
+              Caption = 'Group Edit'
+              ImageIndex = 5
+              OnClick = GroupEditBtnClick
+            end
+            object GroupDeleteBtn: TToolButton
+              Left = 621
+              Hint = '  '#13#10'  Delete a group of objects  '#13#10'  '
+              Top = 0
+              Caption = 'Group Delete'
+              ImageIndex = 31
+              OnClick = GroupDeleteBtnClick
+            end
+            object EditConvertBtn: TToolButton
+              Left = 406
+              Hint = '  '#13#10'  Convert a link to another type  '#13#10'  '
+              Top = 0
+              Caption = 'Convert Link'
+              DropdownMenu = ConvertMenu
+              Enabled = False
+              ImageIndex = 32
+              ParentShowHint = False
+              ShowHint = True
+              Style = tbsButtonDrop
+            end
+          end
+        end
+        object Page3: TPage
+          object ViewPanel: TPanel
+            Left = 0
+            Height = 65
+            Top = 0
+            Width = 1140
+            Align = alClient
+            BevelOuter = bvNone
+            ClientHeight = 65
+            ClientWidth = 1140
+            TabOrder = 0
+            object ViewNodeLegendBtn: TSpeedButton
+              Left = 161
+              Height = 54
+              Hint = #13#10'  Edit the Node Theme''s legend  '#13#10'  '
+              Top = 2
+              Width = 59
+              AllowAllUp = True
+              Caption = '  Legend'
+              Flat = True
+              Glyph.Data = {
+                36090000424D3609000000000000360000002800000018000000180000000100
+                2000000000000009000064000000640000000000000000000000000000000000
+                0000000000000000000000000000000000000000000000000000000000000000
+                0000000000000000000000000000000000000000000000000000000000000000
+                0000000000000000000000000000000000000000000000000000000000000000
+                0000000000000000000000000000000000000000000000000000000000000000
+                0000000000000000000000000000000000000000000000000000000000000000
+                0000000000000000000000000000000000000000000000000000000000000000
+                0000000000000000000000000000000000000000000000000000000000000000
+                0000000000000000000000000000000000000000000000000000000000000000
+                0000000000000000000000000000000000000000000000000000000000000000
+                000000000000000000DF000000BF000000400000001000000000000000000000
+                000000000000000000000000003000000070000000DF000000CF000000800000
+                0030000000000000000000000000000000000000000000000000000000000000
+                000000000000000000FF000000FF000000FF000000EF00000080000000300000
+                001000000070000000CF000000FF000000FF000000FF000000FF000000FF0000
+                00FF000000CF0000008000000030000000000000000000000000000000000000
+                000000000000000000FF000000FF000000CF000000FF000000FF000000FF0000
+                00FF000000FF000000FF000000FF0000008F000000FF000000FF0000008F0000
+                00DF000000FF000000FF000000EF000000000000000000000000000000000000
+                000000000000000000FF000000FF00000010000000600000008F000000FF0000
+                00FF000000AF000000600000000000000000000000FF000000FF000000000000
+                001000000040000000FF000000FF000000000000000000000000000000000000
+                000000000000000000FF000000FF00000070000000EF00000070000000FF0000
+                00FF00000000000000000000000000000000000000FF000000FF000000000000
+                000000000000000000FF000000FF000000000000000000000000000000000000
+                000000000000000000FF000000FF00000070000000EF00000080000000FF0000
+                00FF00000000000000000000000000000000000000FF000000FF000000000000
+                000000000000000000FF000000FF000000000000000000000000000000000000
+                000000000000000000FF000000FF000000400000007000000040000000FF0000
+                00FF00000000000000000000000000000000000000FF000000FF000000000000
+                000000000000000000FF000000FF000000000000000000000000000000000000
+                000000000000000000FF000000FF00000070000000FF00000080000000FF0000
+                00FF00000000000000000000000000000000000000FF000000FF000000000000
+                000000000000000000FF000000FF000000000000000000000000000000000000
+                000000000000000000FF000000FF00000050000000CF00000080000000FF0000
+                00FF00000000000000000000000000000000000000FF000000FF000000000000
+                000000000000000000FF000000FF000000000000000000000000000000000000
+                000000000000000000FF000000FF000000600000008F00000030000000FF0000
+                00FF00000000000000000000000000000000000000FF000000FF000000000000
+                000000000000000000FF000000FF000000000000000000000000000000000000
+                000000000000000000FF000000FF00000070000000FF00000080000000FF0000
+                00FF00000000000000000000000000000000000000FF000000FF000000000000
+                000000000000000000FF000000FF000000000000000000000000000000000000
+                000000000000000000FF000000FF000000300000008F00000070000000FF0000
+                00FF00000000000000000000000000000000000000FF000000FF000000000000
+                000000000000000000FF000000FF000000000000000000000000000000000000
+                000000000000000000FF000000FF00000070000000BF00000050000000FF0000
+                00FF00000000000000000000000000000000000000FF000000FF000000000000
+                000000000000000000FF000000FF000000000000000000000000000000000000
+                000000000000000000FF000000FF00000070000000FF00000080000000FF0000
+                00FF00000000000000000000000000000000000000FF000000FF000000000000
+                000000000000000000FF000000FF000000000000000000000000000000000000
+                000000000000000000FF000000FF000000600000005000000050000000FF0000
+                00FF000000000000000000000060000000BF000000FF000000FF000000BF0000
+                005000000010000000FF000000FF000000000000000000000000000000000000
+                000000000000000000EF000000FF000000FF000000EF000000AF000000FF0000
+                00FF0000009F000000FF000000FF000000FF000000FF000000EF000000FF0000
+                00FF000000EF000000FF000000FF000000000000000000000000000000000000
+                0000000000000000001000000080000000CF000000FF000000FF000000FF0000
+                00FF000000FF000000FF000000AF000000700000000000000010000000800000
+                00CF000000FF000000FF000000FF000000000000000000000000000000000000
+                0000000000000000000000000000000000000000002000000080000000CF0000
+                00BF000000800000002000000000000000000000000000000000000000000000
+                0000000000400000008F000000CF000000000000000000000000000000000000
+                0000000000000000000000000000000000000000000000000000000000000000
+                0000000000000000000000000000000000000000000000000000000000000000
+                0000000000000000000000000000000000000000000000000000000000000000
+                0000000000000000000000000000000000000000000000000000000000000000
+                0000000000000000000000000000000000000000000000000000000000000000
+                0000000000000000000000000000000000000000000000000000000000000000
+                0000000000000000000000000000000000000000000000000000000000000000
+                0000000000000000000000000000000000000000000000000000000000000000
+                0000000000000000000000000000000000000000000000000000
+              }
+              Images = mainForm.MaterialImageList
+              ImageIndex = 6
+              ImageWidth = 24
+              Layout = blGlyphBottom
+              OnClick = ViewNodeLegendBtnClick
+            end
+            object ViewNodeCombo: TComboBox
+              Left = 14
+              Height = 26
+              Hint = '  '#13#10'  Select a Node property to view  '#13#10'  '
+              Top = 27
+              Width = 140
+              ItemHeight = 20
+              Style = csOwnerDrawFixed
+              TabOrder = 0
+              OnChange = ViewNodeComboChange
+            end
+            object ViewLinkLbl: TLabel
+              Left = 245
+              Height = 15
+              Top = 8
+              Width = 62
+              Caption = 'Link Theme'
+              ParentColor = False
+            end
+            object ViewLinkCombo: TComboBox
+              Left = 245
+              Height = 26
+              Hint = '  '#13#10'  Select a Link property to view  '#13#10'  '
+              Top = 27
+              Width = 140
+              ItemHeight = 20
+              Style = csOwnerDrawFixed
+              TabOrder = 1
+              OnChange = ViewLinkComboChange
+            end
+            object ViewBevel2: TBevel
+              Left = 457
+              Height = 64
+              Top = 0
+              Width = 8
+              Shape = bsLeftLine
+            end
+            object ViewBevel1: TBevel
+              Left = 232
+              Height = 64
+              Top = 0
+              Width = 8
+              Shape = bsLeftLine
+            end
+            object ViewLinkLegendBtn: TSpeedButton
+              Left = 394
+              Height = 54
+              Hint = '  '#13#10'  Edit the Link Theme''s legend  '#13#10'  '
+              Top = 2
+              Width = 55
+              AllowAllUp = True
+              Caption = 'Legend'
+              Flat = True
+              Glyph.Data = {
+                36090000424D3609000000000000360000002800000018000000180000000100
+                2000000000000009000064000000640000000000000000000000000000000000
+                0000000000000000000000000000000000000000000000000000000000000000
+                0000000000000000000000000000000000000000000000000000000000000000
+                0000000000000000000000000000000000000000000000000000000000000000
+                0000000000000000000000000000000000000000000000000000000000000000
+                0000000000000000000000000000000000000000000000000000000000000000
+                0000000000000000000000000000000000000000000000000000000000000000
+                0000000000000000000000000000000000000000000000000000000000000000
+                0000000000000000000000000000000000000000000000000000000000000000
+                0000000000000000000000000000000000000000000000000000000000000000
+                000000000000000000DF000000BF000000400000001000000000000000000000
+                000000000000000000000000003000000070000000DF000000CF000000800000
+                0030000000000000000000000000000000000000000000000000000000000000
+                000000000000000000FF000000FF000000FF000000EF00000080000000300000
+                001000000070000000CF000000FF000000FF000000FF000000FF000000FF0000
+                00FF000000CF0000008000000030000000000000000000000000000000000000
+                000000000000000000FF000000FF000000CF000000FF000000FF000000FF0000
+                00FF000000FF000000FF000000FF0000008F000000FF000000FF0000008F0000
+                00DF000000FF000000FF000000EF000000000000000000000000000000000000
+                000000000000000000FF000000FF00000010000000600000008F000000FF0000
+                00FF000000AF000000600000000000000000000000FF000000FF000000000000
+                001000000040000000FF000000FF000000000000000000000000000000000000
+                000000000000000000FF000000FF00000070000000EF00000070000000FF0000
+                00FF00000000000000000000000000000000000000FF000000FF000000000000
+                000000000000000000FF000000FF000000000000000000000000000000000000
+                000000000000000000FF000000FF00000070000000EF00000080000000FF0000
+                00FF00000000000000000000000000000000000000FF000000FF000000000000
+                000000000000000000FF000000FF000000000000000000000000000000000000
+                000000000000000000FF000000FF000000400000007000000040000000FF0000
+                00FF00000000000000000000000000000000000000FF000000FF000000000000
+                000000000000000000FF000000FF000000000000000000000000000000000000
+                000000000000000000FF000000FF00000070000000FF00000080000000FF0000
+                00FF00000000000000000000000000000000000000FF000000FF000000000000
+                000000000000000000FF000000FF000000000000000000000000000000000000
+                000000000000000000FF000000FF00000050000000CF00000080000000FF0000
+                00FF00000000000000000000000000000000000000FF000000FF000000000000
+                000000000000000000FF000000FF000000000000000000000000000000000000
+                000000000000000000FF000000FF000000600000008F00000030000000FF0000
+                00FF00000000000000000000000000000000000000FF000000FF000000000000
+                000000000000000000FF000000FF000000000000000000000000000000000000
+                000000000000000000FF000000FF00000070000000FF00000080000000FF0000
+                00FF00000000000000000000000000000000000000FF000000FF000000000000
+                000000000000000000FF000000FF000000000000000000000000000000000000
+                000000000000000000FF000000FF000000300000008F00000070000000FF0000
+                00FF00000000000000000000000000000000000000FF000000FF000000000000
+                000000000000000000FF000000FF000000000000000000000000000000000000
+                000000000000000000FF000000FF00000070000000BF00000050000000FF0000
+                00FF00000000000000000000000000000000000000FF000000FF000000000000
+                000000000000000000FF000000FF000000000000000000000000000000000000
+                000000000000000000FF000000FF00000070000000FF00000080000000FF0000
+                00FF00000000000000000000000000000000000000FF000000FF000000000000
+                000000000000000000FF000000FF000000000000000000000000000000000000
+                000000000000000000FF000000FF000000600000005000000050000000FF0000
+                00FF000000000000000000000060000000BF000000FF000000FF000000BF0000
+                005000000010000000FF000000FF000000000000000000000000000000000000
+                000000000000000000EF000000FF000000FF000000EF000000AF000000FF0000
+                00FF0000009F000000FF000000FF000000FF000000FF000000EF000000FF0000
+                00FF000000EF000000FF000000FF000000000000000000000000000000000000
+                0000000000000000001000000080000000CF000000FF000000FF000000FF0000
+                00FF000000FF000000FF000000AF000000700000000000000010000000800000
+                00CF000000FF000000FF000000FF000000000000000000000000000000000000
+                0000000000000000000000000000000000000000002000000080000000CF0000
+                00BF000000800000002000000000000000000000000000000000000000000000
+                0000000000400000008F000000CF000000000000000000000000000000000000
+                0000000000000000000000000000000000000000000000000000000000000000
+                0000000000000000000000000000000000000000000000000000000000000000
+                0000000000000000000000000000000000000000000000000000000000000000
+                0000000000000000000000000000000000000000000000000000000000000000
+                0000000000000000000000000000000000000000000000000000000000000000
+                0000000000000000000000000000000000000000000000000000000000000000
+                0000000000000000000000000000000000000000000000000000000000000000
+                0000000000000000000000000000000000000000000000000000000000000000
+                0000000000000000000000000000000000000000000000000000
+              }
+              Images = mainForm.MaterialImageList
+              ImageIndex = 6
+              ImageWidth = 24
+              Layout = blGlyphBottom
+              OnClick = ViewLinkLegendBtnClick
+            end
+            object ViewNodeLbl: TLabel
+              Left = 14
+              Height = 15
+              Top = 8
+              Width = 69
+              Caption = 'Node Theme'
+              ParentColor = False
+              ParentShowHint = False
+            end
+            object ViewTimePanel: TPanel
+              Left = 477
+              Height = 22
+              Top = 4
+              Width = 171
+              Alignment = taLeftJustify
+              BevelOuter = bvNone
+              Caption = 'Time: 100:00:00 hrs (12:00 am)'
+              ParentBackground = False
+              ParentShowHint = False
+              TabOrder = 2
+            end
+            object ViewAnimateBtn: TSpeedButton
+              Left = 672
+              Height = 54
+              Hint = '    '#13#10'  Animate the map display  '#13#10'  '
+              Top = 2
+              Width = 60
+              AllowAllUp = True
+              Caption = 'Animate'
+              Enabled = False
+              Flat = True
+              Glyph.Data = {
+                36090000424D3609000000000000360000002800000018000000180000000100
+                2000000000000009000064000000640000000000000000000000000000000000
+                0000000000000000000000000000000000000000000000000000000000000000
+                0000000000000000000000000000000000000000000000000000000000000000
+                0000000000000000000000000000000000000000000000000000000000000000
+                0000000000000000000000000000000000000000000000000000000000000000
+                0000000000000000000000000000000000000000000000000000000000000000
+                0000000000000000000000000000000000000000000000000000000000000000
+                000000000040000000DF000000FF000000FF000000FF000000FF000000FF0000
+                00FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000
+                00FF000000FF000000FF000000BF000000600000000000000000000000000000
+                0000000000DF000000FF000000FF000000FF000000FF000000FF000000FF0000
+                00FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000
+                00FF000000FF000000FF000000FF000000CF0000000000000000000000000000
+                0000000000FF000000FF00000000000000000000000000000000000000000000
+                0000000000000000000000000000000000000000000000000000000000000000
+                00000000000000000000000000FF000000FF0000000000000000000000000000
+                0000000000FF000000FF00000000000000000000000000000000000000000000
+                0000000000000000000000000000000000000000000000000000000000000000
+                00000000000000000000000000FF000000FF0000000000000000000000000000
+                0000000000FF000000FF00000000000000000000000000000000000000000000
+                0000000000000000000000000000000000000000000000000000000000000000
+                00000000000000000000000000FF000000FF0000000000000000000000000000
+                0000000000FF000000FF00000000000000000000000000000000000000000000
+                0000000000000000000000000000000000000000000000000000000000000000
+                00000000000000000000000000FF000000FF0000000000000000000000000000
+                0000000000FF000000FF00000000000000000000000000000000000000000000
+                0000000000000000000000000000000000000000000000000000000000000000
+                00000000000000000000000000FF000000FF0000000000000000000000000000
+                0000000000FF000000FF00000000000000000000000000000000000000000000
+                0000000000000000000000000000000000000000000000000000000000000000
+                00000000000000000000000000FF000000FF0000000000000000000000000000
+                0000000000FF000000FF00000000000000000000000000000000000000000000
+                0000000000000000000000000000000000000000000000000000000000000000
+                00000000000000000000000000FF000000FF0000000000000000000000000000
+                0000000000FF000000FF00000000000000000000000000000000000000000000
+                0000000000000000000000000000000000000000000000000000000000000000
+                00000000000000000000000000FF000000FF0000000000000000000000000000
+                0000000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000
+                00FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000
+                00FF000000FF000000FF000000FF000000FF0000000000000000000000000000
+                0000000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000
+                00FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000
+                00FF000000FF000000FF000000FF000000FF0000000000000000000000000000
+                0010000000EF000000BF0000008F000000500000003000000000000000000000
+                0000000000000000000000000000000000000000000000000000000000000000
+                0000000000000000000000000000000000000000000000000000000000000000
+                0050000000FF000000FF000000FF000000FF0000007000000000000000000000
+                0020000000500000003000000000000000000000000000000000000000000000
+                0000000000000000000000000000000000000000000000000000000000000000
+                0040000000FF000000FF000000FF000000BF0000000000000000000000100000
+                00CF000000FF0000006000000000000000000000004000000050000000300000
+                0000000000000000000000000000000000000000000000000000000000000000
+                0010000000CF000000FF000000EF000000100000000000000000000000AF0000
+                00FF000000AF000000000000000000000010000000DF000000FF000000400000
+                0000000000000000004000000060000000300000000000000000000000000000
+                0000000000100000005000000020000000000000000000000060000000FF0000
+                00CF000000000000000000000000000000BF000000FF00000070000000000000
+                000000000020000000FF000000FF000000800000000000000000000000000000
+                0000000000000000000000000000000000000000000000000030000000500000
+                001000000000000000000000009F000000FF000000BF00000000000000000000
+                0010000000CF000000FF000000FF000000600000000000000000000000000000
+                0000000000000000000000000000000000000000000000000000000000000000
+                0000000000000000000000000020000000500000001000000000000000000000
+                00AF000000FF000000FF000000FF000000200000000000000000000000000000
+                0000000000000000000000000000000000000000000000000000000000000000
+                0000000000000000000000000000000000000000000000000000000000000000
+                00200000005000000080000000AF000000000000000000000000000000000000
+                0000000000000000000000000000000000000000000000000000000000000000
+                0000000000000000000000000000000000000000000000000000000000000000
+                0000000000000000000000000000000000000000000000000000000000000000
+                0000000000000000000000000000000000000000000000000000000000000000
+                0000000000000000000000000000000000000000000000000000000000000000
+                0000000000000000000000000000000000000000000000000000
+              }
+              GroupIndex = 1
+              Images = mainForm.MaterialImageList
+              ImageIndex = 7
+              ImageWidth = 24
+              Layout = blGlyphBottom
+              OnClick = ViewAnimateBtnClick
+            end
+            object ViewTrackBar: TTrackBar
+              Left = 471
+              Height = 30
+              Top = 27
+              Width = 177
+              Position = 0
+              ShowSelRange = False
+              TickStyle = tsNone
+              OnChange = ViewTrackBarChange
+              TabOrder = 3
+              OnMouseDown = ViewTrackBarMouseDown
+              OnMouseUp = ViewTrackBarMouseUp
+              OnKeyDown = ViewTrackBarKeyDown
+              OnKeyUp = ViewTrackBarKeyUp
+            end
+          end
+        end
+        object Page4: TPage
+          object MapToolBar: TToolBar
+            Left = 0
+            Height = 65
+            Top = 0
+            Width = 1140
+            Align = alClient
+            ButtonHeight = 62
+            ButtonWidth = 100
+            EdgeBorders = []
+            Images = mainForm.MaterialImageList
+            ImagesWidth = 24
+            ShowCaptions = True
+            TabOrder = 0
+            Transparent = True
+            object MapBasemapBtn: TToolButton
+              Left = 1
+              Hint = '  '#13#10'  Add/remove/adjust a basemap layer  '#13#10'  '
+              Top = 0
+              Caption = 'Basemap'
+              DropdownMenu = BasemapMenu
+              ImageIndex = 8
+              Style = tbsButtonDrop
+            end
+            object MapOptionsBtn: TToolButton
+              Left = 621
+              Hint = '  '#13#10'  Change the map display settings  '#13#10'  '
+              Top = 0
+              Caption = 'Settings'
+              ImageIndex = 14
+              OnClick = MapOptionsBtnClick
+            end
+            object MapCopyMapBtn: TToolButton
+              Left = 111
+              Hint = '  '#13#10'  Export the map image  '#13#10'  '
+              Top = 0
+              Caption = 'Export'
+              ImageIndex = 9
+              OnClick = MapCopyMapBtnClick
+            end
+            object MapQueryBtn: TToolButton
+              Left = 211
+              Hint = '  '#13#10'  Find items meeting some criterion  '#13#10'  '
+              Top = 0
+              Caption = 'Query'
+              ImageIndex = 10
+              OnClick = MapQueryBtnClick
+            end
+            object MapSep1: TToolButton
+              Left = 311
+              Height = 5
+              Top = 0
+              Style = tbsDivider
+            end
+            object MapSep3: TToolButton
+              Left = 616
+              Height = 5
+              Top = 0
+              Caption = 'MapSep3'
+              Style = tbsDivider
+            end
+            object MapZoomInBtn: TToolButton
+              Left = 316
+              Hint = '  '#13#10'  Zoom in on the map  '#13#10'  '
+              Top = 0
+              Caption = 'Zoom In'
+              ImageIndex = 11
+              OnClick = MapZoomInBtnClick
+            end
+            object MapZoomOutBtn: TToolButton
+              Left = 416
+              Hint = '  '#13#10'  Zoom out on the map  '#13#10'  '
+              Top = 0
+              Caption = 'Zoom Out'
+              ImageIndex = 12
+              OnClick = MapZoomOutBtnClick
+            end
+            object MapExtentsBtn: TToolButton
+              Left = 516
+              Hint = '  '#13#10'  View the map at full extent  '#13#10'  '
+              Top = 0
+              Caption = 'Full Extent'
+              ImageIndex = 13
+              OnClick = MapExtentsBtnClick
+            end
+          end
+        end
+        object Page5: TPage
+          object ProjectToolBar: TToolBar
+            Left = 0
+            Height = 65
+            Top = 0
+            Width = 1140
+            Align = alClient
+            ButtonHeight = 62
+            ButtonWidth = 100
+            Caption = 'ProjectToolBar'
+            EdgeBorders = []
+            Images = mainForm.MaterialImageList
+            ImagesWidth = 24
+            ShowCaptions = True
+            TabOrder = 0
+            Transparent = True
+            object ProjectDetailsBtn: TToolButton
+              Left = 516
+              Hint = '  '#13#10'  View all project data  '#13#10'  '
+              Top = 0
+              Caption = 'Details'
+              ImageIndex = 20
+              OnClick = ProjectDetailsBtnClick
+            end
+            object ProjectSep2: TToolButton
+              Left = 616
+              Height = 5
+              Top = 0
+              Caption = 'ProjectSep2'
+              Style = tbsDivider
+            end
+            object ProjectAnalyzeBtn: TToolButton
+              Left = 621
+              Hint = '  '#13#10'  Run a hydraulic / water quality analysis  '#13#10'  '
+              Top = 0
+              Caption = 'Analyze'
+              ImageIndex = 21
+              OnClick = ProjectAnalyzeBtnClick
+            end
+            object ProjectSummaryBtn: TToolButton
+              Left = 416
+              Hint = '  '#13#10'  Summarize the project''s contents  '#13#10'  '
+              Top = 0
+              Caption = 'Summary'
+              ImageIndex = 19
+              OnClick = ProjectSummaryBtnClick
+            end
+            object ProjectSetupBtn: TToolButton
+              Left = 1
+              Hint = '  '#13#10'  Set project options and default properties  '#13#10'  including flow units and head loss model    '#13#10'  '
+              Top = 0
+              Caption = 'Setup'
+              ImageIndex = 15
+              OnClick = ProjectSetupBtnClick
+            end
+            object ProjectAddBtn: TToolButton
+              Left = 101
+              Hint = #13#10'  Add a new object to the project  '#13#10'  '
+              Top = 0
+              Caption = 'Add'
+              DropdownMenu = ObjectMenu
+              ImageIndex = 16
+              Style = tbsButtonDrop
+            end
+            object ProjectDeleteBtn: TToolButton
+              Left = 211
+              Hint = #13#10'  Delete the selected object  '#13#10'  from the project  '#13#10'  '
+              Top = 0
+              Caption = 'Delete'
+              ImageIndex = 17
+              OnClick = ProjectDeleteBtnClick
+            end
+            object ProjectSep1: TToolButton
+              Left = 411
+              Height = 5
+              Top = 0
+              Caption = 'ProjectSep1'
+              Style = tbsDivider
+            end
+            object ProjectFindBtn: TToolButton
+              Left = 311
+              Hint = '  '#13#10'  Find an object  '#13#10'    '
+              Top = 0
+              Caption = 'Locate'
+              ImageIndex = 18
+              OnClick = ProjectFindBtnClick
+            end
+            object ProjectReportBtn: TToolButton
+              Left = 721
+              Hint = #13#10'  Report analysis results  '#13#10'  '
+              Top = 0
+              Caption = 'Report'
+              DropdownMenu = ReportMenu
+              ImageIndex = 22
+              Style = tbsButtonDrop
+            end
+          end
+        end
+        object Page6: TPage
+          object HelpToolBar: TToolBar
+            Left = 0
+            Height = 65
+            Top = 0
+            Width = 1140
+            Align = alClient
+            ButtonHeight = 62
+            ButtonWidth = 100
+            EdgeBorders = []
+            Images = mainForm.MaterialImageList
+            ImagesWidth = 24
+            ShowCaptions = True
+            TabOrder = 0
+            Transparent = True
+            object HelpTopicsBtn: TToolButton
+              Left = 1
+              Hint = '  '#13#10'  View the User Manual  '#13#10'  '
+              Top = 0
+              Caption = 'User Manual'
+              ImageIndex = 23
+              OnClick = HelpTopicsBtnClick
+            end
+            object HelpUnitsBtn: TToolButton
+              Left = 101
+              Hint = '  '#13#10'  List the units of all properties  '#13#10'  '
+              Top = 0
+              Caption = ' Units '
+              ImageIndex = 24
+              OnClick = HelpUnitsBtnClick
+            end
+            object HelpSep1: TToolButton
+              Left = 501
+              Height = 5
+              Top = 0
+              Caption = 'HelpSep1'
+              Style = tbsDivider
+            end
+            object HelpAboutBtn: TToolButton
+              Left = 401
+              Hint = '  '#13#10'  About EPANET  '#13#10'  '
+              Top = 0
+              Caption = 'About'
+              ImageIndex = 27
+              OnClick = HelpAboutBtnClick
+            end
+            object HelpErrorsBtn: TToolButton
+              Left = 201
+              Hint = '  '#13#10'  List all error/warning messages  '#13#10'  '
+              Top = 0
+              Caption = 'Error Codes'
+              ImageIndex = 25
+              OnClick = HelpErrorsBtnClick
+            end
+            object HelpTutorialBtn: TToolButton
+              Left = 301
+              Hint = '  '#13#10'  Run a tutorial on how to use EPANET  '#13#10'  '
+              Top = 0
+              Caption = 'Tutorial'
+              ImageIndex = 26
+              OnClick = HelpTutorialBtnClick
+            end
+          end
+        end
+      end
+    end
+  end
+  object AnimationTimer: TTimer
+    Enabled = False
+    OnTimer = AnimationTimerTimer
+    Left = 792
+    Top = 8
+  end
+  object BasemapMenu: TPopupMenu
+    Images = mainForm.PopupImageList
+    ImagesWidth = 16
+    OnMeasureItem = MenuMeasureItem
+    OnPopup = BasemapMenuPopup
+    Left = 566
+    Top = 8
+    object BasemapLoadItem: TMenuItem
+      Caption = 'Load'
+      ImageIndex = 19
+      OnClick = BasemapLoadItemClick
+    end
+    object BasemapUnloadItem: TMenuItem
+      Caption = 'Unload'
+      ImageIndex = 20
+      OnClick = BasemapUnloadItemClick
+    end
+    object Separator1: TMenuItem
+      Tag = -1
+      Caption = '-'
+    end
+    object BasemapGeorefItem: TMenuItem
+      Caption = 'Georeference'
+      ImageIndex = 33
+      OnClick = BasemapGeorefItemClick
+    end
+    object BasemapAlignItem: TMenuItem
+      Caption = 'Align'
+      Enabled = False
+      ImageIndex = 22
+      OnClick = BasemapAlignItemClick
+    end
+    object Separator11: TMenuItem
+      Tag = -1
+      Caption = '-'
+    end
+    object BasemapLightenItem: TMenuItem
+      AutoCheck = True
+      Caption = 'Lighten'
+      ShowAlwaysCheckable = True
+      OnClick = BasemapLightenItemClick
+    end
+    object BasemapGrayscaleItem: TMenuItem
+      AutoCheck = True
+      Caption = 'Grayscale'
+      ShowAlwaysCheckable = True
+      OnClick = BasemapGrayscaleItemClick
+    end
+  end
+  object ObjectMenu: TPopupMenu
+    Images = mainForm.PopupImageList
+    ImagesWidth = 16
+    OwnerDraw = True
+    OnMeasureItem = MenuMeasureItem
+    Left = 646
+    Top = 8
+    object AddJuncItem: TMenuItem
+      Caption = 'Junction Node'
+      ImageIndex = 0
+      OnClick = AddNodeItemClick
+    end
+    object AddResvItem: TMenuItem
+      Tag = 1
+      Caption = 'Reservoir Node'
+      ImageIndex = 1
+      OnClick = AddNodeItemClick
+    end
+    object AddTankItem: TMenuItem
+      Tag = 2
+      Caption = 'Tank Node'
+      ImageIndex = 2
+      OnClick = AddNodeItemClick
+    end
+    object Separator3: TMenuItem
+      Tag = -1
+      Caption = '-'
+    end
+    object AddPipeItem: TMenuItem
+      Tag = 1
+      Caption = 'Pipe Link'
+      ImageIndex = 3
+      OnClick = AddLinkItemClick
+    end
+    object AddPumpItem: TMenuItem
+      Tag = 2
+      Caption = 'Pump Link'
+      ImageIndex = 4
+      OnClick = AddLinkItemClick
+    end
+    object AddValveItem: TMenuItem
+      Tag = 3
+      Caption = 'Valve Link'
+      ImageIndex = 5
+      OnClick = AddLinkItemClick
+    end
+    object Separator4: TMenuItem
+      Tag = -1
+      Caption = '-'
+    end
+    object AddLabelItem: TMenuItem
+      Caption = 'Map Label'
+      ImageIndex = 6
+      OnClick = AddLabelItemClick
+    end
+  end
+  object ReportMenu: TPopupMenu
+    Images = mainForm.PopupImageList
+    ImagesWidth = 16
+    OnMeasureItem = MenuMeasureItem
+    OnPopup = ReportMenuPopup
+    Left = 721
+    Top = 8
+    object RptStatusItem: TMenuItem
+      Caption = 'Status Report'
+      ImageIndex = 7
+      OnClick = RptStatusItemClick
+    end
+    object Separator5: TMenuItem
+      Tag = -1
+      Caption = '-'
+    end
+    object RptEnergyItem: TMenuItem
+      Caption = 'Energy Report'
+      ImageIndex = 13
+      OnClick = RptEnergyItemClick
+    end
+    object RptPumpItem: TMenuItem
+      Caption = 'Pumping Report'
+      ImageIndex = 16
+      OnClick = RptPumpItemClick
+    end
+    object RptSysFlowItem: TMenuItem
+      Caption = 'System Flow Report'
+      ImageIndex = 14
+      OnClick = RptSysFlowItemClick
+    end
+    object Separator6: TMenuItem
+      Tag = -1
+      Caption = '-'
+    end
+    object RptTseriesItem: TMenuItem
+      Caption = 'Time Series Report'
+      ImageIndex = 10
+      OnClick = RptTseriesItemClick
+    end
+    object RptPercentileItem: TMenuItem
+      Caption = 'Variability Report'
+      ImageIndex = 36
+      OnClick = RptPercentileItemClick
+    end
+    object RptProfileItem: TMenuItem
+      Caption = 'Hydraulic Profile Plot'
+      ImageIndex = 12
+      OnClick = RptProfileItemClick
+    end
+    object Separator7: TMenuItem
+      Tag = -1
+      Caption = '-'
+    end
+    object RptNetNodesItem: TMenuItem
+      Caption = 'Node Results Table'
+      ImageIndex = 0
+      OnClick = RptNetNodesItemClick
+    end
+    object RptNetLinksItem: TMenuItem
+      Caption = 'Link Results Table'
+      ImageIndex = 3
+      OnClick = RptNetLinksItemClick
+    end
+    object Separator8: TMenuItem
+      Tag = -1
+      Caption = '-'
+    end
+    object RptCalibItem: TMenuItem
+      Caption = 'Calibration Report'
+      ImageIndex = 15
+      OnClick = RptCalibItemClick
+    end
+    object RptFireFlowItem: TMenuItem
+      Caption = 'Fire Flow Report'
+      ImageIndex = 40
+      OnClick = RptFireFlowItemClick
+    end
+  end
+  object ConvertMenu: TPopupMenu
+    Images = mainForm.PopupImageList
+    ImagesWidth = 16
+    OnPopup = ConvertMenuPopup
+    Left = 482
+    Top = 8
+    object ToPipeMenuItem: TMenuItem
+      Tag = 1
+      Caption = 'to Pipe'
+      ImageIndex = 3
+      OnClick = ConvertMenuItemClick
+    end
+    object ToPumpMenuItem: TMenuItem
+      Tag = 2
+      Caption = 'to Pump'
+      ImageIndex = 4
+      OnClick = ConvertMenuItemClick
+    end
+    object ToValveMenuItem: TMenuItem
+      Tag = 3
+      Caption = 'to Valve'
+      ImageIndex = 5
+      OnClick = ConvertMenuItemClick
+    end
+  end
+  object ImportMenu: TPopupMenu
+    Images = mainForm.ImportImageList
+    ImagesWidth = 24
+    OnMeasureItem = MenuMeasureItem
+    Left = 888
+    Top = 40
+    object ShapefileMenuItem: TMenuItem
+      Caption = 'GIS Shapefile'
+      ImageIndex = 0
+      OnClick = ShapefileMenuItemClick
+    end
+    object DxfFileMenuItem: TMenuItem
+      Caption = 'CAD DXF File'
+      ImageIndex = 1
+      OnClick = DxfFileMenuItemClick
+    end
+    object TextFileMenuItem: TMenuItem
+      Caption = 'CSV Text File'
+      ImageIndex = 2
+      OnClick = TextFileMenuItemClick
+    end
+  end
+  object MruMenu: TPopupMenu
+    OnMeasureItem = MenuMeasureItem
+    Left = 976
+    Top = 40
+  end
+end

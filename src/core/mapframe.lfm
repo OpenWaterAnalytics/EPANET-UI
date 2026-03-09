@@ -1,0 +1,111 @@
+object MapFrame: TMapFrame
+  Left = 0
+  Height = 478
+  Top = 0
+  Width = 583
+  ClientHeight = 478
+  ClientWidth = 583
+  LCLVersion = '4.4.0.0'
+  TabOrder = 0
+  DesignLeft = 925
+  DesignTop = 234
+  object MapBox: TPaintBox
+    Left = 0
+    Height = 478
+    Top = 0
+    Width = 583
+    Align = alClient
+    ParentColor = False
+    ParentShowHint = False
+    ShowHint = True
+    OnChangeBounds = MapBoxChangeBounds
+    OnClick = MapBoxClick
+    OnMouseDown = MapBoxMouseDown
+    OnMouseMove = MapBoxMouseMove
+    OnMouseUp = MapBoxMouseUp
+    OnMouseWheelDown = MapBoxMouseWheelDown
+    OnMouseWheelUp = MapBoxMouseWheelUp
+    OnPaint = MapBoxPaint
+    OnResize = MapBoxResize
+  end
+  object HiliteTimer: TTimer
+    Enabled = False
+    Interval = 500
+    OnTimer = HiliteTimerTimer
+    Left = 120
+    Top = 424
+  end
+  object OpenPictureDialog1: TOpenPictureDialog
+    Title = 'Select an Image File'
+    Left = 224
+    Top = 368
+  end
+  object ResizeTimer: TTimer
+    Enabled = False
+    Interval = 100
+    OnTimer = ResizeTimerTimer
+    Left = 120
+    Top = 368
+  end
+  object MapPopupMenu: TPopupMenu
+    Images = mainForm.PopupImageList
+    ImagesWidth = 16
+    Left = 101
+    Top = 251
+    object CopyMenuItem: TMenuItem
+      Caption = 'Copy'
+      ImageIndex = 17
+      OnClick = MapMenuItemClick
+    end
+    object PasteMenuItem: TMenuItem
+      Tag = 1
+      Caption = 'Paste'
+      ImageIndex = 37
+      OnClick = MapMenuItemClick
+    end
+    object DeleteMenuItem: TMenuItem
+      Tag = 2
+      Caption = 'Delete'
+      ImageIndex = 28
+      OnClick = MapMenuItemClick
+    end
+    object Separator1: TMenuItem
+      Caption = '-'
+    end
+    object ReverseMenuItem: TMenuItem
+      Tag = 3
+      Caption = 'Reverse'
+      ImageIndex = 38
+      OnClick = MapMenuItemClick
+    end
+    object ReshapeMenuItem: TMenuItem
+      Tag = 4
+      Caption = 'Reshape'
+      ImageIndex = 10
+      OnClick = MapMenuItemClick
+    end
+    object ConvertMenuItem: TMenuItem
+      Tag = 5
+      Caption = 'Convert to'
+      ImageIndex = 39
+      object PipeMenuItem: TMenuItem
+        Tag = 1
+        Caption = 'Pipe'
+        ImageIndex = 3
+        OnClick = ConvertMenuItemClick
+      end
+      object PumpMenuItem: TMenuItem
+        Tag = 2
+        Caption = 'Pump'
+        ImageIndex = 4
+        OnClick = ConvertMenuItemClick
+      end
+      object ValveMenuItem: TMenuItem
+        Tag = 3
+        Caption = 'Valve'
+        ImageIndex = 5
+        OnClick = ConvertMenuItemClick
+      end
+    end
+  end
+end

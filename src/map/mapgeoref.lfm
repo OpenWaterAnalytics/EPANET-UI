@@ -1,0 +1,397 @@
+object GeoRefFrame: TGeoRefFrame
+  Left = 0
+  Height = 275
+  Top = 0
+  Width = 239
+  ClientHeight = 275
+  ClientWidth = 239
+  LCLVersion = '4.4.0.0'
+  TabOrder = 0
+  DesignLeft = 1535
+  DesignTop = 534
+  object TopPanel: TPanel
+    Left = 0
+    Height = 28
+    Top = 0
+    Width = 239
+    Align = alTop
+    Caption = 'Map Georeference Tool'
+    ClientHeight = 28
+    ClientWidth = 239
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 0
+    object CloseBtn: TSpeedButton
+      Left = 209
+      Height = 26
+      Hint = 'Close'
+      Top = 2
+      Width = 26
+      Anchors = [akTop, akRight]
+      AutoSize = True
+      Flat = True
+      Glyph.Data = {
+        76060000424D7606000000000000360000002800000014000000140000000100
+        2000000000004006000064000000640000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        00800000008F0000000000000000000000000000000000000000000000000000
+        009F000000800000000000000000000000000000000000000000000000000000
+        000000000000000000000000000000000080000000FF0000008F000000000000
+        000000000000000000000000009F000000FF0000008000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        000000000080000000FF0000008F00000000000000000000009F000000FF0000
+        0080000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000080000000FF0000
+        008F0000009F000000FF00000080000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000080000000FF000000FF00000080000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        00000000000000000000000000000000000000000000000000000000009F0000
+        00FF000000FF0000008F00000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000009F000000FF0000008000000080000000FF0000008F0000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000009F000000FF000000800000
+        00000000000000000080000000FF0000008F0000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        009F000000FF0000008000000000000000000000000000000000000000800000
+        00FF0000008F0000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000700000008000000000000000000000
+        0000000000000000000000000000000000800000006000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000
+      }
+      Images = mainForm.WindowImageList
+      ImageIndex = 1
+      ImageWidth = 16
+      ShowCaption = False
+      ShowHint = True
+      ParentShowHint = False
+      OnClick = CloseBtnClick
+    end
+  end
+  object MidPanel: TPanel
+    Left = 0
+    Height = 192
+    Top = 28
+    Width = 239
+    Align = alClient
+    BevelOuter = bvNone
+    ClientHeight = 192
+    ClientWidth = 239
+    TabOrder = 1
+    object Notebook1: TNotebook
+      Left = 0
+      Height = 192
+      Top = 0
+      Width = 239
+      PageIndex = 0
+      Align = alClient
+      TabOrder = 0
+      object Page1: TPage
+        object MethodRG: TRadioGroup
+          Left = 8
+          Height = 80
+          Top = 16
+          Width = 216
+          AutoFill = True
+          Caption = 'Georeference the basemap by:'
+          ChildSizing.LeftRightSpacing = 6
+          ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+          ChildSizing.EnlargeVertical = crsHomogenousChildResize
+          ChildSizing.ShrinkHorizontal = crsScaleChilds
+          ChildSizing.ShrinkVertical = crsScaleChilds
+          ChildSizing.Layout = cclLeftToRightThenTopToBottom
+          ChildSizing.ControlsPerLine = 1
+          ClientHeight = 60
+          ClientWidth = 212
+          ItemIndex = 0
+          Items.Strings = (
+            'Using control points'
+            'Using a world file'
+          )
+          ParentBackground = False
+          TabOrder = 0
+        end
+        object UnitsRG: TRadioGroup
+          Left = 8
+          Height = 73
+          Top = 109
+          Width = 216
+          AutoFill = True
+          Caption = 'Choose coordinate units:'
+          ChildSizing.LeftRightSpacing = 6
+          ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+          ChildSizing.EnlargeVertical = crsHomogenousChildResize
+          ChildSizing.ShrinkHorizontal = crsScaleChilds
+          ChildSizing.ShrinkVertical = crsScaleChilds
+          ChildSizing.Layout = cclLeftToRightThenTopToBottom
+          ChildSizing.ControlsPerLine = 2
+          ClientHeight = 53
+          ClientWidth = 212
+          Columns = 2
+          Items.Strings = (
+            'None'
+            'Feet'
+            'Meters'
+            'Degrees'
+          )
+          ParentBackground = False
+          TabOrder = 1
+        end
+      end
+      object Page2: TPage
+        object RP1Label: TLabel
+          Left = 16
+          Height = 18
+          Top = 42
+          Width = 136
+          Caption = 'X: 0000000    Y:000000'
+          ParentColor = False
+        end
+        object CtrlPt1RB: TRadioButton
+          Left = 16
+          Height = 24
+          Top = 16
+          Width = 207
+          Caption = 'Click map on 1st control point'
+          TabOrder = 0
+        end
+        object CtrlPt2RB: TRadioButton
+          Left = 16
+          Height = 24
+          Top = 68
+          Width = 212
+          Caption = 'Click map on 2nd control point'
+          TabOrder = 1
+        end
+        object RP2Label: TLabel
+          Left = 16
+          Height = 18
+          Top = 93
+          Width = 136
+          Caption = 'X: 0000000    Y:000000'
+          ParentColor = False
+        end
+        object DistanceEdit: TFloatSpinEditEx
+          Left = 16
+          Height = 26
+          Top = 144
+          Width = 80
+          MaxLength = 0
+          SpinButtonWidth = 17
+          TabOrder = 2
+          ArrowKeys = False
+          UpDownVisible = False
+        end
+        object UnitsCB: TComboBox
+          Left = 124
+          Height = 26
+          Top = 144
+          Width = 80
+          ItemHeight = 15
+          ItemIndex = 0
+          Items.Strings = (
+            'Feet'
+            'Meters'
+          )
+          Style = csOwnerDrawFixed
+          TabOrder = 3
+          Text = 'Feet'
+        end
+        object Label1: TLabel
+          Left = 16
+          Height = 18
+          Top = 117
+          Width = 201
+          Caption = 'Distance between control points:'
+        end
+      end
+      object Page3: TPage
+        object RP3Label: TLabel
+          Left = 16
+          Height = 18
+          Top = 44
+          Width = 136
+          Caption = 'X: 0000000    Y:000000'
+          ParentColor = False
+        end
+        object Label16: TLabel
+          Left = 16
+          Height = 18
+          Top = 106
+          Width = 12
+          Caption = 'X:'
+          ParentColor = False
+        end
+        object LowLeftXEdit: TFloatSpinEditEx
+          Left = 45
+          Height = 26
+          Top = 103
+          Width = 115
+          MaxLength = 0
+          SpinButtonWidth = 17
+          TabOrder = 0
+          ArrowKeys = False
+          DecimalPlaces = 6
+          UpDownVisible = False
+        end
+        object Label17: TLabel
+          Left = 16
+          Height = 18
+          Top = 138
+          Width = 11
+          Caption = 'Y:'
+          ParentColor = False
+        end
+        object LowLeftYEdit: TFloatSpinEditEx
+          Left = 45
+          Height = 26
+          Top = 135
+          Width = 115
+          MaxLength = 0
+          SpinButtonWidth = 17
+          TabOrder = 1
+          DecimalPlaces = 6
+          UpDownVisible = False
+        end
+        object XunitsLabel: TLabel
+          Left = 176
+          Height = 18
+          Top = 106
+          Width = 27
+          Caption = 'Feet'
+        end
+        object YunitsLabel: TLabel
+          Left = 176
+          Height = 18
+          Top = 138
+          Width = 27
+          Caption = 'Feet'
+        end
+        object CtrlPt3RB: TRadioButton
+          Left = 16
+          Height = 24
+          Top = 16
+          Width = 205
+          Caption = 'Click map at 3rd control point'
+          TabOrder = 2
+        end
+        object Label2: TLabel
+          Left = 16
+          Height = 18
+          Top = 73
+          Width = 168
+          Caption = 'Enter its world coordinates:'
+        end
+      end
+      object Page4: TPage
+        object WorldFileBtn: TButton
+          Left = 49
+          Height = 25
+          Top = 16
+          Width = 140
+          Caption = 'Open a World File'
+          TabOrder = 0
+          OnClick = WorldFileBtnClick
+        end
+        object WorldFileGrid: TStringGrid
+          Left = 8
+          Height = 103
+          Top = 60
+          Width = 224
+          AutoEdit = False
+          AutoFillColumns = True
+          ColCount = 2
+          DefaultColWidth = 128
+          FixedCols = 0
+          FixedRows = 0
+          RowCount = 4
+          TabOrder = 1
+          ColWidths = (
+            112
+            112
+          )
+        end
+      end
+      object Page5: TPage
+        object Label3: TLabel
+          Left = 16
+          Height = 18
+          Top = 16
+          Width = 161
+          Caption = 'The basemap extents are :'
+        end
+        object ExtentsGrid: TStringGrid
+          Left = 8
+          Height = 103
+          Top = 40
+          Width = 224
+          AutoEdit = False
+          AutoFillColumns = True
+          ColCount = 2
+          FixedCols = 0
+          FixedRows = 0
+          RowCount = 4
+          TabOrder = 0
+          ColWidths = (
+            112
+            112
+          )
+        end
+      end
+    end
+  end
+  object BotPanel: TPanel
+    Left = 0
+    Height = 55
+    Top = 220
+    Width = 239
+    Align = alBottom
+    BevelOuter = bvNone
+    ClientHeight = 55
+    ClientWidth = 239
+    TabOrder = 2
+    object BackBtn: TButton
+      Left = 34
+      Height = 25
+      Top = 12
+      Width = 75
+      Caption = 'Back'
+      TabOrder = 0
+      OnClick = BackBtnClick
+    end
+    object NextBtn: TButton
+      Left = 130
+      Height = 25
+      Top = 12
+      Width = 75
+      Caption = 'Next'
+      TabOrder = 1
+      OnClick = NextBtnClick
+    end
+  end
+end

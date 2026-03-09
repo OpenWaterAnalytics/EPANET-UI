@@ -1,0 +1,60 @@
+object ShpViewerForm: TShpViewerForm
+  Left = 538
+  Height = 411
+  Top = 233
+  Width = 678
+  Caption = 'Shape File Attribute Table'
+  ClientHeight = 411
+  ClientWidth = 678
+  KeyPreview = True
+  Position = poMainFormCenter
+  LCLVersion = '4.4.0.0'
+  OnClose = FormClose
+  OnCreate = FormCreate
+  OnKeyDown = FormKeyDown
+  object Notebook1: TNotebook
+    Left = 0
+    Height = 411
+    Top = 0
+    Width = 678
+    PageIndex = 0
+    Align = alClient
+    TabOrder = 0
+    object AttributePage: TPage
+      object DrawGrid1: TDrawGrid
+        Left = 0
+        Height = 411
+        Top = 0
+        Width = 678
+        Align = alClient
+        DefaultColWidth = 80
+        ExtendedSelect = False
+        FixedCols = 0
+        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goThumbTracking, goSmoothScroll]
+        TabOrder = 0
+        OnDrawCell = DrawGrid1DrawCell
+        OnKeyDown = DrawGrid1KeyDown
+      end
+    end
+    object ProjectionPage: TPage
+      object Memo1: TMemo
+        Left = 0
+        Height = 411
+        Top = 0
+        Width = 678
+        Align = alClient
+        Font.CharSet = ANSI_CHARSET
+        Font.Height = -13
+        Font.Name = 'Courier New'
+        Font.Pitch = fpFixed
+        Font.Quality = fqDraft
+        Lines.Strings = (
+          'Memo1'
+        )
+        ParentFont = False
+        ReadOnly = True
+        TabOrder = 0
+      end
+    end
+  end
+end

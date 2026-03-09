@@ -1,0 +1,482 @@
+object ThemePaletteForm: TThemePaletteForm
+  Left = 1526
+  Height = 464
+  Top = 479
+  Width = 236
+  BorderStyle = bsToolWindow
+  Caption = 'Color Palette Selector'
+  ClientHeight = 464
+  ClientWidth = 236
+  Color = clWindow
+  Position = poOwnerFormCenter
+  LCLVersion = '4.4.0.0'
+  OnCreate = FormCreate
+  object Button1: TButton
+    Left = 38
+    Height = 25
+    Top = 423
+    Width = 75
+    Caption = 'OK'
+    Default = True
+    ModalResult = 1
+    TabOrder = 12
+    OnClick = Button1Click
+  end
+  object Button2: TButton
+    Left = 123
+    Height = 25
+    Top = 423
+    Width = 75
+    Cancel = True
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 13
+  end
+  object Box1: TShape
+    Left = 16
+    Height = 20
+    Top = 25
+    Width = 32
+  end
+  object Box2: TShape
+    Left = 48
+    Height = 20
+    Top = 25
+    Width = 32
+  end
+  object Box3: TShape
+    Left = 80
+    Height = 20
+    Top = 25
+    Width = 32
+  end
+  object Box4: TShape
+    Left = 112
+    Height = 20
+    Top = 25
+    Width = 32
+  end
+  object Box5: TShape
+    Left = 144
+    Height = 20
+    Top = 25
+    Width = 32
+  end
+  object RadioButton1: TRadioButton
+    Left = 201
+    Height = 15
+    Top = 26
+    Width = 14
+    Checked = True
+    TabOrder = 0
+    TabStop = True
+  end
+  object Box6: TShape
+    Left = 16
+    Height = 20
+    Top = 58
+    Width = 32
+  end
+  object Box7: TShape
+    Left = 48
+    Height = 20
+    Top = 58
+    Width = 32
+  end
+  object Box8: TShape
+    Left = 80
+    Height = 20
+    Top = 58
+    Width = 32
+  end
+  object Box9: TShape
+    Left = 112
+    Height = 20
+    Top = 58
+    Width = 32
+  end
+  object Box10: TShape
+    Left = 144
+    Height = 20
+    Top = 58
+    Width = 32
+  end
+  object RadioButton2: TRadioButton
+    Left = 201
+    Height = 15
+    Top = 59
+    Width = 14
+    TabOrder = 1
+  end
+  object Box11: TShape
+    Left = 16
+    Height = 20
+    Top = 91
+    Width = 32
+  end
+  object Box12: TShape
+    Left = 48
+    Height = 20
+    Top = 91
+    Width = 32
+  end
+  object Box13: TShape
+    Left = 80
+    Height = 20
+    Top = 91
+    Width = 32
+  end
+  object Box14: TShape
+    Left = 112
+    Height = 20
+    Top = 91
+    Width = 32
+  end
+  object Box15: TShape
+    Left = 144
+    Height = 20
+    Top = 91
+    Width = 32
+  end
+  object RadioButton3: TRadioButton
+    Left = 201
+    Height = 15
+    Top = 92
+    Width = 14
+    TabOrder = 2
+  end
+  object Box16: TShape
+    Left = 16
+    Height = 20
+    Top = 124
+    Width = 32
+  end
+  object Box17: TShape
+    Left = 48
+    Height = 20
+    Top = 124
+    Width = 32
+  end
+  object Box18: TShape
+    Left = 80
+    Height = 20
+    Top = 124
+    Width = 32
+  end
+  object Box19: TShape
+    Left = 112
+    Height = 20
+    Top = 124
+    Width = 32
+  end
+  object Box20: TShape
+    Left = 144
+    Height = 20
+    Top = 124
+    Width = 32
+  end
+  object RadioButton4: TRadioButton
+    Left = 201
+    Height = 15
+    Top = 125
+    Width = 14
+    TabOrder = 3
+  end
+  object Box21: TShape
+    Left = 16
+    Height = 20
+    Top = 157
+    Width = 32
+  end
+  object Box22: TShape
+    Left = 48
+    Height = 20
+    Top = 157
+    Width = 32
+  end
+  object Box23: TShape
+    Left = 80
+    Height = 20
+    Top = 157
+    Width = 32
+  end
+  object Box24: TShape
+    Left = 112
+    Height = 20
+    Top = 157
+    Width = 32
+  end
+  object Box25: TShape
+    Left = 144
+    Height = 20
+    Top = 157
+    Width = 32
+  end
+  object RadioButton5: TRadioButton
+    Left = 201
+    Height = 15
+    Top = 158
+    Width = 14
+    TabOrder = 4
+  end
+  object Box26: TShape
+    Left = 16
+    Height = 20
+    Top = 190
+    Width = 32
+  end
+  object Box27: TShape
+    Left = 48
+    Height = 20
+    Top = 190
+    Width = 32
+  end
+  object Box28: TShape
+    Left = 80
+    Height = 20
+    Top = 190
+    Width = 32
+  end
+  object Box29: TShape
+    Left = 112
+    Height = 20
+    Top = 190
+    Width = 32
+  end
+  object Box30: TShape
+    Left = 144
+    Height = 20
+    Top = 190
+    Width = 32
+  end
+  object RadioButton6: TRadioButton
+    Left = 201
+    Height = 15
+    Top = 191
+    Width = 14
+    TabOrder = 5
+  end
+  object Box31: TShape
+    Left = 16
+    Height = 20
+    Top = 223
+    Width = 32
+  end
+  object Box32: TShape
+    Left = 48
+    Height = 20
+    Top = 223
+    Width = 32
+  end
+  object Box33: TShape
+    Left = 80
+    Height = 20
+    Top = 223
+    Width = 32
+  end
+  object Box34: TShape
+    Left = 112
+    Height = 20
+    Top = 223
+    Width = 32
+  end
+  object Box35: TShape
+    Left = 144
+    Height = 20
+    Top = 223
+    Width = 32
+  end
+  object RadioButton7: TRadioButton
+    Left = 201
+    Height = 15
+    Top = 224
+    Width = 14
+    TabOrder = 6
+  end
+  object Box36: TShape
+    Left = 16
+    Height = 20
+    Top = 256
+    Width = 32
+  end
+  object Box37: TShape
+    Left = 48
+    Height = 20
+    Top = 256
+    Width = 32
+  end
+  object Box38: TShape
+    Left = 80
+    Height = 20
+    Top = 256
+    Width = 32
+  end
+  object Box39: TShape
+    Left = 112
+    Height = 20
+    Top = 256
+    Width = 32
+  end
+  object Box40: TShape
+    Left = 144
+    Height = 20
+    Top = 256
+    Width = 32
+  end
+  object RadioButton8: TRadioButton
+    Left = 201
+    Height = 15
+    Top = 257
+    Width = 14
+    TabOrder = 7
+  end
+  object Box41: TShape
+    Left = 16
+    Height = 20
+    Top = 289
+    Width = 32
+  end
+  object Box42: TShape
+    Left = 48
+    Height = 20
+    Top = 289
+    Width = 32
+  end
+  object Box43: TShape
+    Left = 80
+    Height = 20
+    Top = 289
+    Width = 32
+  end
+  object Box44: TShape
+    Left = 112
+    Height = 20
+    Top = 289
+    Width = 32
+  end
+  object Box45: TShape
+    Left = 144
+    Height = 20
+    Top = 289
+    Width = 32
+  end
+  object RadioButton9: TRadioButton
+    Left = 201
+    Height = 15
+    Top = 290
+    Width = 14
+    TabOrder = 8
+  end
+  object Box46: TShape
+    Left = 16
+    Height = 20
+    Top = 320
+    Width = 32
+  end
+  object Box47: TShape
+    Left = 48
+    Height = 20
+    Top = 320
+    Width = 32
+  end
+  object Box48: TShape
+    Left = 80
+    Height = 20
+    Top = 320
+    Width = 32
+  end
+  object Box49: TShape
+    Left = 112
+    Height = 20
+    Top = 320
+    Width = 32
+  end
+  object Box50: TShape
+    Left = 144
+    Height = 20
+    Top = 320
+    Width = 32
+  end
+  object RadioButton10: TRadioButton
+    Left = 201
+    Height = 15
+    Top = 321
+    Width = 14
+    TabOrder = 9
+  end
+  object Box51: TShape
+    Left = 16
+    Height = 20
+    Top = 352
+    Width = 32
+  end
+  object Box52: TShape
+    Left = 48
+    Height = 20
+    Top = 352
+    Width = 32
+  end
+  object Box53: TShape
+    Left = 80
+    Height = 20
+    Top = 352
+    Width = 32
+  end
+  object Box54: TShape
+    Left = 112
+    Height = 20
+    Top = 352
+    Width = 32
+  end
+  object Box55: TShape
+    Left = 144
+    Height = 20
+    Top = 352
+    Width = 32
+  end
+  object RadioButton11: TRadioButton
+    Left = 201
+    Height = 15
+    Top = 353
+    Width = 14
+    TabOrder = 10
+  end
+  object Box56: TShape
+    Left = 16
+    Height = 20
+    Top = 384
+    Width = 32
+  end
+  object Box57: TShape
+    Left = 48
+    Height = 20
+    Top = 384
+    Width = 32
+  end
+  object Box58: TShape
+    Left = 80
+    Height = 20
+    Top = 384
+    Width = 32
+  end
+  object Box59: TShape
+    Left = 112
+    Height = 20
+    Top = 384
+    Width = 32
+  end
+  object Box60: TShape
+    Left = 144
+    Height = 20
+    Top = 384
+    Width = 32
+  end
+  object RadioButton12: TRadioButton
+    Tag = 11
+    Left = 201
+    Height = 15
+    Top = 385
+    Width = 14
+    TabOrder = 11
+  end
+end

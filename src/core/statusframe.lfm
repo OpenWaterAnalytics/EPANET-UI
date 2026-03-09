@@ -1,0 +1,127 @@
+object StatusBarFrame: TStatusBarFrame
+  Left = 0
+  Height = 32
+  Top = 0
+  Width = 1081
+  ClientHeight = 32
+  ClientWidth = 1081
+  LCLVersion = '4.4.0.0'
+  TabOrder = 0
+  DesignLeft = 794
+  DesignTop = 980
+  object Panel1: TPanel
+    Left = 0
+    Height = 32
+    Top = 0
+    Width = 110
+    Align = alLeft
+    ClientHeight = 32
+    ClientWidth = 110
+    TabOrder = 0
+    object AutoLengthCheckBox: TCheckBox
+      Cursor = crHandPoint
+      Left = 9
+      Height = 30
+      Top = 1
+      Width = 86
+      Align = alLeft
+      BorderSpacing.Left = 8
+      Caption = 'Auto-Length'
+      TabOrder = 0
+      OnChange = AutoLengthCheckBoxChange
+    end
+  end
+  object Panel6: TPanel
+    Cursor = crHandPoint
+    Left = 550
+    Height = 32
+    Hint = 'Click to change water quality model'
+    Top = 0
+    Width = 160
+    Align = alLeft
+    Caption = 'Panel6'
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 1
+    OnClick = Panel6Click
+  end
+  object Panel5: TPanel
+    Cursor = crHandPoint
+    Left = 430
+    Height = 32
+    Hint = 'Click to change demand model'
+    Top = 0
+    Width = 120
+    Align = alLeft
+    Caption = 'Panel5'
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 2
+    OnClick = Panel5Click
+  end
+  object Panel4: TPanel
+    Cursor = crHandPoint
+    Left = 310
+    Height = 32
+    Hint = 'Click to change head loss formula'
+    Top = 0
+    Width = 120
+    Align = alLeft
+    Caption = 'Panel4'
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 3
+    OnClick = Panel4Click
+  end
+  object Panel2: TPanel
+    Cursor = crHandPoint
+    Left = 110
+    Height = 32
+    Hint = 'Click to change flow units'
+    Top = 0
+    Width = 90
+    Align = alLeft
+    Caption = 'Panel2'
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 4
+    OnClick = Panel2Click
+  end
+  object Panel7: TPanel
+    Left = 710
+    Height = 32
+    Top = 0
+    Width = 170
+    Align = alLeft
+    Caption = 'Panel7'
+    Color = clLime
+    ParentBackground = False
+    ParentColor = False
+    TabOrder = 5
+  end
+  object Panel8: TPanel
+    Left = 880
+    Height = 32
+    Top = 0
+    Width = 201
+    Align = alClient
+    Alignment = taLeftJustify
+    BevelOuter = bvNone
+    Caption = 'Panel8'
+    TabOrder = 6
+  end
+  object Panel3: TPanel
+    Cursor = crHandPoint
+    Left = 200
+    Height = 32
+    Hint = 'Click to change pressure units'
+    Top = 0
+    Width = 110
+    Align = alLeft
+    Caption = 'Panel3'
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 7
+    OnClick = Panel3Click
+  end
+end

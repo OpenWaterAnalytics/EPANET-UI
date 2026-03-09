@@ -1,0 +1,328 @@
+object MapOptionsForm: TMapOptionsForm
+  Left = 986
+  Height = 364
+  Top = 279
+  Width = 370
+  BorderStyle = bsDialog
+  Caption = 'Map Display Settings'
+  ClientHeight = 364
+  ClientWidth = 370
+  ParentFont = True
+  Position = poMainFormCenter
+  LCLVersion = '4.4.0.0'
+  OnCreate = FormCreate
+  OnShow = FormShow
+  object ListBox1: TListBox
+    Left = 8
+    Height = 308
+    Top = 8
+    Width = 104
+    Align = alLeft
+    BorderSpacing.Around = 8
+    Items.Strings = (
+      'Nodes'
+      'Links'
+      'Annotations'
+      'Flow Arrows'
+      'Background'
+    )
+    ItemHeight = 32
+    Style = lbOwnerDrawFixed
+    TabOrder = 0
+    OnSelectionChange = ListBox1SelectionChange
+  end
+  object BtnPanel: TPanel
+    Left = 0
+    Height = 40
+    Top = 324
+    Width = 370
+    Align = alBottom
+    BevelOuter = bvNone
+    ClientHeight = 40
+    ClientWidth = 370
+    TabOrder = 2
+    object OkBtn: TButton
+      Left = 186
+      Height = 25
+      Top = 6
+      Width = 75
+      Caption = 'OK'
+      Default = True
+      ModalResult = 1
+      TabOrder = 0
+      OnClick = OkBtnClick
+    end
+    object CancelBtn: TButton
+      Left = 278
+      Height = 25
+      Top = 6
+      Width = 75
+      Cancel = True
+      Caption = 'Cancel'
+      ModalResult = 2
+      TabOrder = 1
+    end
+  end
+  object Panel2: TPanel
+    Left = 120
+    Height = 308
+    Top = 8
+    Width = 242
+    Align = alClient
+    BorderSpacing.Top = 8
+    BorderSpacing.Right = 8
+    BorderSpacing.Bottom = 8
+    BevelOuter = bvNone
+    BorderStyle = bsSingle
+    ClientHeight = 308
+    ClientWidth = 242
+    Color = clWindow
+    ParentBackground = False
+    ParentColor = False
+    TabOrder = 1
+    object Notebook1: TNotebook
+      Left = 8
+      Height = 288
+      Top = 8
+      Width = 222
+      PageIndex = 0
+      Align = alClient
+      BorderSpacing.Around = 8
+      TabOrder = 0
+      object Nodes: TPage
+        object NodeShape: TShape
+          Left = 162
+          Height = 5
+          Top = 16
+          Width = 5
+          Brush.Color = clRed
+          Pen.Color = clRed
+          Shape = stCircle
+        end
+        object NodeSizeEdit: TSpinEdit
+          Left = 80
+          Height = 23
+          Top = 16
+          Width = 49
+          MaxValue = 10
+          MinValue = 2
+          TabOrder = 0
+          Value = 5
+          OnChange = NodeSizeEditChange
+        end
+        object Label1: TLabel
+          Left = 16
+          Height = 15
+          Top = 23
+          Width = 20
+          Caption = 'Size'
+          ParentColor = False
+        end
+        object NodesBySizeChk: TCheckBox
+          Left = 16
+          Height = 19
+          Top = 60
+          Width = 133
+          Caption = 'Proportional To Value'
+          TabOrder = 1
+        end
+        object NodeBorderChk: TCheckBox
+          Left = 16
+          Height = 19
+          Top = 100
+          Width = 94
+          Caption = 'Display Border'
+          TabOrder = 2
+          OnChange = NodeBorderChkChange
+        end
+      end
+      object Links: TPage
+        object LinkShape: TShape
+          Left = 147
+          Height = 1
+          Top = 24
+          Width = 39
+          Brush.Color = clRed
+          Pen.Color = clRed
+        end
+        object LinkSizeEdit: TSpinEdit
+          Left = 80
+          Height = 23
+          Top = 16
+          Width = 49
+          MaxValue = 8
+          MinValue = 1
+          TabOrder = 0
+          Value = 1
+          OnChange = LinkSizeEditChange
+        end
+        object Label2: TLabel
+          Left = 16
+          Height = 15
+          Top = 23
+          Width = 20
+          Caption = 'Size'
+          ParentColor = False
+        end
+        object LinksBySizeChk: TCheckBox
+          Left = 16
+          Height = 19
+          Top = 60
+          Width = 132
+          Caption = 'Proportional To Value'
+          TabOrder = 1
+        end
+        object LinkBorderChk: TCheckBox
+          Left = 16
+          Height = 19
+          Top = 100
+          Width = 94
+          Caption = 'Display Border'
+          TabOrder = 2
+          OnChange = LinkBorderChkChange
+        end
+      end
+      object Annotations: TPage
+        object Label3: TLabel
+          Left = 15
+          Height = 15
+          Top = 156
+          Width = 53
+          Caption = 'Font size'
+          ParentColor = False
+        end
+        object NotationSizeEdit: TSpinEdit
+          Left = 102
+          Height = 26
+          Top = 148
+          Width = 51
+          MaxValue = 20
+          MinValue = 4
+          TabOrder = 5
+          Value = 8
+          OnChange = LinkSizeEditChange
+        end
+        object NotationZoomEdit: TSpinEdit
+          Left = 102
+          Height = 26
+          Top = 183
+          Width = 51
+          MaxValue = 22
+          TabOrder = 6
+          OnChange = LinkSizeEditChange
+        end
+        object Label6: TLabel
+          Left = 16
+          Height = 15
+          Top = 191
+          Width = 65
+          Caption = 'Zoom level'
+          ParentColor = False
+        end
+        object ShowNodeIDsChk: TCheckBox
+          Left = 16
+          Height = 23
+          Top = 8
+          Width = 116
+          Caption = 'Show node IDs'
+          TabOrder = 0
+        end
+        object ShowNodeValuesChk: TCheckBox
+          Left = 16
+          Height = 23
+          Top = 36
+          Width = 135
+          Caption = 'Show node values'
+          TabOrder = 1
+        end
+        object ShowLinkIDsChk: TCheckBox
+          Left = 16
+          Height = 23
+          Top = 63
+          Width = 107
+          Caption = 'Show link IDs'
+          TabOrder = 2
+        end
+        object ShowLinkValuesChk: TCheckBox
+          Left = 16
+          Height = 23
+          Top = 91
+          Width = 126
+          Caption = 'Show link values'
+          TabOrder = 3
+        end
+        object OpaqueTextChk: TCheckBox
+          Left = 16
+          Height = 23
+          Top = 119
+          Width = 125
+          Caption = 'Use opaque text'
+          TabOrder = 4
+        end
+      end
+      object FlowArrows: TPage
+        object Label4: TLabel
+          Left = 16
+          Height = 15
+          Top = 56
+          Width = 54
+          Caption = 'Arrow size'
+          ParentColor = False
+        end
+        object ArrowSizeEdit: TSpinEdit
+          Left = 98
+          Height = 23
+          Top = 48
+          Width = 51
+          MaxValue = 10
+          MinValue = 2
+          TabOrder = 1
+          Value = 2
+        end
+        object ArrowsChk: TCheckBox
+          Left = 16
+          Height = 19
+          Top = 16
+          Width = 135
+          Caption = 'Show direction arrows'
+          TabOrder = 0
+        end
+        object Label7: TLabel
+          Left = 16
+          Height = 15
+          Top = 96
+          Width = 59
+          Caption = 'Zoom level'
+          ParentColor = False
+        end
+        object ArrowZoomEdit: TSpinEdit
+          Left = 98
+          Height = 23
+          Top = 88
+          Width = 51
+          MaxValue = 22
+          TabOrder = 2
+          OnChange = LinkSizeEditChange
+        end
+      end
+      object Background: TPage
+        object BackColorClb: TColorListBox
+          Left = 0
+          Height = 288
+          Top = 0
+          Width = 222
+          ColorRectWidth = 20
+          ColorRectOffset = 8
+          Style = [cbCustomColors]
+          OnGetColors = BackColorClbGetColors
+          Align = alClient
+          BorderStyle = bsNone
+          ClickOnSelChange = False
+          ExtendedSelect = False
+          ItemHeight = 30
+          TabOrder = 0
+        end
+      end
+    end
+  end
+end

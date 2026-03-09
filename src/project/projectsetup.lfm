@@ -1,0 +1,151 @@
+object ProjectSetupForm: TProjectSetupForm
+  Left = 898
+  Height = 425
+  Top = 198
+  Width = 400
+  BorderStyle = bsDialog
+  Caption = 'Project Setup'
+  ClientHeight = 425
+  ClientWidth = 400
+  ParentFont = True
+  Position = poMainFormCenter
+  LCLVersion = '4.4.0.0'
+  OnCreate = FormCreate
+  OnShow = FormShow
+  object Label1: TLabel
+    Left = 16
+    Height = 19
+    Top = 324
+    Width = 106
+    Caption = 'Unit System: US'
+    ParentColor = False
+  end
+  object OkBtn: TButton
+    Left = 221
+    Height = 25
+    Top = 392
+    Width = 75
+    Caption = 'OK'
+    TabOrder = 3
+    OnClick = OkBtnClick
+  end
+  object CancelBtn: TButton
+    Left = 309
+    Height = 25
+    Top = 392
+    Width = 75
+    Cancel = True
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 4
+  end
+  object HelpBtn: TButton
+    Left = 16
+    Height = 25
+    Top = 392
+    Width = 75
+    Caption = 'Help'
+    TabOrder = 2
+    OnClick = HelpBtnClick
+  end
+  object CheckBox1: TCheckBox
+    Left = 14
+    Height = 25
+    Top = 352
+    Width = 246
+    Caption = 'Save as defaults for new projects'
+    TabOrder = 1
+  end
+  object Panel1: TPanel
+    Left = 16
+    Height = 310
+    Top = 0
+    Width = 368
+    BevelOuter = bvNone
+    ClientHeight = 310
+    ClientWidth = 368
+    ParentBackground = False
+    ParentColor = False
+    TabOrder = 0
+    TabStop = True
+    object ValueListEditor1: TValueListEditor
+      Left = 0
+      Height = 228
+      Top = 54
+      Width = 368
+      Align = alClient
+      DefaultColWidth = 145
+      DefaultRowHeight = 25
+      FixedColor = clDefault
+      Flat = True
+      RowCount = 9
+      TabOrder = 1
+      OnPickListSelect = ValueListEditor1PickListSelect
+      OnPrepareCanvas = ValueListEditor1PrepareCanvas
+      OnSelectCell = ValueListEditor1SelectCell
+      Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goColSizing, goEditing, goThumbTracking]
+      Strings.Strings = (
+        ''
+        ''
+        ''
+        ''
+        ''
+        ''
+        ''
+        ''
+      )
+      TitleCaptions.Strings = (
+        'Object'
+        'ID Prefix'
+      )
+      ColWidths = (
+        145
+        222
+      )
+    end
+    object HintPanel: TPanel
+      Left = 0
+      Height = 28
+      Top = 282
+      Width = 368
+      Align = alBottom
+      Alignment = taLeftJustify
+      BevelOuter = bvNone
+      BorderStyle = bsSingle
+      Color = 14811135
+      ParentBackground = False
+      ParentColor = False
+      TabOrder = 2
+    end
+    object RadioGroup1: TRadioGroup
+      Left = 0
+      Height = 54
+      Top = 0
+      Width = 368
+      Align = alTop
+      AutoFill = True
+      ChildSizing.LeftRightSpacing = 6
+      ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+      ChildSizing.EnlargeVertical = crsHomogenousChildResize
+      ChildSizing.ShrinkHorizontal = crsScaleChilds
+      ChildSizing.ShrinkVertical = crsScaleChilds
+      ChildSizing.Layout = cclLeftToRightThenTopToBottom
+      ChildSizing.ControlsPerLine = 4
+      ClientHeight = 45
+      ClientWidth = 362
+      Columns = 4
+      ItemIndex = 0
+      Items.Strings = (
+        'Options'
+        'ID Labels'
+        'Properties'
+        'Map'
+      )
+      ParentBackground = False
+      ParentColor = False
+      TabOrder = 0
+      TabStop = True
+      OnClick = RadioGroup1Click
+    end
+  end
+end

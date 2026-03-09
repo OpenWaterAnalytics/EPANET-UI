@@ -1,0 +1,47 @@
+const
+
+  IntroA: String =
+    '<p>EPANET''s <i>Multi-Species Extension (MSX)</i> allows it to model the fate of '+
+    'multiple, interacting chemical and biological species in both the bulk fluid '+
+    'and at the pipe wall.</p>'+
+    '<p>The data needed to define an MSX model are divided into several categories listed '+
+    'in the left hand panel. Selecting a category will bring up its associated '+
+    'editor. The minimum required categories are <i>Species</i> and <i>Pipe Reactions</i>.</p>';
+
+  IntroB: String =
+    '<p>The buttons on the bottom panel execute the following actions:<br>'+
+    '<i>Clear</i> - clears the current contents of the editor.<br>'+
+    '<i>Load</i> - loads a previously saved MSX data file into the editor.<br>'+
+    '<i>Save As</i> - saves the editor''s contents to a new file.<br>'+
+    '<i>Save and Close</i> - saves the editor''s contents to file and closes it.</p>'+
+    'Pressing the down arrow key when in the last row of a data entry grid adds a new row to it.'+
+    '<p>More information on building an MSX model, including several examples, can be '+
+    'found <a href="https://epanetmsx2manual.readthedocs.io/en/latest/">here</a>.</p>';
+  
+  Instructs: array[1..9] of String =
+    ('Provide values for the simulation options listed above. ',
+     'Identify each specie being modeled. Leave Atol and Rtol blank if '+
+     'they are the same as the global options.',
+     'Enter a pipe reaction expression for each specie. ',
+     'Enter a tank reaction expression for each bulk specie if it is '+
+     'different from the pipe expression. ',
+     'Define formulas for any intermediate terms used in the '+
+     'specie reaction expressions. ',
+     'Assign global values for all coefficients (parameters and constants) used in the ' +
+     'specie reaction expressions. ',
+     'Set reaction parameter values for specific pipes and tanks if '+
+     'different from the global value. ',
+     'List initial concentrations of each specie if different from 0. ',
+     'Provide information for all external water quality sources. ');
+
+  Symbols: String =
+    '<b>Reserved Symbols:</b><br><br>'+
+    '<b>D </b> - Pipe diameter<br><br>'+
+    '<b>Kc</b> - Pipe roughness<br><br>'+
+    '<b>Q </b> - Pipe flow rate<br><br>'+
+    '<b>U </b> - Pipe flow velocity<br><br>'+
+    '<b>Re</b> - Flow Reynolds number<br><br>'+
+    '<b>Us</b> - Pipe shear velocity<br><br>'+
+    '<b>Ff</b> - Friction factor<br><br>'+
+    '<b>Av</b> - Surface area / volume<br><br>' +
+    '<b>Len</b> - Pipe length';

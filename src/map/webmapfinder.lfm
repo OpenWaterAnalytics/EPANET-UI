@@ -1,0 +1,32 @@
+object WebMapFinderForm: TWebMapFinderForm
+  Left = 595
+  Height = 93
+  Top = 419
+  Width = 392
+  BorderStyle = bsDialog
+  Caption = 'Location Finder'
+  ClientHeight = 93
+  ClientWidth = 392
+  KeyPreview = True
+  Position = poMainFormCenter
+  LCLVersion = '4.4.0.0'
+  OnCreate = FormCreate
+  object Edit1: TEdit
+    Left = 16
+    Height = 23
+    Hint = 'Enter a place name, address, or lat,lng values'
+    Top = 49
+    Width = 359
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 0
+    OnKeyDown = Edit1KeyDown
+  end
+  object Label1: TLabel
+    Left = 17
+    Height = 15
+    Top = 19
+    Width = 269
+    Caption = 'Enter a place name, address, or  latitude, longitude:'
+  end
+end

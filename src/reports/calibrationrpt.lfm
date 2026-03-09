@@ -1,0 +1,357 @@
+object CalibRptFrame: TCalibRptFrame
+  Left = 0
+  Height = 398
+  Top = 0
+  Width = 671
+  Align = alClient
+  ClientHeight = 398
+  ClientWidth = 671
+  LCLVersion = '4.4.0.0'
+  TabOrder = 0
+  DesignLeft = 1133
+  DesignTop = 97
+  object PageControl1: TPageControl
+    Left = 0
+    Height = 398
+    Top = 0
+    Width = 671
+    ActivePage = TabSheet1
+    Align = alClient
+    Style = tsFlatButtons
+    TabIndex = 0
+    TabOrder = 0
+    OnChange = PageControl1Change
+    OnChanging = PageControl1Changing
+    object TabSheet1: TTabSheet
+      Caption = 'Calibration Data'
+      ClientHeight = 365
+      ClientWidth = 667
+      OnExit = TabSheet1Exit
+      object Label2: TLabel
+        Left = 76
+        Height = 19
+        Top = 19
+        Width = 294
+        Caption = 'Enter measured values grouped by location:'
+        ParentColor = False
+      end
+      object DataGrid: TStringGrid
+        Left = 76
+        Height = 300
+        Top = 43
+        Width = 283
+        Anchors = [akTop, akLeft, akBottom]
+        AutoFillColumns = True
+        ColCount = 3
+        FixedCols = 0
+        Flat = True
+        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goAutoAddRows, goThumbTracking, goSmoothScroll, goAutoAddRowsSkipContentCheck]
+        RowCount = 2
+        ScrollBars = ssAutoVertical
+        TabOrder = 0
+        ColWidths = (
+          94
+          94
+          94
+        )
+      end
+      object Label1: TLabel
+        Left = 380
+        Height = 19
+        Top = 19
+        Width = 151
+        Caption = 'Parameter to calibrate'
+        ParentColor = False
+      end
+      object VariableCombo: TComboBox
+        Left = 380
+        Height = 27
+        Top = 43
+        Width = 124
+        ItemHeight = 18
+        Style = csOwnerDrawFixed
+        TabOrder = 1
+        OnChange = VariableComboChange
+      end
+      object LoadBtn: TBitBtn
+        Left = 380
+        Height = 30
+        Hint = 'Load values from file'
+        Top = 81
+        Width = 124
+        Caption = 'Load'
+        GlyphShowMode = gsmAlways
+        ImageIndex = 19
+        ImageWidth = 16
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 2
+        OnClick = LoadBtnClick
+      end
+      object SaveBtn: TBitBtn
+        Left = 380
+        Height = 30
+        Hint = 'Save values to file'
+        Top = 125
+        Width = 124
+        Caption = 'Save'
+        GlyphShowMode = gsmAlways
+        ImageIndex = 40
+        ImageWidth = 16
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 3
+        OnClick = SaveBtnClick
+      end
+      object ClearBtn: TBitBtn
+        Left = 380
+        Height = 30
+        Hint = 'Clear all values'
+        Top = 169
+        Width = 124
+        Caption = 'Clear'
+        GlyphShowMode = gsmAlways
+        ImageIndex = 66
+        ImageWidth = 16
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 4
+        OnClick = ClearBtnClick
+      end
+    end
+    object TabSheet2: TTabSheet
+      Caption = 'Time Series Plot'
+      ClientHeight = 365
+      ClientWidth = 667
+      object TimeSeriesPanel: TPanel
+        Left = 0
+        Height = 365
+        Top = 0
+        Width = 667
+        Align = alClient
+        BevelOuter = bvNone
+        ClientHeight = 365
+        ClientWidth = 667
+        ParentBackground = False
+        TabOrder = 0
+        object LocationsPanel: TPanel
+          Left = 0
+          Height = 365
+          Top = 0
+          Width = 112
+          Align = alLeft
+          Caption = 'LocationsPanel'
+          ClientHeight = 365
+          ClientWidth = 112
+          ParentBackground = False
+          TabOrder = 0
+          object LocationsHeader: TPanel
+            Left = 1
+            Height = 22
+            Top = 1
+            Width = 110
+            Align = alTop
+            BevelOuter = bvNone
+            BorderStyle = bsSingle
+            Caption = 'Location'
+            ParentBackground = False
+            TabOrder = 0
+          end
+          object LocationsListBox: TListBox
+            Left = 1
+            Height = 341
+            Top = 23
+            Width = 110
+            Align = alClient
+            ItemHeight = 18
+            Style = lbOwnerDrawFixed
+            TabOrder = 1
+            TopIndex = -1
+            OnClick = LocationsListBoxClick
+          end
+        end
+        object TimeSeriesChartPanel: TPanel
+          Left = 120
+          Height = 349
+          Top = 8
+          Width = 539
+          Align = alClient
+          BorderSpacing.Around = 8
+          BevelOuter = bvNone
+          BorderStyle = bsSingle
+          ClientHeight = 349
+          ClientWidth = 539
+          TabOrder = 1
+          object TimeSeriesChart: TChart
+            Left = 0
+            Height = 349
+            Top = 0
+            Width = 539
+            AxisList = <            
+              item
+                Grid.Color = clSilver
+                Grid.Style = psSolid
+                Marks.LabelBrush.Style = bsClear
+                Minors = <>
+                Title.LabelFont.Orientation = 900
+                Title.LabelBrush.Style = bsClear
+              end            
+              item
+                Grid.Visible = False
+                Alignment = calBottom
+                Marks.LabelBrush.Style = bsClear
+                Minors = <>
+                Title.Visible = True
+                Title.Caption = 'Hour'
+                Title.LabelBrush.Style = bsClear
+              end>
+            Legend.Alignment = laTopCenter
+            Legend.BackgroundBrush.Color = clWindow
+            Legend.ColumnCount = 2
+            Legend.Frame.Visible = False
+            Legend.GroupTitles.Strings = (
+              ''
+            )
+            Legend.Visible = True
+            Title.Brush.Style = bsClear
+            Title.Font.CharSet = ANSI_CHARSET
+            Title.Font.Color = clBlue
+            Title.Font.Height = -13
+            Title.Font.Pitch = fpVariable
+            Title.Font.Quality = fqDraft
+            Title.Font.Style = [fsBold]
+            Title.Text.Strings = (
+              ' for Node'
+            )
+            Title.Visible = True
+            Align = alClient
+            Color = clWindow
+            object ComputedSeries: TLineSeries
+              Title = 'Computed'
+              LinePen.Color = 12489328
+              LinePen.Width = 2
+            end
+            object MeasuredSeries: TLineSeries
+              Title = 'Observed'
+              LinePen.Style = psClear
+              Pointer.Brush.Color = clRed
+              Pointer.Visible = True
+              ShowPoints = True
+            end
+          end
+        end
+      end
+    end
+    object TabSheet3: TTabSheet
+      Caption = 'Correlation Plot'
+      ClientHeight = 365
+      ClientWidth = 667
+      object CorrelationChartPanel: TPanel
+        Left = 8
+        Height = 349
+        Top = 8
+        Width = 651
+        Align = alClient
+        BorderSpacing.Around = 8
+        BevelOuter = bvNone
+        BorderStyle = bsSingle
+        ClientHeight = 349
+        ClientWidth = 651
+        TabOrder = 0
+        object CorrelationPlot: TChart
+          Left = 0
+          Height = 349
+          Top = 0
+          Width = 651
+          AxisList = <          
+            item
+              Grid.Visible = False
+              Marks.LabelBrush.Style = bsClear
+              Minors = <>
+              Title.LabelFont.Orientation = 900
+              Title.Visible = True
+              Title.Caption = 'Computed'
+              Title.LabelBrush.Style = bsClear
+            end          
+            item
+              Grid.Visible = False
+              Alignment = calBottom
+              Marks.LabelBrush.Style = bsClear
+              Minors = <>
+              Title.Visible = True
+              Title.Caption = 'Observed'
+              Title.LabelBrush.Style = bsClear
+            end>
+          Foot.Alignment = taRightJustify
+          Foot.Brush.Style = bsClear
+          Foot.Font.Color = clBlue
+          Foot.Text.Strings = (
+            'Correlation Coeff. ='
+          )
+          Foot.Visible = True
+          Legend.Alignment = laTopLeft
+          Legend.BackgroundBrush.Color = clWindow
+          Legend.Frame.Visible = False
+          Legend.UseSidebar = False
+          Legend.Visible = True
+          Title.Brush.Style = bsClear
+          Title.Font.CharSet = ANSI_CHARSET
+          Title.Font.Color = clBlue
+          Title.Font.Height = -13
+          Title.Font.Pitch = fpVariable
+          Title.Font.Quality = fqDraft
+          Title.Font.Style = [fsBold]
+          Title.Text.Strings = (
+            'Correlation Plot for '
+          )
+          Title.Visible = True
+          Align = alClient
+          Color = clWindow
+        end
+      end
+    end
+    object TabSheet4: TTabSheet
+      Caption = 'Error Statistics'
+      ClientHeight = 365
+      ClientWidth = 667
+      object Panel1: TPanel
+        Left = 8
+        Height = 349
+        Top = 8
+        Width = 651
+        Align = alClient
+        BorderSpacing.Around = 8
+        BevelOuter = bvNone
+        BorderStyle = bsSingle
+        ClientHeight = 349
+        ClientWidth = 651
+        TabOrder = 0
+        object ErrorStatsMemo: TMemo
+          Left = 0
+          Height = 347
+          Top = 0
+          Width = 649
+          Align = alClient
+          ReadOnly = True
+          TabOrder = 0
+        end
+      end
+    end
+  end
+  object Exportmenu: TPopupMenu
+    Images = mainForm.PopupImageList
+    ImagesWidth = 16
+    Left = 456
+    Top = 272
+    object CopyMnuItem: TMenuItem
+      Caption = 'Copy to Clipboard'
+      ImageIndex = 17
+      OnClick = CopyMnuItemClick
+    end
+    object SaveMnuItem: TMenuItem
+      Caption = 'Save to File'
+      ImageIndex = 18
+      OnClick = SaveMnuItemClick
+    end
+  end
+end
