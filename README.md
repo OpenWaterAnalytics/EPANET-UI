@@ -10,7 +10,8 @@ EPANET is an industry-standard software package for modeling water distribution 
 - has multiple reporting options for simulation results, including energy audits, variability plots, and fire flow analysis. 
 
 
-
+EPANET-UI executables for both Windows and Linux can be downloaded from  [here](https://sites.google.com/view/epanet-ui).
 Ongoing development of the OWA EPANET engine can be found at [OWA EPANET](https://github.com/openwateranalytics/epanet).
+
 
 
