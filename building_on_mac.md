@@ -53,8 +53,9 @@ cmake -DOpenMP_C_FLAGS="-Xclang -fopenmp -I/usr/local/opt/libomp/include" \
 
 ## Fix the UI application bundle
 
-1. Navigate to the `Contents/MacOS` folder of the `epanet-ui.app` bundle, and place the required dynamic libraries (epanet, msx, shapelib, proj, omp) in a `Frameworks` folder that you create there.
-2. Use the `otool` and `install_name_tool` commands in the terminal to update the library paths in the executable to point to the `Frameworks` folder you just created.
+1. Navigate to the `Contents` folder of the `epanet-ui.app` bundle, and place the required dynamic libraries (epanet, msx, shapelib, proj, omp) in a `Frameworks` folder that you create there.
+2. Use the `otool` and `install_name_tool` commands in the terminal to update the ids and library paths of the dynamic libraries to be relative to the app bundle. For example:
+   `install_name_tool -id @rpath/libepanet2.dylib libepanet2.dylib`
 3. Move/copy the `epanet-ui` application binary to the `MacOS` folder of the app bundle, replacing the alias file that was there before.
 4. Add a relative loader path so the binary can find its dynamic libs:
 
