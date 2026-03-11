@@ -1,0 +1,5 @@
+backup/
+lib/
+*.app/
+*.lps
+*.res
