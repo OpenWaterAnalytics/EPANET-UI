@@ -1,0 +1,659 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <ProjectOptions>
+    <Version Value="12"/>
+    <PathDelim Value="\"/>
+    <General>
+      <SessionStorage Value="InProjectDir"/>
+      <Title Value="EPANET-UI"/>
+      <Scaled Value="True"/>
+      <ResourceType Value="res"/>
+      <UseXPManifest Value="True"/>
+      <XPManifest>
+        <DpiAware Value="True/PM_V2"/>
+      </XPManifest>
+    </General>
+    <BuildModes>
+      <Item Name="Default" Default="True"/>
+    </BuildModes>
+    <PublishOptions>
+      <Version Value="2"/>
+      <DestinationDirectory Value=""/>
+      <CompressFinally Value="False"/>
+    </PublishOptions>
+    <RunParams>
+      <FormatVersion Value="2"/>
+    </RunParams>
+    <RequiredPackages>
+      <Item>
+        <PackageName Value="tachartbgra"/>
+      </Item>
+      <Item>
+        <PackageName Value="lazMapViewerPkg"/>
+      </Item>
+      <Item>
+        <PackageName Value="LazControls"/>
+      </Item>
+      <Item>
+        <PackageName Value="LazControlDsgn"/>
+      </Item>
+      <Item>
+        <PackageName Value="FrameViewer09"/>
+      </Item>
+      <Item>
+        <PackageName Value="TAChartLazarusPkg"/>
+      </Item>
+      <Item>
+        <PackageName Value="LCL"/>
+      </Item>
+    </RequiredPackages>
+    <Units>
+      <Unit>
+        <Filename Value="epanet_ui_mac.lpr"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\core\main.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="mainForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\map\mapcoords.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\map\webmap.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\core\about.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="AboutForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\core\config.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\core\utils.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\project\inifile.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\project\project.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\project\projectbuilder.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\project\projectsetup.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="ProjectSetupForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\project\projectmapdata.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\core\projectframe.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="ProjectFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\project\projectloader.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="ProjectLoaderForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\project\projectsummary.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="SummaryForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\project\projectviewer.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="ProjectViewerForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\project\properties.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\core\mapframe.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="MapFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\map\maplabel.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\map\mapoptions.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="MapOptionsForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\map\maprenderer.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\map\webmapfinder.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="WebMapFinderForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\editors\configeditor.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="ConfigForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\editors\controlseditor.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="ControlsEditorForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\editors\demandseditor.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="DemandsEditorForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\editors\editor.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\editors\labeleditor.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="LabelEditorForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\editors\qualeditor.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="QualEditorForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\editors\ruleseditor.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="RulesEditorForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\editors\sourceeditor.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="SourceEditorForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\editors\titleeditor.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="TitleEditorForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\editors\validator.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\reports\chartoptions.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="ChartOptionsForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\simulator\results.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\simulator\simulator.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="SimulationForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\themes\mapthemes.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\editors\legendeditor.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="LegendEditorForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\themes\themepalette.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="ThemePaletteForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\map\map.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\core\welcome.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="WelcomeForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\reports\statusrpt.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="StatusRptFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\reports\sysflowrpt.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="SysFlowFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\reports\timeseriesrpt.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="TimeSeriesFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\reports\pumpingrpt.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="PumpingRptFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\reports\networkrpt.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="NetworkRptFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\map\mapgeoref.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="GeoRefFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\reports\calibrationrpt.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="CalibRptFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\simulator\energycalc.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\reports\energyrpt.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="EnergyRptFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\thirdparty\epanet2.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\importers\dxfimporter.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="DxfImporterForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\importers\dxfloader.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\importers\dxfviewer.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\map\maplocater.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="MapLocaterFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\map\mapquery.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="MapQueryFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\reports\pcntilerpt.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="PcntileRptFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\core\mainmenu.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="MainMenuFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\map\webmapserver.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\core\basemapmenu.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="BasemapMenuForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\map\mapexporter.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="MapExporterFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\thirdparty\epanetmsx.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\thirdparty\shpapi.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="ShpAPI"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\importers\shpimporter.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="ShpImporterForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\importers\shpviewer.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="ShpViewerForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\importers\shploader.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\editors\msxeditor.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="MsxEditorForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\editors\curveeditor.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="CurveEditorForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\editors\patterneditor.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="PatternEditorForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\editors\curveviewer.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\reports\tseriesselector.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="TseriesSelectorFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\editors\msxfileprocs.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\editors\groupeditor.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="GroupEditorForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\reports\profilerpt.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="ProfileRptFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\reports\profileselector.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="ProfileSelectorFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\thirdparty\proj.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\map\projtransform.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\core\statusframe.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="StatusBarFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\map\mapalign.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="MapAlignFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\importers\csvimporter.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="CsvImporterForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\importers\csvviewer.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="CsvViewerForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\importers\csvloader.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\map\overviewmapframe.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="OverviewMapFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\reports\pcntileselector.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="PcntileSelectorFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\core\resourcestrings.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\core\reportviewer.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="ReportViewerForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\simulator\sysresults.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\reports\fireflowcalc.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\reports\fireflowrpt.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="FireFlowFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\reports\fireflowselector.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="FireFlowSelectorFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\reports\fireflowprogress.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="FireFlowProgressForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\thirdparty\mrumanager.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+    </Units>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="11"/>
+    <PathDelim Value="\"/>
+    <Target>
+      <Filename Value="bin\mac\epanet-ui"/>
+    </Target>
+    <SearchPaths>
+      <IncludeFiles Value="$(ProjOutDir)"/>
+      <Libraries Value="bin\mac"/>
+      <OtherUnitFiles Value="src;src\map;src\project;src\editors;src\reports;src\simulator;src\themes;src\importers;src\thirdparty;src\core"/>
+      <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+    </SearchPaths>
+    <Conditionals Value="// example for adding linker options on Mac OS X
+//if TargetOS=&apos;darwin&apos; then
+//  LinkerOptions := &apos; -framework OpenGL&apos;;
+
+// example for adding a unit and include path on Windows
+//if SrcOS=&apos;win&apos; then begin
+//  UnitPath += &apos;;win&apos;;
+//  IncPath += &apos;;win&apos;;
+//end;
+-WM14.0"/>
+    <CodeGeneration>
+      <SmartLinkUnit Value="True"/>
+      <TargetCPU Value="aarch64"/>
+      <TargetOS Value="darwin"/>
+      <Optimizations>
+        <OptimizationLevel Value="3"/>
+      </Optimizations>
+    </CodeGeneration>
+    <Linking>
+      <Debugging>
+        <GenerateDebugInfo Value="False"/>
+        <RunWithoutDebug Value="True"/>
+        <DebugInfoType Value="dsDwarf2Set"/>
+        <UseLineInfoUnit Value="False"/>
+        <StripSymbols Value="True"/>
+      </Debugging>
+      <LinkSmart Value="True"/>
+      <Options>
+        <PassLinkerOptions Value="True"/>
+        <LinkerOptions Value="-rpath @loader_path\"/>
+        <Win32>
+          <GraphicApplication Value="True"/>
+        </Win32>
+      </Options>
+    </Linking>
+    <Other>
+      <Verbosity>
+        <ShowNotes Value="False"/>
+        <ShowHints Value="False"/>
+      </Verbosity>
+      <CompilerMessages>
+        <IgnoredMessages idx6058="True" idx5024="True"/>
+      </CompilerMessages>
+    </Other>
+  </CompilerOptions>
+  <Debugging>
+    <Exceptions>
+      <Item>
+        <Name Value="EAbort"/>
+      </Item>
+      <Item>
+        <Name Value="ECodetoolError"/>
+      </Item>
+      <Item>
+        <Name Value="EFOpenError"/>
+      </Item>
+    </Exceptions>
+  </Debugging>
+</CONFIG>
