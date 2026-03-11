@@ -6,6 +6,11 @@ These notes cover building the EPANET-UI (Lazarus) app on macOS (Apple Silicon).
 
 You may need to do a bit of one-time setup in your Lazarus environment.
 
+### Follow other instructions in `building.md` to get most of the required packages.
+- TAChartBgra
+- TAChartLazarusPkg
+- OnlinePackageManager
+
 ### Install the BGRA Bitmap Pack
 
 - Download: https://github.com/bgrabitmap/bgrabitmap/releases/tag/v11.6.6
@@ -19,6 +24,7 @@ You may need to do a bit of one-time setup in your Lazarus environment.
 - Same basic steps as above (unzip → copy into `lazarus/components/` → open package → compile)
 
 Reason for the manual install: there’s a font-finding issue with the package-manager version.
+After this is installed you can use the online package manager to install the LazMapViewer package, which depends on HtmlViewer.
 
 ### Install required system libraries
 
