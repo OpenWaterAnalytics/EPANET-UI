@@ -1,10 +1,10 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.0
+ Version:      1.0.1
  Module:       about
  Description:  'About EPANET' form
  License:      see LICENSE
- Last Updated: 03/07/2026
+ Last Updated: 03/13/2026
 =====================================================================}
 
 unit about;

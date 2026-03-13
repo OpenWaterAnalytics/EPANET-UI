@@ -1,11 +1,11 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.0
+ Version:      1.0.1
  Module:       results
  Description:  retrieves the hydraulic and water quality results
                of a simulation that were saved to file
  License:      see LICENSE
- Last Updated: 03/07/2026
+ Last Updated: 03/13/2026
 =====================================================================}
 
 unit results;
@@ -518,7 +518,7 @@ function  GetTimeStr(const Period: Integer): string;
 var
   Seconds: Integer;
 begin
-  Seconds := project.StartTime + (Period * Rstep) + Rstart;
+  Seconds := (Period * Rstep) + Rstart;
   Result := utils.Time2Str(Seconds) + ' ' + rsHrs;
 end;
 
