@@ -1,10 +1,10 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.0
+ Version:      1.0.1
  Module:       timeseriesrpt
  Description:  A frame that displays a time series report
  License:      see LICENSE
- Last Updated: 03/07/2026
+ Last Updated: 03/13/2026
 =====================================================================}
 
 unit timeseriesrpt;
@@ -443,7 +443,7 @@ begin
     if R = 0 then
       Result := rsTimeHrs
     else
-      Result := FloatToStrF((R - 1) * Xstep, ffFixed, 7, 2);
+      Result := FloatToStrF((R - 1) * results.Rstep / 3600, ffFixed, 7, 2);
   end
   else if C = 1 then
   begin

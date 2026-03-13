@@ -18,9 +18,9 @@ object AboutForm: TAboutForm
     Height = 270
     Top = 26
     Width = 424
-    ActivePage = TabSheet3
+    ActivePage = TabSheet1
     Style = tsFlatButtons
-    TabIndex = 2
+    TabIndex = 0
     TabOrder = 0
     OnChange = PageControl1Change
     object TabSheet1: TTabSheet
@@ -35,8 +35,8 @@ object AboutForm: TAboutForm
         Align = alClient
         BevelOuter = bvNone
         BorderStyle = bsSingle
-        ClientHeight = 239
-        ClientWidth = 416
+        ClientHeight = 235
+        ClientWidth = 412
         Color = clWindow
         ParentBackground = False
         ParentColor = False

@@ -1,10 +1,10 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.0
+ Version:      1.0.1
  Module:       resourcestrings
  Description:  contains text for internationalizing all project strings
  License:      see LICENSE
- Last Updated: 03/07/2026
+ Last Updated: 03/13/2026
 =====================================================================}
 
 unit resourcestrings;
@@ -43,20 +43,6 @@ resourcestring
                     LineEnding + LineEnding +
                     'Check the Status Report for details.';
   rsNoLoadProject = 'Could not load project file.';
-
-  // filemenu.pas
-  rsExitMenu      = '  Exit this menu.';
-  rsNewProject    = '  Start a new project.';
-  rsOpenProject   = '  Open a previously saved project.';
-  rsSaveProject   = '  Save the project under its current name.';
-  rsSaveProjectAs = '  Save the project under a new name.';
-  rsImportData    = '  Import project data in other formats.';
-  rsConfigure     = '  Configure program settings.';
-  rsExitProgram   = '  Exit the program.';
-  rsImport        = 'Import';
-  rsOpen          = 'Open';
-  rsRecentProj    = ' Recent Projects';
-  rsImportFrom    = ' Import Network Data From';
 
   // menuframe.pas
   rsShapingLink   = 'Reshaping a Link';
@@ -402,6 +388,7 @@ resourcestring
   rsEnergy        = 'Energy';
   rsSimple        = 'Simple';
   rsRuleBased     = 'Rule-Based';
+  rsOpen          = 'Open';
   rsClosed        = 'Closed';
   rsGeneric       = 'Generic';
   rsNormal        = 'Normal';
@@ -876,7 +863,7 @@ resourcestring
   rsMsxSave        = 'Save Msx Data';
 
   // about.pas
-  rsVersions       = 'EPANET-UI Version 1.0.0' + LineEnding + LineEnding +
+  rsVersions       = 'EPANET-UI Version 1.0.1' + LineEnding + LineEnding +
                      'OWA-EPANET Version 2.3.5' + LineEnding + LineEnding +
                      'EPANET-MSX Version 2.0';
   rsAbout          = 'A graphical user interface for the Open Water Analytics' +
