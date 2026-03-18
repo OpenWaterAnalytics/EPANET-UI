@@ -1,6 +1,6 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.0
+ Version:      1.0.2
  Module:       inifile
  Description:  saves and retrieves project settings to an inifile
  License:      see LICENSE
@@ -40,33 +40,58 @@ const
 
 procedure ReadAppDefaults(FileName: string);
 var
-  I:       Integer;
-  Ini:     TIniFile;
-  Options: TDefOptions;
+  I:           Integer;
+  Ini:         TIniFile;
+  Props:       TDefProps;
+  BaseProps:   TDefProps;
+  Options:     TDefOptions;
+  BaseOptions: TDefOptions;
+  DS:          Char;
 begin
+  // Adjust base defaults for decimal separator
+  DS := DefaultFormatSettings.DecimalSeparator;
+  BaseOptions := BaseDefOptions;
+  for I := 1 to project.MAX_DEF_OPTIONS do
+    BaseOptions[I] := StringReplace(BaseOptions[I], '.', DS, []);
+  BaseProps := BaseDefProps;
+  for I := 1 to project.MAX_DEF_PROPS do
+    BaseProps[I] := StringReplace(BaseProps[I], '.', DS, []);
+
+  // Set project defaults to base values if no INI file
   if not FileExists(FileName) then
   begin
     for I := 1 to project.MAX_ID_PREFIXES do
       project.IDprefix[I] := '';
     for I := 1 to project.MAX_DEF_PROPS do
-      project.DefProps[I] := BaseDefProps[I];
+      project.DefProps[I] := BaseProps[I];
     for I := 1 to project.MAX_DEF_OPTIONS do
-      Options[I] := BaseDefOptions[I];
+      Options[I] := BaseOptions[I];
   end
   else
+
+  // Read project defaults from INI file
   begin
     Ini := TIniFile.Create(FileName);
     try
       for I := 1 to project.MAX_ID_PREFIXES do
         project.IDprefix[I] := Ini.ReadString('ID_PREFIXES', IntToStr(I), '');
+
       for I := 1 to project.MAX_DEF_PROPS do
+      begin
         project.DefProps[I] := Ini.ReadString('DEFAULTS', IntToStr(I), BaseDefProps[I]);
+        project.DefProps[I] := StringReplace(project.DefProps[I], '.', DS, []);
+      end;
+
       for I := 1 to project.MAX_DEF_OPTIONS do
+      begin
         Options[I] := Ini.ReadString('OPTIONS', IntToStr(I), BaseDefOptions[I]);
+        Options[I] := StringReplace(Options[I], '.', DS, []);
+      end;
     finally
       Ini.Free;
     end;
   end;
+
   project.SetFlowUnits(Options[htFlowUnits]);
   project.SetPressUnits(Options[htPressUnits]);                                               
   project.SetDefHydOptions(Options);
@@ -77,18 +102,30 @@ procedure WriteAppDefaults(FileName: string);
 var
   I:       Integer;
   Ini:     TIniFile;
+  Props:   TDefProps;
   Options: TDefOptions;
+  DS:      Char;
 begin
   if not FileExists(FileName) then exit;
+  DS := DefaultFormatSettings.DecimalSeparator;
   Ini := TIniFile.Create(FileName);
   try
     for I := 1 to project.MAX_ID_PREFIXES do
       Ini.WriteString('ID_PREFIXES', IntToStr(I), project.IDprefix[I]);
+
+    Props := project.DefProps;
     for I := 1 to project.MAX_DEF_PROPS do
-      Ini.WriteString('DEFAULTS', IntToStr(I), project.DefProps[I]);
+    begin
+      Props[I] := StringReplace(Props[I], DS, '.', []);
+      Ini.WriteString('DEFAULTS', IntToStr(I), Props[I]);
+    end;
+
     project.GetDefHydOptions(Options);
     for I := 1 to MAX_DEF_OPTIONS do
+    begin
+      Options[I] := StringReplace(Options[I], DS, '.', []);
       Ini.WriteString('OPTIONS', IntToStr(I), Options[I]);
+    end;
   finally
     Ini.Free;
   end;
@@ -99,9 +136,11 @@ var
   I:   Integer;
   Ini: TIniFile;
   S:   string;
+  DS:  Char;
 begin
   WebMapSource := -1;
   if not FileExists(Filename) then exit;
+  DS := DefaultFormatSettings.DecimalSeparator;
   Ini := TIniFile.Create(FileName);
   try
     // Project default settings
@@ -109,8 +148,11 @@ begin
       project.IDprefix[I] := Ini.ReadString('ID_PREFIXES', IntToStr(I),
         project.IDprefix[I]);
     for I := 1 to project.MAX_DEF_PROPS do
+    begin
       project.DefProps[I] := Ini.ReadString('DEFAULTS', IntToStr(I),
         project.DefProps[I]);
+      project.DefProps[I] := StringReplace(project.DefProps[I], '.', DS, []);
+    end;
 
     // MSX file name
     S := Ini.ReadString('MSX', 'FILE', '');
@@ -159,8 +201,10 @@ end;
 
 procedure WriteProjectDefaults(FileName: string; WebMapSource: Integer);
 var
-  I:   Integer;
-  Ini: TIniFile;
+  I:     Integer;
+  Ini:   TIniFile;
+  Props: TDefProps;
+  DS:    Char;
 begin
   Ini := TIniFile.Create(FileName);
   try
@@ -169,8 +213,12 @@ begin
       // Project default settings
       for I := 1 to project.MAX_ID_PREFIXES do
         Ini.WriteString('ID_PREFIXES', IntToStr(I), project.IDprefix[I]);
+      Props := project.DefProps;
       for I := 1 to project.MAX_DEF_PROPS do
-        Ini.WriteString('DEFAULTS', IntToStr(I), project.DefProps[I]);
+      begin
+        Props[I] := StringReplace(Props[I], DS, '.', []);
+        Ini.WriteString('DEFAULTS', IntToStr(I), Props[I]);
+      end;
 
       // MSX file name
       if project.MsxFlag then
