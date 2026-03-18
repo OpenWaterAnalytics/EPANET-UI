@@ -865,7 +865,13 @@ procedure TMainMenuFrame.HelpTutorialBtnClick(Sender: TObject);
 var
   Url: string;
 begin
-  Url := 'file:///' + ExtractFilePath(Application.ExeName) + 'tutorial.html';
+  Url := 'file://' + ExtractFilePath(Application.ExeName) + 'tutorial.html';
+  {$IFDEF Windows}
+  if config.IsDefaultBrowserChromium then
+  begin
+    Url := '"' + Url + '"';
+  end;
+  {$ENDIF}
   OpenUrl(Url);
 end;
 
