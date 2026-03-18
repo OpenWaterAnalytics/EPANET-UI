@@ -1,6 +1,6 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.0
+ Version:      1.0.2
  Module:       projectmapdata
  Description:  reads/writes map data to/from an EPANET input file
  License:      see LICENSE
@@ -96,15 +96,19 @@ end;
 procedure WriteBackdropData(Lines: TStringList);
 var
   S: string;
+  DS: Char;
 begin
   Lines.Add('');
   Lines.Add('[BACKDROP]');
+  DS := DefaultFormatSettings.DecimalSeparator;
+  DefaultFormatSettings.DecimalSeparator := '.';
   with MainForm.MapFrame do
   begin
     with Map.Extent do
       S := Format('DIMENSIONS'#9'%.6f'#9'%.6f'#9'%.6f'#9'%.6f',
         [LowerLeft.X, LowerLeft.Y, UpperRight.X, UpperRight.Y]);
   end;
+  DefaultFormatSettings.DecimalSeparator := DS;
   Lines.Add(S);
   Lines.Add('UNITS     ' + #9 + project.MapUnitsStr[project.MapUnits] +
     #9 + IntToStr(project.MapEPSG));

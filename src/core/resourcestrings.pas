@@ -863,7 +863,7 @@ resourcestring
   rsMsxSave        = 'Save Msx Data';
 
   // about.pas
-  rsVersions       = 'EPANET-UI Version 1.0.1' + LineEnding + LineEnding +
+  rsVersions       = 'EPANET-UI Version 1.0.2' + LineEnding + LineEnding +
                      'OWA-EPANET Version 2.3.5' + LineEnding + LineEnding +
                      'EPANET-MSX Version 2.0';
   rsAbout          = 'A graphical user interface for the Open Water Analytics' +
