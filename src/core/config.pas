@@ -1,10 +1,10 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.0
+ Version:      1.0.2
  Module:       config
  Description:  reads, saves and edits program preferenecs
  License:      see LICENSE
- Last Updated: 03/07/2026
+ Last Updated: 03/18/2026
 =====================================================================}
 
 unit config;
@@ -14,7 +14,7 @@ unit config;
 interface
 
 uses
-  Classes, Graphics, SysUtils, Controls, Forms, IniFiles;
+  Classes, Graphics, SysUtils, Controls, Forms, IniFiles, LCLIntf, Registry;
 
 const
   WinFontSize = 9;
@@ -44,6 +44,7 @@ var
   procedure ReadPreferences(FileName: string);
   procedure SavePreferences(FileName: string);
   procedure EditPreferences(var ClearFileList: Boolean);
+  function  IsDefaultBrowserChromium: Boolean;
 
 implementation
 
@@ -158,6 +159,52 @@ begin
     end;
   finally
     Free;
+  end;
+end;
+
+function GetDefaultBrowserProgId: string;
+//
+//  Return the ID of Windows default web browser.
+//
+var
+  Reg: TRegistry;
+  ProgId: string;
+begin
+  Result := '';
+  Reg := TRegistry.Create(KEY_READ);
+  try
+    Reg.RootKey := HKEY_CURRENT_USER;
+    if Reg.OpenKeyReadOnly(
+'Software\Microsoft\Windows\Shell\Associations\UrlAssociations\http\UserChoiceLatest\ProgId') then
+    begin
+      ProgId := Reg.ReadString('ProgId');
+      Reg.CloseKey;
+      Result := ProgId;
+    end;
+  finally
+    Reg.Free;
+  end;
+end;
+
+function IsDefaultBrowserChromium: Boolean;
+//
+//  Determine if Windows default web browser is Chromium-based (Edge or Chrome)
+//
+var
+  ProgId: string;
+begin
+  ProgId := GetDefaultBrowserProgId;
+  // Check for common Edge/Chrome ProgIds
+  if (Pos('Edge', ProgId) > 0)
+  or (Pos('MicrosoftEdge', ProgId) > 0)
+  or (Pos('MSEdge', ProgId) > 0)
+  or (Pos('Chrome', ProgId) > 0) then
+  begin
+    Result := True;
+  end
+  else
+  begin
+    Result := False;
   end;
 end;
 

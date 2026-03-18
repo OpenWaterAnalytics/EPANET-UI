@@ -1,11 +1,11 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.0
+ Version:      1.0.2
  Module:       main
  Description:  main form of a graphical user interface for the
                EPANET water distribution system analysis engine
  License:      see LICENSE
- Last Updated: 03/07/2026
+ Last Updated: 03/18/2026
 =====================================================================}
 {
  The application's main form consists of several panels as shown
@@ -197,7 +197,7 @@ begin
   Screen.HintFont.Size := config.FontSize;
   Application.ShowButtonGlyphs := sbgNever;
 
-  AppHelpFile := 'file:///' + ExtractFilePath(Application.ExeName) + 'manual.html';
+  AppHelpFile := ExtractFilePath(Application.ExeName) + 'manual.html';
   AppIniFile := '';
   AppIniDir := GetAppConfigDir(false);
   if ForceDirectories(AppIniDir) then
@@ -892,7 +892,13 @@ procedure TMainForm.ViewHelp(Topic: String);
 var
   Url: string;
 begin
-  Url := AppHelpFile + Topic;
+  Url := 'file://' + AppHelpFile + Topic;
+  {$IFDEF Windows}
+  if config.IsDefaultBrowserChromium then
+  begin
+    Url := '"' + Url + '"';
+  end;
+  {$ENDIF}
   OpenUrl(Url);
 end;
 
