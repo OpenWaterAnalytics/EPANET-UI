@@ -4,7 +4,7 @@
  Module:       mapgeoref
  Description:  a frame used to georeference a basemap image
  License:      see LICENSE
- Last Updated: 03/07/2026
+ Last Updated: 03/21/2026
 =====================================================================}
 {
   The mapgeoref frame contains a TNotebook with 5 pages that are
@@ -122,7 +122,14 @@ procedure TGeoRefFrame.Show;
 //
 var
   I: Integer;
+  DS: Char;
 begin
+  // Set decimal separator for TFloatSpinEditEx controls
+  DS := DefaultFormatSettings.DecimalSeparator;
+  LowLeftXEdit.DecimalSeparator := DS;
+  LowLeftYEdit.DecimalSeparator := DS;
+  DistanceEdit.DecimalSeparator := DS;
+
   // Initialize georeferencing method and distance units
   Color := config.CreamTheme;
   TopPanel.Color := config.ThemeColor;

@@ -12,6 +12,7 @@
       <XPManifest>
         <DpiAware Value="True/PM_V2"/>
       </XPManifest>
+      <Icon Value="0"/>
     </General>
     <BuildModes>
       <Item Name="Default" Default="True"/>

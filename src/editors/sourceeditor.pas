@@ -4,7 +4,7 @@
  Module:       sourceeditor
  Description:  a dialog form that edits a Water Quality source
  License:      see LICENSE
- Last Updated: 03/07/2026
+ Last Updated: 03/21/2026
 =====================================================================}
 
 unit sourceeditor;
@@ -62,6 +62,7 @@ procedure TSourceEditorForm.FormCreate(Sender: TObject);
 begin
   Color := config.FormColor;
   Font.Size := config.FontSize;
+  StrengthEdit.DecimalSeparator := DefaultFormatSettings.DecimalSeparator;
 end;
 
 procedure TSourceEditorForm.OkBtnClick(Sender: TObject);

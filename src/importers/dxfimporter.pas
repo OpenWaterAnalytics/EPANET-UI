@@ -112,6 +112,7 @@ begin
   Bitmap.PixelFormat := pf24Bit;
   Notebook1.PageIndex := 0;
   Layers := TStringList.Create;
+  SnapTolEdit.DecimalSeparator := DefaultFormatSettings.DecimalSeparator;
 end;
 
 procedure TDxfImporterForm.FormClose(Sender: TObject;

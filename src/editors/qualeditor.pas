@@ -5,7 +5,7 @@
  Description:  a dialog form that edits single species Water
                Quality options
  License:      see LICENSE
- Last Updated: 03/07/2026
+ Last Updated: 03/21/2026
 =====================================================================}
 
 unit qualeditor;
@@ -91,6 +91,7 @@ var
 procedure TQualEditorForm.FormCreate(Sender: TObject);
 var
   I: Integer;
+  DS: Char;
 begin
   Color := config.FormColor;
   Font.Size := config.FontSize;
@@ -99,6 +100,11 @@ begin
   QualNameEdit.MaxLength := EN_MAXID;
   UnitsLabel.Left := UnitsCombo.Left;
   UnitsLabel.Top := Label4.Top;
+  DS := DefaultFormatSettings.DecimalSeparator;
+  QualTolEdit.DecimalSeparator := DS;
+  BulkOrderEdit.DecimalSeparator := DS;
+  ConcenLimitEdit.DecimalSeparator := DS;
+  DiffusEdit.DecimalSeparator := DS;
 end;
 
 procedure TQualEditorForm.FormShow(Sender: TObject);
