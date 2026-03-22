@@ -1,10 +1,10 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.0
+ Version:      1.0.2
  Module:       msxeditor
  Description:  a form used to edit EPANET-MSX input data
  License:      see LICENSE
- Last Updated: 03/07/2026
+ Last Updated: 03/20/2026
 =====================================================================}
 {
  The MsxEditorForm consists of a MenuPanel used to select a
@@ -134,6 +134,7 @@ type
     procedure ClearBtnClick(Sender: TObject);
     procedure CopyBtnClick(Sender: TObject);
     procedure CutBtnClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure TitleEditChange(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure HelpBtnClick(Sender: TObject);
@@ -172,8 +173,10 @@ type
     procedure SymbolsBtnClick(Sender: TObject);
 
   private
-    MsxFile:     string;
-    FocusedGrid: TStringGrid;
+    OldDecimalPt: Char;
+    MsxFile:      string;
+    FocusedGrid:  TStringGrid;
+
     procedure ClearAll;
     procedure SelectionSetText(TheText: string);
     procedure ReadMsxFile(Filename: string);
@@ -181,6 +184,7 @@ type
 
   public
     HasChanged: Boolean;
+
     procedure SetMsxFile(FileName: string);
     procedure GetMsxFile(var FileName: string);
 
@@ -197,7 +201,6 @@ uses
   project, config, msxfileprocs, patterneditor, utils;
 
 resourcestring
-  rsSaveMsg        = 'Please save your newly created MSX model.';
   rsShowSymbolsMsg = 'Show Reserved Symbols Panel';
   rsHideSymbolsMsg = 'Hide Reserved Symbols Panel';
   rsReplaceMsg     = 'Do you wish to replace all current MSX data with';
@@ -229,6 +232,10 @@ begin
   Color := config.ThemeColor;
   TitlePanel.Color := Color;
   Font.Size := config.FontSize;
+
+  // Force editor to use '.' as decimal point
+  OldDecimalPt := DefaultFormatSettings.DecimalSeparator;
+  DefaultFormatSettings.DecimalSeparator := '.';
 
   // Set platform-specific mono-spaced font for all StringGrids
   for I := 1 to 8 do
@@ -273,6 +280,13 @@ begin
   ClearAll;
   HasChanged := false;
   FocusedGrid := nil;
+end;
+
+procedure TMsxEditorForm.FormClose(Sender: TObject;
+  var CloseAction: TCloseAction);
+begin
+  // Restore original decimal point
+  DefaultFormatSettings.DecimalSeparator := OldDecimalPt;
 end;
 
 procedure TMsxEditorForm.SetMsxFile(FileName: string);

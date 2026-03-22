@@ -6,7 +6,9 @@ const
     'and at the pipe wall.</p>'+
     '<p>The data needed to define an MSX model are divided into several categories listed '+
     'in the left hand panel. Selecting a category will bring up its associated '+
-    'editor. The minimum required categories are <i>Species</i> and <i>Pipe Reactions</i>.</p>';
+    'editor. The minimum required categories are <i>Species</i> and <i>Pipe Reactions</i>.</p>' +
+    '<p>More information on building an MSX model, including several examples, can be '+
+    'found <a href="https://epanetmsx2manual.readthedocs.io/en/latest/">here</a>.</p>';    
 
   IntroB: String =
     '<p>The buttons on the bottom panel execute the following actions:<br>'+
@@ -15,9 +17,9 @@ const
     '<i>Save As</i> - saves the editor''s contents to a new file.<br>'+
     '<i>Save and Close</i> - saves the editor''s contents to file and closes it.</p>'+
     'Pressing the down arrow key when in the last row of a data entry grid adds a new row to it.'+
-    '<p>More information on building an MSX model, including several examples, can be '+
-    'found <a href="https://epanetmsx2manual.readthedocs.io/en/latest/">here</a>.</p>';
-  
+    '<p>The MSX engine requires that all numeric values use a period (.) as the '+
+    'decimal separator.</p>';
+
   Instructs: array[1..9] of String =
     ('Provide values for the simulation options listed above. ',
      'Identify each specie being modeled. Leave Atol and Rtol blank if '+

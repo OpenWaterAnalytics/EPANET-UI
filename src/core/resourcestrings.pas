@@ -4,7 +4,7 @@
  Module:       resourcestrings
  Description:  contains text for internationalizing all project strings
  License:      see LICENSE
- Last Updated: 03/13/2026
+ Last Updated: 03/22/2026
 =====================================================================}
 
 unit resourcestrings;
@@ -864,7 +864,7 @@ resourcestring
 
   // about.pas
   rsVersions       = 'EPANET-UI Version 1.0.2' + LineEnding + LineEnding +
-                     'OWA-EPANET Version 2.3.5' + LineEnding + LineEnding +
+                     'OWA-EPANET Version 2.3.6' + LineEnding + LineEnding +
                      'EPANET-MSX Version 2.0';
   rsAbout          = 'A graphical user interface for the Open Water Analytics' +
                      LineEnding +

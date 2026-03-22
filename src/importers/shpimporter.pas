@@ -137,6 +137,7 @@ var
 begin
   Color := config.ThemeColor;
   Font.Size := config.FontSize;
+  SnapTolEdit.DecimalSeparator := DefaultFormatSettings.DecimalSeparator;
   ViewLinkAttribLabel.Font.Size := config.FontSize;
   ViewNodeAttribLabel.Font.Size := config.FontSize;
   PrjFileLabel.Font.Size := config.FontSize;

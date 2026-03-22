@@ -5,6 +5,7 @@ program epanet_ui_mac;
 uses
   {$IFDEF UNIX}
   cthreads,
+  cLocale,
   {$ENDIF}
   {$IFDEF HASAMIGA}
   athreads,

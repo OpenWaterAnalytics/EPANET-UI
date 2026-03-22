@@ -5,7 +5,7 @@
  Description:  a dialog form that edits the legend used to
                display a theme on the pipe network map
  License:      see LICENSE
- Last Updated: 03/07/2026
+ Last Updated: 03/21/2026
 =====================================================================}
 
 unit legendeditor;
@@ -89,9 +89,14 @@ uses
 { TLegendEditorForm }
 
 procedure TLegendEditorForm.FormCreate(Sender: TObject);
+var
+  DS: Char;
 begin
   Color := config.ThemeColor;
   Font.Size := config.FontSize;
+  DS := DefaultFormatSettings.DecimalSeparator;
+  MinEdit.DecimalSeparator := DS;
+  MaxEdit.DecimalSeparator := DS;
 end;
 
 procedure TLegendEditorForm.FormKeyDown(Sender: TObject; var Key: Word;

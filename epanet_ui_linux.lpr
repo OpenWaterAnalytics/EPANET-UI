@@ -5,6 +5,7 @@ program epanet_ui_linux;
 uses
   {$IFDEF UNIX}
   cthreads,
+  cLocale,
   {$ENDIF}
   {$IFDEF HASAMIGA}
   athreads,

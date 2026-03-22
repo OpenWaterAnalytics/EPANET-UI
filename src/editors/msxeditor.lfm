@@ -10,6 +10,7 @@ object MsxEditorForm: TMsxEditorForm
   ParentFont = True
   Position = poMainFormCenter
   LCLVersion = '4.4.0.0'
+  OnClose = FormClose
   OnCreate = FormCreate
   OnShow = FormShow
   object MenuPanel: TPanel
@@ -83,7 +84,6 @@ object MsxEditorForm: TMsxEditorForm
       Top = 12
       Width = 72
       Anchors = [akTop, akLeft, akRight]
-      Cancel = True
       Caption = 'Cancel'
       TabOrder = 5
       OnClick = CancelBtnClick
@@ -139,7 +139,7 @@ object MsxEditorForm: TMsxEditorForm
       Height = 370
       Top = 45
       Width = 598
-      PageIndex = 0
+      PageIndex = 1
       Align = alClient
       TabOrder = 0
       object Overview: TPage
@@ -165,8 +165,8 @@ object MsxEditorForm: TMsxEditorForm
           Align = alTop
           BevelOuter = bvNone
           BorderStyle = bsSingle
-          ClientHeight = 168
-          ClientWidth = 598
+          ClientHeight = 164
+          ClientWidth = 594
           Color = clWindow
           ParentBackground = False
           ParentColor = False
@@ -795,8 +795,8 @@ object MsxEditorForm: TMsxEditorForm
           Width = 533
           BevelOuter = bvNone
           BorderStyle = bsSingle
-          ClientHeight = 316
-          ClientWidth = 533
+          ClientHeight = 312
+          ClientWidth = 529
           Color = clWindow
           ParentBackground = False
           ParentColor = False

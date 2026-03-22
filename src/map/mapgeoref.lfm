@@ -154,10 +154,10 @@ object GeoRefFrame: TGeoRefFrame
           ClientWidth = 212
           Columns = 2
           Items.Strings = (
-            'None'
             'Feet'
             'Meters'
             'Degrees'
+            'None'
           )
           ParentBackground = False
           TabOrder = 1
