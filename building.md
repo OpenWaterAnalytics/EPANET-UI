@@ -34,16 +34,16 @@ Binaries for each of these libraries have been placed in the *bin* folder of thi
 
 ### Linux 64-bit
 1. Open a terminal window and navigate to the directory where this project resides.
-2. Issue the following commands to setup your Lazarus environment for building **epanet-ui**:
+2. Issue the following commands to setup the environment for building **epanet-ui** (this only needs to be done once):
 ```
-chmod +x linuxsetup.sh
-sudo ./linuxsetup.sh
+sudo apt install openssl libqt5pas-dev
+cd ./bin/linux
+ln -s libproj.so libproj.so.12
+```
+If your package manager is <b>dnf</b>, replace the first line with
+```
+sudo dnf install openssl libqt5pas-devel`
 ```
 3. Launch Lazarus and from the **File** menu open ***epanet_ui_linux.lpi***.
 4. From the **Run** menu select the **Build** command.
 5. The newly created executable file ***epanet-ui*** will appear in the **bin/linux** folder.
-6. Make **epanet-ui** executable by closing Lazarus and issuing the following commands in the terminal window:
-```
-cd bin/linux
-chmod +x epanet-ui
-```
