@@ -22,6 +22,8 @@ procedure WriteAppDefaults(FileName: string);
 procedure ReadProjectDefaults(FileName: string; var WebMapSource: Integer);
 procedure WriteProjectDefaults(FileName: string; WebMapSource: Integer);
 procedure WriteProjectMapOptions(FileName: string; WebMapSource:Integer);
+procedure ReadLegendIntervals(FileName: string);
+procedure ReadBasemapStyle(FileName: string);
 
 implementation
 
@@ -245,7 +247,7 @@ end;
 
 procedure WriteProjectMapOptions(FileName: string; WebMapSource:Integer);
 var
-  I:   Integer;
+  I, J: Integer;
   Ini: TIniFile;
 begin
   Ini := TIniFile.Create(FileName);
@@ -263,6 +265,8 @@ begin
         Ini.WriteString('MAP', 'BACKCOLOR', ColorToString(BackColor));
       end;
       Ini.WriteInteger('MAP', 'WEBMAPSOURCE', WebMapSource);
+      Ini.WriteBool('MAP', 'GRAYSCALE', MainForm.MapFrame.Map.Basemap.Grayscale);
+      Ini.WriteInteger('MAP', 'BRIGHTNESS', MainForm.MapFrame.Map.Basemap.Brightness);
 
       for I := Low(mapthemes.NodeColors) to High(mapthemes.NodeColors) do
         Ini.WriteString('LEGENDS', 'NODE' + IntToStr(I),
@@ -270,9 +274,95 @@ begin
       for I := Low(mapthemes.LinkColors) to High(mapthemes.LinkColors) do
         Ini.WriteString('LEGENDS', 'LINK' + IntToStr(I),
           ColorToString(mapthemes.LinkColors[I]));
+
+      // Legend interval thresholds (labels + values), one INI section per theme
+      for I := 0 to Length(mapthemes.NodeIntervals)-1 do
+        for J := 1 to mapthemes.MAXLEVELS do
+        begin
+          Ini.WriteString('NODE_INTERVALS_' + IntToStr(I),
+            'LABEL' + IntToStr(J), mapthemes.NodeIntervals[I].Labels[J]);
+          Ini.WriteFloat('NODE_INTERVALS_' + IntToStr(I),
+            'VALUE' + IntToStr(J), mapthemes.NodeIntervals[I].Values[J]);
+        end;
+      for I := 0 to Length(mapthemes.LinkIntervals)-1 do
+        for J := 1 to mapthemes.MAXLEVELS do
+        begin
+          Ini.WriteString('LINK_INTERVALS_' + IntToStr(I),
+            'LABEL' + IntToStr(J), mapthemes.LinkIntervals[I].Labels[J]);
+          Ini.WriteFloat('LINK_INTERVALS_' + IntToStr(I),
+            'VALUE' + IntToStr(J), mapthemes.LinkIntervals[I].Values[J]);
+        end;
     except
     end;
 
+  finally
+    Ini.Free;
+  end;
+end;
+
+procedure ReadLegendIntervals(FileName: string);
+//
+// Restores legend interval thresholds and basemap grayscale style.
+// Must be called AFTER mapthemes.InitThemes has already populated
+// NodeIntervals/LinkIntervals with their default values, since this
+// procedure only overwrites entries that already exist in those arrays.
+//
+var
+  I, J: Integer;
+  Ini: TIniFile;
+begin
+  if not FileExists(FileName) then exit;
+  Ini := TIniFile.Create(FileName);
+  try
+    try
+      for I := 0 to Length(mapthemes.NodeIntervals)-1 do
+        for J := 1 to mapthemes.MAXLEVELS do
+        begin
+          mapthemes.NodeIntervals[I].Labels[J] := Ini.ReadString(
+            'NODE_INTERVALS_' + IntToStr(I), 'LABEL' + IntToStr(J),
+            mapthemes.NodeIntervals[I].Labels[J]);
+          mapthemes.NodeIntervals[I].Values[J] := Ini.ReadFloat(
+            'NODE_INTERVALS_' + IntToStr(I), 'VALUE' + IntToStr(J),
+            mapthemes.NodeIntervals[I].Values[J]);
+        end;
+      for I := 0 to Length(mapthemes.LinkIntervals)-1 do
+        for J := 1 to mapthemes.MAXLEVELS do
+        begin
+          mapthemes.LinkIntervals[I].Labels[J] := Ini.ReadString(
+            'LINK_INTERVALS_' + IntToStr(I), 'LABEL' + IntToStr(J),
+            mapthemes.LinkIntervals[I].Labels[J]);
+          mapthemes.LinkIntervals[I].Values[J] := Ini.ReadFloat(
+            'LINK_INTERVALS_' + IntToStr(I), 'VALUE' + IntToStr(J),
+            mapthemes.LinkIntervals[I].Values[J]);
+        end;
+    except
+    end;
+  finally
+    Ini.Free;
+  end;
+end;
+
+procedure ReadBasemapStyle(FileName: string);
+//
+// Restores the basemap's grayscale/brightness display style.
+// Must be called AFTER MapFrame.LoadBasemapFromWeb, since loading a
+// basemap resets Grayscale to false and Brightness to 0 as part of
+// its own initialization.
+//
+var
+  Ini: TIniFile;
+begin
+  if not FileExists(FileName) then exit;
+  Ini := TIniFile.Create(FileName);
+  try
+    try
+      MainForm.MapFrame.Map.Basemap.Grayscale := Ini.ReadBool(
+        'MAP', 'GRAYSCALE', MainForm.MapFrame.Map.Basemap.Grayscale);
+      MainForm.MapFrame.Map.Basemap.Brightness := Ini.ReadInteger(
+        'MAP', 'BRIGHTNESS', MainForm.MapFrame.Map.Basemap.Brightness);
+      MainForm.MapFrame.Map.Basemap.NeedsRedraw := true;
+    except
+    end;
   finally
     Ini.Free;
   end;
