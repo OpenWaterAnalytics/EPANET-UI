@@ -858,8 +858,12 @@ begin
   UpdateStatusBar(sbXY, '');
 
   MainMenuFrame.InitMapThemes;
+  inifile.ReadLegendIntervals(ChangeFileExt(FileName, '.ini'));
   MruMenuMgr.AddToRecent(FileName);
   MapFrame.LoadBasemapFromWeb(WebMapSource, project.MapEPSG, project.MapUnits);
+  inifile.ReadBasemapStyle(ChangeFileExt(FileName, '.ini'));
+  MainMenuFrame.BasemapGrayscaleItem.Checked := MapFrame.Map.Basemap.Grayscale;
+  MainMenuFrame.BasemapLightenItem.Checked := (MapFrame.Map.Basemap.Brightness > 0);
   MapFrame.DrawFullExtent;
 
 end;
