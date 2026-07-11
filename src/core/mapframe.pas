@@ -1676,6 +1676,7 @@ begin
   if mapcoords.CanProjectionTransform(IntToStr(Epsg), '4326', Extent) then
   begin
     MainForm.Cursor := crHourGlass;
+	if not mapcoords.HasCachedNodeCoords then mapcoords.CacheNativeNodeCoords;
     Transformed := mapcoords.DoProjectionTransform(IntToStr(Epsg),
       '4326', Extent);
      MainForm.Cursor := crDefault;
