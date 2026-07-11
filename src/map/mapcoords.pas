@@ -64,6 +64,23 @@ function  FromWGS84ToWebMercator(LatLng: TDoublePoint): TDoublePoint;
 
 function  ManhattanDistance(P1, P2: TDoublePoint): Double;
 
+// Caches each node's coordinates in the project's native (non-WGS84)
+// coordinate system, taken BEFORE any transform to WGS84 for basemap
+// display happens. This lets Save() write out the pristine original
+// coordinates every time, instead of round-tripping through PROJ on
+// every save (which accumulates rounding drift).
+procedure CacheNativeNodeCoords;
+
+function  HasCachedNodeCoords: Boolean;
+
+procedure GetCachedNodeCoord(Index: Integer; var X, Y: Double);
+
+function  GetCachedVertexCount(LinkIndex: Integer): Integer;
+
+procedure GetCachedVertexCoord(LinkIndex, VertexIndex: Integer; var X, Y: Double);
+
+procedure GetCachedLabelCoord(Index: Integer; var X, Y: Double);
+
 implementation
 
 uses
@@ -77,6 +94,14 @@ const
 var
   S1: TScalingInfo;
   S2: TScalingInfo;               // Used for scaling transform
+  CachedNodeX: array of Double;   // Cached native-CRS node X coords
+  CachedNodeY: array of Double;   // Cached native-CRS node Y coords
+  CachedVertexX: array of array of Double;  // [LinkIndex][VertexIndex]
+  CachedVertexY: array of array of Double;
+  CachedVertexCount: array of Integer;      // [LinkIndex]
+  CachedLabelX: array of Double;
+  CachedLabelY: array of Double;
+  NodeCoordsCached: Boolean = false;
   Ax: Double;                     // Used for affine transform
   Ay: Double;
   Bx: Double;
@@ -209,8 +234,20 @@ begin
 end;
 
 function ApplyProjectionTransform(var X, Y: Double): TDoublePoint;
+var
+  OrigX, OrigY: Double;
 begin
-  ProjTrans.Transform(X,Y);
+  // Keep a copy of the original coordinates. PROJ's pj_transform can
+  // write HUGE_VAL (Infinity) directly into X/Y *even when it fails*,
+  // so we cannot trust X/Y after a failed call - restore the originals.
+  OrigX := X;
+  OrigY := Y;
+  if (not ProjTrans.Transform(X,Y))
+  or IsInfinite(X) or IsInfinite(Y) or IsNan(X) or IsNan(Y) then
+  begin
+    X := OrigX;
+    Y := OrigY;
+  end;
   Result.X := X;
   Result.Y := Y;
 end;
@@ -495,6 +532,97 @@ function  ManhattanDistance(P1, P2: TDoublePoint): Double;
 //
 begin
   Result := Abs(P2.X - P1.X) + Abs(P2.Y - P1.Y);
+end;
+
+procedure CacheNativeNodeCoords;
+var
+  I, J:    Integer;
+  N:       Integer;
+  Vcount:  Integer;
+  X, Y:    Double;
+begin
+  // Nodes
+  N := project.GetItemCount(ctNodes);
+  SetLength(CachedNodeX, N+1);
+  SetLength(CachedNodeY, N+1);
+  for I := 1 to N do
+  begin
+    if project.GetNodeCoord(I, X, Y) then
+    begin
+      CachedNodeX[I] := X;
+      CachedNodeY[I] := Y;
+    end;
+  end;
+
+  // Link vertices (interior bend points)
+  N := project.GetItemCount(ctLinks);
+  SetLength(CachedVertexX, N+1);
+  SetLength(CachedVertexY, N+1);
+  SetLength(CachedVertexCount, N+1);
+  for I := 1 to N do
+  begin
+    Vcount := project.GetVertexCount(I);
+    CachedVertexCount[I] := Vcount;
+    SetLength(CachedVertexX[I], Vcount+1);
+    SetLength(CachedVertexY[I], Vcount+1);
+    for J := 1 to Vcount do
+      project.GetVertexCoord(I, J, CachedVertexX[I][J], CachedVertexY[I][J]);
+  end;
+
+  // Map labels
+  N := project.GetItemCount(ctLabels);
+  SetLength(CachedLabelX, N+1);
+  SetLength(CachedLabelY, N+1);
+  for I := 1 to N do
+  begin
+    if project.GetLabelCoord(I, X, Y) then
+    begin
+      CachedLabelX[I] := X;
+      CachedLabelY[I] := Y;
+    end;
+  end;
+
+  NodeCoordsCached := true;
+end;
+
+function  HasCachedNodeCoords: Boolean;
+begin
+  Result := NodeCoordsCached and (Length(CachedNodeX) > 0);
+end;
+
+procedure GetCachedNodeCoord(Index: Integer; var X, Y: Double);
+begin
+  if NodeCoordsCached and (Index >= 0) and (Index <= High(CachedNodeX)) then
+  begin
+    X := CachedNodeX[Index];
+    Y := CachedNodeY[Index];
+  end;
+end;
+
+function  GetCachedVertexCount(LinkIndex: Integer): Integer;
+begin
+  Result := 0;
+  if NodeCoordsCached and (LinkIndex >= 0) and (LinkIndex <= High(CachedVertexCount)) then
+    Result := CachedVertexCount[LinkIndex];
+end;
+
+procedure GetCachedVertexCoord(LinkIndex, VertexIndex: Integer; var X, Y: Double);
+begin
+  if NodeCoordsCached and (LinkIndex >= 0) and (LinkIndex <= High(CachedVertexX))
+  and (VertexIndex >= 0) and (VertexIndex <= High(CachedVertexX[LinkIndex])) then
+  begin
+    X := CachedVertexX[LinkIndex][VertexIndex];
+    Y := CachedVertexY[LinkIndex][VertexIndex];
+  end;
+end;
+
+procedure GetCachedLabelCoord(Index: Integer; var X, Y: Double);
+begin
+  if NodeCoordsCached and (Index >= 0) and (Index <= High(CachedLabelX)) then
+  begin
+    X := CachedLabelX[Index];
+    Y := CachedLabelY[Index];
+  end;
 end;
 
 end.
