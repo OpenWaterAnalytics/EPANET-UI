@@ -1022,15 +1022,90 @@ end;
 function Save(FileName: string): Boolean;
 var
   ErrCode: Integer;
+  I, J, N, NL, NLbl, Vcount: Integer;
+  X, Y: Double;
+  DisplayX, DisplayY: array of Double;
+  DisplayVertexX, DisplayVertexY: array of array of Double;
+  DisplayLabelX, DisplayLabelY: array of Double;
+  UseCache: Boolean;
 begin
-  with MainForm.MapFrame do
-    if HasWebBasemap then UnloadWebBasemap;
+  UseCache := MainForm.MapFrame.HasWebBasemap and mapcoords.HasCachedNodeCoords;
+
+  if UseCache then
+  begin
+    // Temporarily swap in the pristine, never-transformed native
+    // coordinates for the file write, after remembering the currently
+    // displayed (WGS84) ones so the map can keep showing them.
+
+    // --- Nodes ---
+    N := project.GetItemCount(ctNodes);
+    SetLength(DisplayX, N+1);
+    SetLength(DisplayY, N+1);
+    for I := 1 to N do
+    begin
+      if project.GetNodeCoord(I, X, Y) then
+      begin
+        DisplayX[I] := X;
+        DisplayY[I] := Y;
+      end;
+      mapcoords.GetCachedNodeCoord(I, X, Y);
+      project.SetNodeCoord(I, X, Y);
+    end;
+
+    // --- Link vertices ---
+    NL := project.GetItemCount(ctLinks);
+    SetLength(DisplayVertexX, NL+1);
+    SetLength(DisplayVertexY, NL+1);
+    for I := 1 to NL do
+    begin
+      Vcount := project.GetVertexCount(I);
+      SetLength(DisplayVertexX[I], Vcount+1);
+      SetLength(DisplayVertexY[I], Vcount+1);
+      for J := 1 to Vcount do
+      begin
+        project.GetVertexCoord(I, J, X, Y);
+        DisplayVertexX[I][J] := X;
+        DisplayVertexY[I][J] := Y;
+        mapcoords.GetCachedVertexCoord(I, J, X, Y);
+        project.SetVertexCoord(I, J, X, Y);
+      end;
+    end;
+
+    // --- Map labels ---
+    NLbl := project.GetItemCount(ctLabels);
+    SetLength(DisplayLabelX, NLbl+1);
+    SetLength(DisplayLabelY, NLbl+1);
+    for I := 1 to NLbl do
+    begin
+      if project.GetLabelCoord(I, X, Y) then
+      begin
+        DisplayLabelX[I] := X;
+        DisplayLabelY[I] := Y;
+      end;
+      mapcoords.GetCachedLabelCoord(I, X, Y);
+      project.SetLabelCoord(I, X, Y);
+    end;
+  end;
+
   ErrCode := epanet2.ENsaveinpfile(PAnsiChar(FileName));
   Result := (ErrCode = 0);
   if Result then
   begin
     projectmapdata.SaveMapData(FileName);
     HasChanged := false;
+  end;
+
+  if UseCache then
+  begin
+    // Restore the WGS84 coordinates so the on-screen map is unaffected -
+    // no transform call involved, so no rounding drift is introduced.
+    for I := 1 to N do
+      project.SetNodeCoord(I, DisplayX[I], DisplayY[I]);
+    for I := 1 to NL do
+      for J := 1 to Length(DisplayVertexX[I])-1 do
+        project.SetVertexCoord(I, J, DisplayVertexX[I][J], DisplayVertexY[I][J]);
+    for I := 1 to NLbl do
+      project.SetLabelCoord(I, DisplayLabelX[I], DisplayLabelY[I]);
   end;
 end;
 
