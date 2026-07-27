@@ -762,8 +762,8 @@ begin
   case LinkType of
     ltPipe:
       begin
-        if utils.Str2Float(project.CopiedProperties[6], X) then
-          epanet2.ENsetlinkvalue(Index, EN_LENGTH, X);
+        // Länge wird nie kopiert – ist eine physische Eigenschaft der
+        // einzelnen Pipe, nicht sinnvoll übertragbar (wie in EPANET 2.2)
         if utils.Str2Float(project.CopiedProperties[7], X) then
           epanet2.ENsetlinkvalue(Index, EN_DIAMETER, X);
         if utils.Str2Float(project.CopiedProperties[8], X) then
