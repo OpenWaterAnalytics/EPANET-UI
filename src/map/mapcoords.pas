@@ -75,11 +75,35 @@ function  HasCachedNodeCoords: Boolean;
 
 procedure GetCachedNodeCoord(Index: Integer; var X, Y: Double);
 
-function  GetCachedVertexCount(LinkIndex: Integer): Integer;
+// NEW: Update a cached node coordinate after it was moved.
+procedure UpdateCachedNodeCoord(Index: Integer; X, Y: Double);
 
+// NEW: Update a cached label coordinate after it was moved.
+procedure UpdateCachedLabelCoord(Index: Integer; X, Y: Double);
+
+// NEW: Update a cached vertex coordinate after it was moved.
+procedure UpdateCachedVertexCoord(LinkIndex, VertexIndex: Integer; X, Y: Double);
+
+// NEW: Get cached vertex coordinate.
 procedure GetCachedVertexCoord(LinkIndex, VertexIndex: Integer; var X, Y: Double);
 
+// NEW: Get cached label coordinate.
 procedure GetCachedLabelCoord(Index: Integer; var X, Y: Double);
+
+//NEUE FUNKTIONEN HINZUFÜGEN:
+procedure AppendCachedNodeCoord(X, Y: Double);
+procedure RemoveCachedNodeCoord(Index: Integer);
+procedure AppendCachedLabelCoord(X, Y: Double);
+procedure InsertCachedNodeCoord(Index: Integer; X, Y: Double);
+procedure RemoveCachedLabelCoord(Index: Integer);
+procedure AppendCachedVertexCoord(LinkIndex, VertexIndex: Integer; X, Y: Double);
+procedure RemoveCachedVertexCoord(LinkIndex, VertexIndex: Integer);
+procedure RemoveCachedLinkVertices(LinkIndex: Integer);
+procedure InsertCachedLinkVertices(LinkIndex: Integer);
+procedure ClearCachedLinkVertices(LinkIndex: Integer);
+procedure CacheNativeVertexCoords;
+procedure CacheNativeLabelCoords;
+procedure ClearCache;
 
 implementation
 
@@ -96,12 +120,13 @@ var
   S2: TScalingInfo;               // Used for scaling transform
   CachedNodeX: array of Double;   // Cached native-CRS node X coords
   CachedNodeY: array of Double;   // Cached native-CRS node Y coords
-  CachedVertexX: array of array of Double;  // [LinkIndex][VertexIndex]
-  CachedVertexY: array of array of Double;
-  CachedVertexCount: array of Integer;      // [LinkIndex]
-  CachedLabelX: array of Double;
-  CachedLabelY: array of Double;
+  CachedVertexX: array of array of Double;  // Cached vertex X coords per link
+  CachedVertexY: array of array of Double;  // Cached vertex Y coords per link
+  CachedLabelX: array of Double;  // Cached native-CRS label X coords
+  CachedLabelY: array of Double;  // Cached native-CRS label Y coords
   NodeCoordsCached: Boolean = false;
+  VertexCoordsCached: Boolean = false;
+  LabelCoordsCached: Boolean = false;
   Ax: Double;                     // Used for affine transform
   Ay: Double;
   Bx: Double;
@@ -534,14 +559,16 @@ begin
   Result := Abs(P2.X - P1.X) + Abs(P2.Y - P1.Y);
 end;
 
+// ============================================================
+//  NODE CACHE FUNCTIONS
+// ============================================================
+
 procedure CacheNativeNodeCoords;
 var
-  I, J:    Integer;
-  N:       Integer;
-  Vcount:  Integer;
-  X, Y:    Double;
+  I: Integer;
+  N: Integer;
+  X, Y: Double;
 begin
-  // Nodes
   N := project.GetItemCount(ctNodes);
   SetLength(CachedNodeX, N+1);
   SetLength(CachedNodeY, N+1);
@@ -553,35 +580,6 @@ begin
       CachedNodeY[I] := Y;
     end;
   end;
-
-  // Link vertices (interior bend points)
-  N := project.GetItemCount(ctLinks);
-  SetLength(CachedVertexX, N+1);
-  SetLength(CachedVertexY, N+1);
-  SetLength(CachedVertexCount, N+1);
-  for I := 1 to N do
-  begin
-    Vcount := project.GetVertexCount(I);
-    CachedVertexCount[I] := Vcount;
-    SetLength(CachedVertexX[I], Vcount+1);
-    SetLength(CachedVertexY[I], Vcount+1);
-    for J := 1 to Vcount do
-      project.GetVertexCoord(I, J, CachedVertexX[I][J], CachedVertexY[I][J]);
-  end;
-
-  // Map labels
-  N := project.GetItemCount(ctLabels);
-  SetLength(CachedLabelX, N+1);
-  SetLength(CachedLabelY, N+1);
-  for I := 1 to N do
-  begin
-    if project.GetLabelCoord(I, X, Y) then
-    begin
-      CachedLabelX[I] := X;
-      CachedLabelY[I] := Y;
-    end;
-  end;
-
   NodeCoordsCached := true;
 end;
 
@@ -599,30 +597,284 @@ begin
   end;
 end;
 
-function  GetCachedVertexCount(LinkIndex: Integer): Integer;
+procedure UpdateCachedNodeCoord(Index: Integer; X, Y: Double);
 begin
-  Result := 0;
-  if NodeCoordsCached and (LinkIndex >= 0) and (LinkIndex <= High(CachedVertexCount)) then
-    Result := CachedVertexCount[LinkIndex];
-end;
-
-procedure GetCachedVertexCoord(LinkIndex, VertexIndex: Integer; var X, Y: Double);
-begin
-  if NodeCoordsCached and (LinkIndex >= 0) and (LinkIndex <= High(CachedVertexX))
-  and (VertexIndex >= 0) and (VertexIndex <= High(CachedVertexX[LinkIndex])) then
+  if NodeCoordsCached and (Index >= 0) and (Index <= High(CachedNodeX)) then
   begin
-    X := CachedVertexX[LinkIndex][VertexIndex];
-    Y := CachedVertexY[LinkIndex][VertexIndex];
+    CachedNodeX[Index] := X;
+    CachedNodeY[Index] := Y;
   end;
 end;
 
+// ============================================================
+//  LABEL CACHE FUNCTIONS
+// ============================================================
+
 procedure GetCachedLabelCoord(Index: Integer; var X, Y: Double);
 begin
-  if NodeCoordsCached and (Index >= 0) and (Index <= High(CachedLabelX)) then
+  if LabelCoordsCached and (Index >= 0) and (Index <= High(CachedLabelX)) then
   begin
     X := CachedLabelX[Index];
     Y := CachedLabelY[Index];
   end;
+end;
+
+procedure UpdateCachedLabelCoord(Index: Integer; X, Y: Double);
+begin
+  if LabelCoordsCached and (Index >= 0) and (Index <= High(CachedLabelX)) then
+  begin
+    CachedLabelX[Index] := X;
+    CachedLabelY[Index] := Y;
+  end;
+end;
+
+// ============================================================
+//  VERTEX CACHE FUNCTIONS
+// ============================================================
+
+procedure GetCachedVertexCoord(LinkIndex, VertexIndex: Integer; var X, Y: Double);
+begin
+  if VertexCoordsCached and (LinkIndex >= 0) and (LinkIndex <= High(CachedVertexX)) then
+  begin
+    if (VertexIndex >= 0) and (VertexIndex <= High(CachedVertexX[LinkIndex])) then
+    begin
+      X := CachedVertexX[LinkIndex][VertexIndex];
+      Y := CachedVertexY[LinkIndex][VertexIndex];
+    end;
+  end;
+end;
+
+procedure UpdateCachedVertexCoord(LinkIndex, VertexIndex: Integer; X, Y: Double);
+begin
+  if VertexCoordsCached and (LinkIndex >= 0) and (LinkIndex <= High(CachedVertexX)) then
+  begin
+    if (VertexIndex >= 0) and (VertexIndex <= High(CachedVertexX[LinkIndex])) then
+    begin
+      CachedVertexX[LinkIndex][VertexIndex] := X;
+      CachedVertexY[LinkIndex][VertexIndex] := Y;
+    end;
+  end;
+end;
+
+// ============================================================
+//  VERTEX CACHE - FILL
+// ============================================================
+
+procedure CacheNativeVertexCoords;
+var
+  I, J, Vcount: Integer;
+  X, Y: Double;
+begin
+  // Setze die Größe des Vertex-Caches
+  SetLength(CachedVertexX, project.GetItemCount(ctLinks) + 1);
+  SetLength(CachedVertexY, project.GetItemCount(ctLinks) + 1);
+  
+  for I := 1 to project.GetItemCount(ctLinks) do
+  begin
+    Vcount := project.GetVertexCount(I);
+    SetLength(CachedVertexX[I], Vcount + 1);
+    SetLength(CachedVertexY[I], Vcount + 1);
+    for J := 1 to Vcount do
+    begin
+      if project.GetVertexCoord(I, J, X, Y) then
+      begin
+        CachedVertexX[I][J] := X;
+        CachedVertexY[I][J] := Y;
+      end;
+    end;
+  end;
+  VertexCoordsCached := true;
+end;
+
+// ============================================================
+//  LABEL CACHE - FILL
+// ============================================================
+
+procedure CacheNativeLabelCoords;
+var
+  I: Integer;
+  X, Y: Double;
+begin
+  SetLength(CachedLabelX, project.GetItemCount(ctLabels) + 1);
+  SetLength(CachedLabelY, project.GetItemCount(ctLabels) + 1);
+  
+  for I := 1 to project.GetItemCount(ctLabels) do
+  begin
+    if project.GetLabelCoord(I, X, Y) then
+    begin
+      CachedLabelX[I] := X;
+      CachedLabelY[I] := Y;
+    end;
+  end;
+  LabelCoordsCached := true;
+end;
+
+// ============================================================
+// NEUE FUNKTIONEN HIER EINFÜGEN (vor dem end.)
+// ============================================================
+
+procedure AppendCachedNodeCoord(X, Y: Double);
+begin
+  if NodeCoordsCached then
+  begin
+    SetLength(CachedNodeX, Length(CachedNodeX) + 1);
+    SetLength(CachedNodeY, Length(CachedNodeY) + 1);
+    CachedNodeX[High(CachedNodeX)] := X;
+    CachedNodeY[High(CachedNodeY)] := Y;
+  end;
+end;
+
+procedure InsertCachedNodeCoord(Index: Integer; X, Y: Double);
+var
+  I: Integer;
+begin
+  if not NodeCoordsCached then exit;
+  SetLength(CachedNodeX, Length(CachedNodeX) + 1);
+  SetLength(CachedNodeY, Length(CachedNodeY) + 1);
+  for I := High(CachedNodeX) downto Index + 1 do
+  begin
+    CachedNodeX[I] := CachedNodeX[I-1];
+    CachedNodeY[I] := CachedNodeY[I-1];
+  end;
+  CachedNodeX[Index] := X;
+  CachedNodeY[Index] := Y;
+end;
+
+procedure RemoveCachedNodeCoord(Index: Integer);
+var
+  I: Integer;
+begin
+  if NodeCoordsCached and (Index >= 1) and (Index <= High(CachedNodeX)) then
+  begin
+    for I := Index to High(CachedNodeX) - 1 do
+    begin
+      CachedNodeX[I] := CachedNodeX[I+1];
+      CachedNodeY[I] := CachedNodeY[I+1];
+    end;
+    SetLength(CachedNodeX, Length(CachedNodeX) - 1);
+    SetLength(CachedNodeY, Length(CachedNodeY) - 1);
+  end;
+end;
+
+procedure AppendCachedLabelCoord(X, Y: Double);
+begin
+  if LabelCoordsCached then
+  begin
+    SetLength(CachedLabelX, Length(CachedLabelX) + 1);
+    SetLength(CachedLabelY, Length(CachedLabelY) + 1);
+    CachedLabelX[High(CachedLabelX)] := X;
+    CachedLabelY[High(CachedLabelY)] := Y;
+  end;
+end;
+
+procedure RemoveCachedLabelCoord(Index: Integer);
+var
+  I: Integer;
+begin
+  if LabelCoordsCached and (Index >= 1) and (Index <= High(CachedLabelX)) then
+  begin
+    for I := Index to High(CachedLabelX) - 1 do
+    begin
+      CachedLabelX[I] := CachedLabelX[I+1];
+      CachedLabelY[I] := CachedLabelY[I+1];
+    end;
+    SetLength(CachedLabelX, Length(CachedLabelX) - 1);
+    SetLength(CachedLabelY, Length(CachedLabelY) - 1);
+  end;
+end;
+
+procedure AppendCachedVertexCoord(LinkIndex, VertexIndex: Integer; X, Y: Double);
+begin
+  if not VertexCoordsCached then exit;
+  if LinkIndex >= Length(CachedVertexX) then
+  begin
+    SetLength(CachedVertexX, LinkIndex + 1);
+    SetLength(CachedVertexY, LinkIndex + 1);
+  end;
+  if VertexIndex >= Length(CachedVertexX[LinkIndex]) then
+  begin
+    SetLength(CachedVertexX[LinkIndex], VertexIndex + 1);
+    SetLength(CachedVertexY[LinkIndex], VertexIndex + 1);
+  end;
+  CachedVertexX[LinkIndex][VertexIndex] := X;
+  CachedVertexY[LinkIndex][VertexIndex] := Y;
+end;
+
+procedure RemoveCachedVertexCoord(LinkIndex, VertexIndex: Integer);
+var
+  I: Integer;
+  CurrentCount: Integer;
+begin
+  if VertexCoordsCached and (LinkIndex >= 0) and (LinkIndex < Length(CachedVertexX)) then
+  begin
+    CurrentCount := Length(CachedVertexX[LinkIndex]);
+    if (VertexIndex >= 1) and (VertexIndex < CurrentCount) then
+    begin
+      for I := VertexIndex to CurrentCount - 2 do
+      begin
+        CachedVertexX[LinkIndex][I] := CachedVertexX[LinkIndex][I+1];
+        CachedVertexY[LinkIndex][I] := CachedVertexY[LinkIndex][I+1];
+      end;
+      SetLength(CachedVertexX[LinkIndex], CurrentCount - 1);
+      SetLength(CachedVertexY[LinkIndex], CurrentCount - 1);
+    end;
+  end;
+end;
+
+// ============================================================
+//  CLEAR CACHE
+// ============================================================
+
+procedure ClearCache;
+begin
+  NodeCoordsCached := false;
+  VertexCoordsCached := false;
+  LabelCoordsCached := false;
+  SetLength(CachedNodeX, 0);
+  SetLength(CachedNodeY, 0);
+  SetLength(CachedVertexX, 0);
+  SetLength(CachedVertexY, 0);
+  SetLength(CachedLabelX, 0);
+  SetLength(CachedLabelY, 0);
+end;
+
+procedure RemoveCachedLinkVertices(LinkIndex: Integer);
+var
+  I: Integer;
+begin
+  if not VertexCoordsCached then exit;
+  if (LinkIndex < 1) or (LinkIndex > High(CachedVertexX)) then exit;
+  for I := LinkIndex to High(CachedVertexX) - 1 do
+  begin
+    CachedVertexX[I] := CachedVertexX[I+1];
+    CachedVertexY[I] := CachedVertexY[I+1];
+  end;
+  SetLength(CachedVertexX, Length(CachedVertexX) - 1);
+  SetLength(CachedVertexY, Length(CachedVertexY) - 1);
+end;
+
+procedure InsertCachedLinkVertices(LinkIndex: Integer);
+var
+  I: Integer;
+begin
+  if not VertexCoordsCached then exit;
+  SetLength(CachedVertexX, Length(CachedVertexX) + 1);
+  SetLength(CachedVertexY, Length(CachedVertexY) + 1);
+  for I := High(CachedVertexX) downto LinkIndex + 1 do
+  begin
+    CachedVertexX[I] := CachedVertexX[I-1];
+    CachedVertexY[I] := CachedVertexY[I-1];
+  end;
+  SetLength(CachedVertexX[LinkIndex], 0);
+  SetLength(CachedVertexY[LinkIndex], 0);
+end;
+
+procedure ClearCachedLinkVertices(LinkIndex: Integer);
+begin
+  if not VertexCoordsCached then exit;
+  if (LinkIndex < 1) or (LinkIndex > High(CachedVertexX)) then exit;
+  SetLength(CachedVertexX[LinkIndex], 0);
+  SetLength(CachedVertexY[LinkIndex], 0);
 end;
 
 end.
