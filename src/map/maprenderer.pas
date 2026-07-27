@@ -1,10 +1,10 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.0
+ Version:      1.0.3
  Module:       maprenderer
- Description:  draws the pipe network on the Canvas of a TMap object
+ Description:  draws the pipe network on a TMap's bitmap canvas.
  License:      see LICENSE
- Last Updated: 03/07/2026
+ Last Updated: 06/19/2026
 =====================================================================}
 
 unit maprenderer;
@@ -399,36 +399,41 @@ end;
 
 procedure DrawAllNodes(Map: TMap);
 var
-  I, Size:    Integer;
+  I:          Integer;
+  Size:       Integer;
+  NodeType:   Integer;
+  NodeSize:   Integer;
   C:          TColor;
   ColorIndex: Integer = 0;
   X:          Double = 0;
   Y:          Double = 0;
   P:          TPoint;
+  ShowJuncs:  Boolean;
 begin
   Map.Canvas.Pen.Width := 1;
+  NodeSize := Map.Options.NodeSize;
+  ShowJuncs := Map.Options.ShowJunctions;
   for I := 1 to project.GetItemCount(project.ctNodes) do
   begin
+    NodeType := project.GetNodeType(I);
+    if (NodeType = ntJunction) and (ShowJuncs = false) then continue;
     if not project.GetNodeCoord(I, X, Y) then continue;
-    P := Map.WorldToScreen(X, Y);
-
-    Map.Canvas.Pen.Color := OutlineColor;
     C := mapthemes.GetNodeColor(I, ColorIndex);
     if (C < 0) or (C = clNone) then continue;
-    Map.Canvas.Brush.Color := C;
-    if Map.Options.ShowNodesBySize then
-      Size := Map.Options.NodeSize + ColorIndex
-    else
-      Size := Map.Options.NodeSize;
-    if not Map.Options.ShowNodeBorder then
-      Map.Canvas.Pen.Color := Map.Canvas.Brush.Color;
 
-    case project.GetNodeType(I) of
+    Map.Canvas.Pen.Color := OutlineColor;
+    Map.Canvas.Brush.Color := C;
+    if not Map.Options.ShowNodeBorder then
+      Map.Canvas.Pen.Color := C;
+    if Map.Options.ShowNodesBySize then
+      Size := NodeSize + ColorIndex
+    else
+      Size := NodeSize;
+
+    P := Map.WorldToScreen(X, Y);
+    case NodeType of
       ntJunction:
-        if Map.Options.ShowJunctions then
-        begin
-          Map.Canvas.Ellipse(P.X - Size, P.Y - Size, P.X + Size, P.Y + Size);
-        end;
+        Map.Canvas.Ellipse(P.X - Size, P.Y - Size, P.X + Size, P.Y + Size);
       ntReservoir:
         DrawReservoir(Map, P.X, P.Y, Size);
       ntTank:
@@ -542,9 +547,9 @@ begin
 
   // Draw all links (including symbols & notation)
   Map.Canvas.Pen.JoinStyle := pjsBevel;
-  if Map.Options.ShowLinks then DrawAllLinks(Map);
   Map.Canvas.Pen.Width := 1;
   Map.Canvas.Pen.Cosmetic := true;
+  if Map.Options.ShowLinks then DrawAllLinks(Map);
 
   // Draw all nodes
   if Map.Options.ShowNodes then

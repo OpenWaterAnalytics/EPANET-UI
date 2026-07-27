@@ -1,0 +1,415 @@
+object MapViewerFrame: TMapViewerFrame
+  Left = 0
+  Height = 700
+  Top = 0
+  Width = 237
+  ClientHeight = 700
+  ClientWidth = 237
+  LCLVersion = '4.4.0.0'
+  TabOrder = 0
+  DesignLeft = 1538
+  DesignTop = 84
+  object MapViewerPanel: TPanel
+    Left = 0
+    Height = 700
+    Top = 0
+    Width = 237
+    Align = alClient
+    BevelOuter = bvNone
+    ClientHeight = 700
+    ClientWidth = 237
+    ParentBackground = False
+    ParentColor = False
+    TabOrder = 0
+    object MapViewerScrollBox: TScrollBox
+      Left = 0
+      Height = 700
+      Top = 0
+      Width = 237
+      HorzScrollBar.Page = 1
+      HorzScrollBar.Visible = False
+      VertScrollBar.Increment = 64
+      VertScrollBar.Page = 648
+      VertScrollBar.Smooth = True
+      VertScrollBar.Tracking = True
+      Align = alClient
+      ClientHeight = 696
+      ClientWidth = 233
+      ParentBackground = False
+      TabOrder = 0
+      object FlowPanel1: TFlowPanel
+        Left = 16
+        Height = 648
+        Top = 0
+        Width = 217
+        Align = alTop
+        AutoWrap = False
+        BevelOuter = bvNone
+        BorderSpacing.Left = 16
+        ControlList = <        
+          item
+            Control = ViewGroupBox
+            WrapAfter = waAuto
+            Index = 0
+          end        
+          item
+            Control = ThemesGroupBox
+            WrapAfter = waAuto
+            Index = 1
+          end        
+          item
+            Control = TimeGroupBox
+            WrapAfter = waAuto
+            Index = 2
+          end        
+          item
+            Control = LayersGroupBox
+            WrapAfter = waAuto
+            Index = 3
+          end>
+        FlowLayout = tlTop
+        FlowStyle = fsTopBottomLeftRight
+        TabOrder = 0
+        object ViewGroupBox: TGroupBox
+          Left = 0
+          Height = 55
+          Top = 8
+          Width = 196
+          Anchors = []
+          BorderSpacing.Top = 8
+          Caption = 'View'
+          ClientHeight = 35
+          ClientWidth = 192
+          Font.Style = [fsBold]
+          ParentBackground = False
+          ParentFont = False
+          TabOrder = 0
+          object MapRadioButton: TRadioButton
+            Left = 9
+            Height = 19
+            Top = 6
+            Width = 42
+            Caption = 'Map'
+            Checked = True
+            ParentFont = False
+            TabOrder = 0
+            TabStop = True
+            OnClick = MapRadioButtonClick
+          end
+          object ReportRadioButton: TRadioButton
+            Left = 86
+            Height = 19
+            Top = 6
+            Width = 53
+            Caption = 'Report'
+            ParentFont = False
+            TabOrder = 1
+            OnClick = MapRadioButtonClick
+          end
+        end
+        object ThemesGroupBox: TGroupBox
+          Left = 0
+          Height = 189
+          Top = 72
+          Width = 196
+          Anchors = []
+          BorderSpacing.Top = 8
+          Caption = 'Themes'
+          ClientHeight = 169
+          ClientWidth = 192
+          Font.Style = [fsBold]
+          ParentBackground = False
+          ParentFont = False
+          TabOrder = 1
+          object ViewNodeCombo: TComboBox
+            Left = 9
+            Height = 24
+            Top = 25
+            Width = 130
+            ItemHeight = 18
+            ParentFont = False
+            Style = csOwnerDrawFixed
+            TabOrder = 0
+            OnChange = ViewNodeComboChange
+          end
+          object NodeLegendBox: TCheckBox
+            Left = 10
+            Height = 19
+            Top = 56
+            Width = 57
+            Caption = 'Legend'
+            Checked = True
+            ParentFont = False
+            State = cbChecked
+            TabOrder = 1
+            OnChange = NodeLegendBoxChange
+          end
+          object NodeUnitsLabel: TLabel
+            Left = 147
+            Height = 15
+            Top = 30
+            Width = 26
+            Caption = 'units'
+            ParentFont = False
+          end
+          object Label1: TLabel
+            Left = 10
+            Height = 15
+            Top = 4
+            Width = 34
+            Caption = 'Nodes'
+            ParentFont = False
+          end
+          object Label2: TLabel
+            Left = 10
+            Height = 15
+            Top = 87
+            Width = 27
+            Caption = 'Links'
+            ParentFont = False
+          end
+          object ViewLinkCombo: TComboBox
+            Left = 9
+            Height = 24
+            Top = 108
+            Width = 130
+            ItemHeight = 18
+            ParentFont = False
+            Style = csOwnerDrawFixed
+            TabOrder = 2
+            OnChange = ViewLinkComboChange
+          end
+          object LinkUnitsLabel: TLabel
+            Left = 147
+            Height = 15
+            Top = 113
+            Width = 26
+            Caption = 'units'
+            ParentFont = False
+          end
+          object LinkLegendBox: TCheckBox
+            Left = 9
+            Height = 19
+            Top = 138
+            Width = 57
+            Caption = 'Legend'
+            Checked = True
+            ParentFont = False
+            State = cbChecked
+            TabOrder = 3
+            OnChange = LinkLegendBoxChange
+          end
+          object EditNodeLegendBtn: TSpeedButton
+            Left = 116
+            Height = 24
+            Hint = 'Edit node legend'
+            Top = 53
+            Width = 23
+            Images = mainForm.WindowImageList
+            ImageIndex = 10
+            ShowCaption = False
+            ShowHint = True
+            ParentShowHint = False
+            OnClick = NodeLegendLabelClick
+          end
+          object EditLinkLegendBtn: TSpeedButton
+            Left = 116
+            Height = 24
+            Hint = 'Edit link legend'
+            Top = 135
+            Width = 23
+            Images = mainForm.WindowImageList
+            ImageIndex = 10
+            ShowCaption = False
+            ShowHint = True
+            ParentShowHint = False
+            OnClick = LinkLegendLabelClick
+          end
+        end
+        object TimeGroupBox: TGroupBox
+          Left = 0
+          Height = 120
+          Top = 270
+          Width = 196
+          Anchors = []
+          BorderSpacing.Top = 8
+          Caption = 'Time'
+          ClientHeight = 100
+          ClientWidth = 192
+          Font.Style = [fsBold]
+          ParentBackground = False
+          ParentFont = False
+          TabOrder = 2
+          object TimeLabel: TLabel
+            Left = 8
+            Height = 15
+            Top = 7
+            Width = 25
+            Caption = '0 hrs'
+            ParentFont = False
+          end
+          object TimeTrackBar: TTrackBar
+            Left = 9
+            Height = 25
+            Top = 31
+            Width = 177
+            Position = 0
+            ScalePos = trBottom
+            TickStyle = tsNone
+            OnChange = TimeTrackBarChange
+            TabOrder = 0
+            OnMouseDown = TimeTrackBarMouseDown
+            OnMouseUp = TimeTrackBarMouseUp
+            OnKeyDown = TimeTrackBarKeyDown
+            OnKeyUp = TimeTrackBarKeyUp
+          end
+          object AnimateBtn: TToggleBox
+            Left = 9
+            Height = 25
+            Top = 60
+            Width = 75
+            Caption = 'Animate'
+            Enabled = False
+            ParentFont = False
+            TabOrder = 1
+            OnChange = AnimateBtnChange
+          end
+          object AnimateTrackBar: TTrackBar
+            Left = 86
+            Height = 25
+            Hint = 'Set animation speed'
+            Top = 60
+            Width = 100
+            Max = 5
+            Min = 1
+            PageSize = 1
+            Position = 3
+            OnChange = AnimateTrackBarChange
+            ParentShowHint = False
+            ShowHint = True
+            TabOrder = 2
+          end
+        end
+        object LayersGroupBox: TGroupBox
+          Left = 0
+          Height = 239
+          Top = 399
+          Width = 196
+          Anchors = []
+          BorderSpacing.Top = 8
+          Caption = 'Layers'
+          ClientHeight = 219
+          ClientWidth = 192
+          Font.Style = [fsBold]
+          ParentBackground = False
+          ParentFont = False
+          TabOrder = 3
+          object JunctionsBox: TCheckBox
+            Left = 9
+            Height = 19
+            Top = 8
+            Width = 68
+            Caption = 'Junctions'
+            Checked = True
+            ParentFont = False
+            State = cbChecked
+            TabOrder = 0
+            OnChange = JunctionsBoxChange
+          end
+          object TanksBox: TCheckBox
+            Tag = 1
+            Left = 9
+            Height = 19
+            Top = 34
+            Width = 107
+            Caption = 'Tanks/Reservoirs'
+            Checked = True
+            ParentFont = False
+            State = cbChecked
+            TabOrder = 1
+            OnChange = JunctionsBoxChange
+          end
+          object PumpsBox: TCheckBox
+            Tag = 12
+            Left = 9
+            Height = 19
+            Top = 84
+            Width = 55
+            Caption = 'Pumps'
+            Checked = True
+            ParentFont = False
+            State = cbChecked
+            TabOrder = 3
+            OnChange = JunctionsBoxChange
+          end
+          object ValvesBox: TCheckBox
+            Tag = 13
+            Left = 9
+            Height = 19
+            Top = 110
+            Width = 51
+            Caption = 'Valves'
+            Checked = True
+            ParentFont = False
+            State = cbChecked
+            TabOrder = 4
+            OnChange = JunctionsBoxChange
+          end
+          object MapLabelsBox: TCheckBox
+            Tag = 5
+            Left = 9
+            Height = 19
+            Top = 136
+            Width = 78
+            Caption = 'Map Labels'
+            Checked = True
+            ParentFont = False
+            State = cbChecked
+            TabOrder = 5
+            OnChange = JunctionsBoxChange
+          end
+          object OverviewMapBox: TCheckBox
+            Left = 9
+            Height = 19
+            Top = 188
+            Width = 94
+            Caption = 'Overview Map'
+            ParentFont = False
+            TabOrder = 7
+            OnChange = OverviewMapBoxChange
+          end
+          object BasemapBox: TCheckBox
+            Left = 9
+            Height = 19
+            Top = 163
+            Width = 66
+            Caption = 'Basemap'
+            Enabled = False
+            ParentFont = False
+            TabOrder = 6
+            OnChange = BasemapBoxChange
+          end
+          object PipesBox: TCheckBox
+            Tag = 11
+            Left = 9
+            Height = 19
+            Top = 59
+            Width = 45
+            Caption = 'Links'
+            Checked = True
+            ParentFont = False
+            State = cbChecked
+            TabOrder = 2
+            OnChange = JunctionsBoxChange
+          end
+        end
+      end
+    end
+  end
+  object AnimationTimer: TTimer
+    Enabled = False
+    OnTimer = AnimationTimerTimer
+    Left = 168
+    Top = 272
+  end
+end

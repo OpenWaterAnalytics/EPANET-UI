@@ -1,10 +1,10 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.0
+ Version:      1.0.3
  Module:       csvloader
  Description:  loads the contents of a CSV text file into a project
  License:      see LICENSE
- Last Updated: 03/07/2026
+ Last Updated: 06/19/2026
 =====================================================================}
 
 unit csvloader;
@@ -63,7 +63,7 @@ procedure LoadCsvFile(theCsvOptions: TCsvOptions);
 implementation
 
 uses
-  main, mapcoords, project, projectbuilder, epanet2;
+  main, project, projectbuilder, epanet2;
 
 const
   FlowPerCFS: array[0..10] of Single =
@@ -335,7 +335,7 @@ begin
     begin
       if epanet2.ENaddnode(PChar(ID), ntJunction, NodeIndex) = 0 then
         epanet2.ENsetnodevalue(NodeIndex, EN_ELEVATION,
-          StrToFloatDef(project.DefProps[1], 0))
+          StrToFloatDef(project.DefProps[ptNodeElev], 0))
       else
         exit;
     end;
@@ -493,7 +493,7 @@ begin
   SetPipeUcfs(theCsvOptions);
   LoadNodes;
   LoadPipes;
-  MainForm.MapFrame.SetExtent(MapCoords.GetBounds(MainForm.MapFrame.GetExtent));
+  MainForm.MapFrame.SetExtent(MainForm.MapFrame.Map.GetBounds);
   MainForm.MapFrame.DrawFullextent;
   project.HasChanged := true;
   project.UpdateResultsStatus;

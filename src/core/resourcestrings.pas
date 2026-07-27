@@ -1,10 +1,10 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.1
+ Version:      1.0.3
  Module:       resourcestrings
  Description:  contains text for internationalizing all project strings
  License:      see LICENSE
- Last Updated: 03/22/2026
+ Last Updated: 06/19/2026
 =====================================================================}
 
 unit resourcestrings;
@@ -18,6 +18,7 @@ uses
 
 resourcestring
   // main.pas
+  rsEpanetUI      = 'EPANET-UI(1.0.3.6 Pre-Release)';
   rsSelectInpFile = 'Select an EPANET Input File';
   rsFileNoExists  = 'Input file no longer exists.';
   rsInpFileOpen   = 'EPANET INP Files|*.inp|All Files|*.*';
@@ -89,6 +90,18 @@ resourcestring
   rsHrs           = 'hrs';
   rsThemesAre     = 'Themes are ';
 
+  // filemanu.pas
+  rsExitMenu      = '  Exit this menu.';
+  rsNewProject    = '  Start a new project.';
+  rsOpenProject   = '  Open a previously saved project.';
+  rsSaveProject   = '  Save the project under its current name.';
+  rsSaveProjectAs = '  Save the project under a new name.';
+  rsImportData    = '  Import project data in other formats.';
+  rsConfigure     = '  Configure program settings.';
+  rsExitProgram   = '  Exit the program.';
+  rsRecentProj    = ' Recent Projects';
+  rsImportFrom    = ' Import Network Data From';
+
   // basemapmenu.pas
   rsCheckInternet = 'Checking internet connection ...';
   rsNoInternet    = 'There is no internet connection.';
@@ -151,7 +164,7 @@ resourcestring
   // ruleseditor.pas
   rsMissingID     = 'Missing Rule ID';
   rsNoIDAssigned  = 'A valid rule must have an ID name assigned to it.';
-  rsRuleError     = 'Error %d occurred in Rule %s.' + LineEnding + LineEnding +
+  rsRuleError     = 'Rule %s has invalid format.' + LineEnding + LineEnding +
                     'Continue editing.';
 
   // sourceeditor.pas
@@ -173,22 +186,39 @@ resourcestring
   rsBadValveConnect = 'Illegal connection of a %s to another valve.';
   rsBadRotation   = 'Rotation must be between 0 and 360.';
 
+  // groupselector.pas
+  rsGroupSelection= 'Group Selection';
+  rsClickOnNodes  = 'Click nodes on the map to' + LineEnding +
+                    'toggle their selection on or off.';
+  rsClickOnLinks  = 'Click links on the map to' + LineEnding +
+                    'toggle their selection on or off.';
+  rsBlankTag      = 'Tag value is blank.';
+  rsBadPolygon    = 'Polygon region is incomplete.';
+  rsNoneSelected  = 'No objects were selected.';
+  rsNodeTags      = 'Select nodes with Tag';
+  rsLinkTags      = 'Select links with Tag';
+  rsAllNodes      = 'Select all nodes';
+  rsAllLinks      = 'Select all links';
+  rsDelAllNodes   = 'Deselect all nodes';
+  rsDelAllLinks   = 'Deselect all links';
+
   // groupeditor.pas
   rsJuncParams    = 'Tag'#13'Elevation'#13'Base Demand'#13'Demand Pattern'#13+
                     'Emitter Coeff.'#13'Initial Quality';
   rsPipeParams    = 'Tag'#13'Diameter'#13'Length'#13'Roughness'#13'Loss Coeff.'#13 +
                     'Bulk Coeff.'#13'Wall Coeff.'#13'Leak Area'#13'Leak Expansion';
-  rsFilters       = 'Below'#13'Equal To'#13'Above';
+  rsFilters       = 'Equal To'#13'Below'#13'Above';
   rsActions       = 'Replace'#13'Multiply'#13'Add To';
   rsBadPattern    = 'Invalid Patten ID';
   rsBadNumber     = 'Invalid number.';
   rsBadTag        = 'Tags cannot contain spaces or semi-colons.';
+  rsClose         = 'Close';
+  rsBack          = 'Back';
   rsWith          = 'with';
   rsBy            = 'by';
   rsNoMatches     = 'No objects match your criteria';
   rsObjsModified  = 'object(s) have been modified.';
   rsMoreEdits     = 'Do you wish to make more edits?';
-  rsNoSelect      = 'No objects were selected for editing';
   rsDeleteAll     = 'Do you wish to delete all objects in the selected region?';
 
   // controledit.pas
@@ -312,20 +342,23 @@ resourcestring
   rsBlue          = 'Blue';
   rsBlack         = 'Black';
 
+  // webmap.pas
+  rsWmsFailure    = 'WMS Failure';
+  rsNoMapImage    = 'Unable to retrieve basemap image.';
+
   // webmapfinder.pas
   rsNoFind        = 'Could not find';
   rsNoConnect     = 'Unable to connect to server.';
 
   // mapgeoref.pas
-  rsWorldXPix     = 'World X / Pixel';
-  rsWorldYPix     = 'World Y / Pixel';
-  rsTopLeftX      = 'Top Left X';
-  rsTopLeftY      = 'Top Left Y';
+  rsLocatePoint   = 'Locate control point';
+  rsClickPoint    = 'Click map at control point';
   rsLowLeftX      = 'Lower Left X';
   rsLowLeftY      = 'Lower Left Y';
   rsUpRightX      = 'Upper Right X';
   rsUpRightY      = 'Upper Right Y';
   rsNext          = 'Next';
+  rsOK            = 'OK';
   rsBadDistance   = 'Distance must be > 0.';
   rsTwoPtsNeeded  = 'Two control points must be selected.';
   rsSamePts       = 'Both control points cannot be the same.';
@@ -333,6 +366,7 @@ resourcestring
   rsWorldFile     = 'World File|*.wld|JPG World File|*.jgw|' +
                     'PNG World File|*.pgw|All Files|*.*';
   rsNoWorldFile   = 'Could not read World file.';
+  rsWorldPerPixel = 'World / Pixel must be >= 0.';
   rsBadExtents    = 'Basemap extents are invalid.';
 
   // maplocater.pas
@@ -655,7 +689,7 @@ resourcestring
   rsPastelRed      = 'Pastel Red';
   rsSeries         = 'Series';
 
-  // reportviewer.pas
+  // reportframe.pas
   rsStatusReport   = 'Status Report';
   rsPumpingReport  = 'Pumping Report';
   rsCalibReport    = 'Calibration Report';
@@ -665,7 +699,7 @@ resourcestring
   rsProfileReport  = 'Hydraulic Profile Plot';
   rsSysFlowReport  = 'System Flow Report';
   rsEnergyReport   = 'Energy Report';
-  rsVariationReport= 'Variability Report';
+  rsPcntilesReport = 'Percentiles Plot';
   rsFireFlowReport = 'Fire Flow Report';
   rsMaximize       = 'Maximize';
   rsRestore        = 'Restore';
@@ -675,6 +709,7 @@ resourcestring
 
   // sysflowrpt.pas
   rsElapsed        = 'Elapsed';
+  rsRptTime        = 'Time';
   rsOf             = 'of';
   rsDay            = 'Day';
   rsStored         = 'Stored';
@@ -783,15 +818,8 @@ resourcestring
 
   // fireflowselector.pas
   rsFireFlowSelect    = 'Fire Flow Selection';
-  rsSelectByTag       = 'Select all nodes whose Tag is';
-  rsNotJunction       = 'Selected object is not a Junction node.';
-  rsDuplicateNode     = 'Junction has already been selected.';
-  rsBadPolygon        = 'Polygon region is incomplete.';
-  rsNoTagNodes        = 'There were no nodes with Tag ';
-  rsAllNodesSelected  = 'All nodes selected';
-  rsAllNodes          = 'All nodes';
   rsBlankEntries      = 'Blank entries are not allowed.';
-  rsNoNodesSelected   = 'No nodes were selected to be analyzed.';
+  rsNoNodesSelected   = 'No junction nodes were selected for analysis.';
 
   // fireflowcalc.pas
   rsSolverFailure  = 'Solver failure for Design Fire Flow at node %s, Error Code = %d';
@@ -863,9 +891,9 @@ resourcestring
   rsMsxSave        = 'Save Msx Data';
 
   // about.pas
-  rsVersions       = 'EPANET-UI Version 1.0.2' + LineEnding + LineEnding +
+  rsVersions       = 'EPANET-UI Version 1.0.3' + LineEnding + LineEnding +
                      'OWA-EPANET Version 2.3.6' + LineEnding + LineEnding +
-                     'EPANET-MSX Version 2.0';
+                     'EPANET-MSX Version 2.0-dev';
   rsAbout          = 'A graphical user interface for the Open Water Analytics' +
                      LineEnding +
                      'version of the EPANET water distribution system simulator.';

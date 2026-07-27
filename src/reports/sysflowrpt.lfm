@@ -10,110 +10,85 @@ object SysFlowFrame: TSysFlowFrame
   TabOrder = 0
   DesignLeft = 1238
   DesignTop = 41
-  object PageControl1: TPageControl
+  object Notebook1: TNotebook
     Left = 0
     Height = 369
     Top = 0
     Width = 637
-    ActivePage = TabSheet1
+    PageIndex = 0
     Align = alClient
-    Style = tsFlatButtons
-    TabIndex = 0
     TabOrder = 0
-    object TabSheet1: TTabSheet
-      Caption = 'Chart'
-      ClientHeight = 338
-      ClientWidth = 629
-      object Panel1: TPanel
-        Left = 16
-        Height = 322
+    object ChartPage: TPage
+      object Chart1: TChart
+        Left = 0
+        Height = 369
         Top = 0
-        Width = 597
+        Width = 637
+        AntialiasingMode = amOn
+        AxisList = <        
+          item
+            Grid.Color = cl3DLight
+            Grid.Style = psSolid
+            Intervals.Options = [aipUseCount, aipUseNiceSteps]
+            Marks.LabelBrush.Style = bsClear
+            Minors = <>
+            Title.LabelFont.Orientation = 900
+            Title.LabelFont.Style = [fsBold]
+            Title.Visible = True
+            Title.Caption = 'Volume'
+            Title.LabelBrush.Style = bsClear
+          end        
+          item
+            Grid.Color = cl3DLight
+            Grid.Style = psSolid
+            Alignment = calBottom
+            Marks.Format = '%2:s'
+            Marks.LabelBrush.Style = bsClear
+            Marks.OverlapPolicy = opHideNeighbour
+            Marks.Source = DateTimeIntervalChartSource1
+            Marks.Style = smsLabel
+            Minors = <>
+            Title.LabelFont.Style = [fsBold]
+            Title.Caption = 'Hour'
+            Title.LabelBrush.Style = bsClear
+          end>
+        GUIConnector = ChartGUIConnectorBGRA1
+        Legend.Alignment = laTopCenter
+        Legend.BackgroundBrush.Style = bsClear
+        Legend.ColumnCount = 3
+        Legend.Frame.Visible = False
+        Legend.Visible = True
+        MarginsExternal.Right = 8
+        Title.Brush.Style = bsClear
+        Title.Font.CharSet = ANSI_CHARSET
+        Title.Font.Color = clBlack
+        Title.Font.Pitch = fpVariable
+        Title.Font.Quality = fqDraft
+        Title.Text.Strings = (
+          'System Flow Volumes'
+        )
         Align = alClient
-        BorderSpacing.Left = 16
-        BorderSpacing.Right = 16
-        BorderSpacing.Bottom = 16
-        BevelOuter = bvNone
-        BorderStyle = bsSingle
-        Caption = 'Panel1'
-        ClientHeight = 322
-        ClientWidth = 597
-        TabOrder = 0
-        object Chart1: TChart
-          Left = 0
-          Height = 318
-          Top = 0
-          Width = 593
-          AntialiasingMode = amOn
-          AxisList = <          
-            item
-              Grid.Color = cl3DLight
-              Grid.Style = psSolid
-              Intervals.Options = [aipUseCount, aipUseNiceSteps]
-              Marks.LabelBrush.Style = bsClear
-              Minors = <>
-              Title.LabelFont.Orientation = 900
-              Title.Visible = True
-              Title.Caption = 'Volume'
-              Title.LabelBrush.Style = bsClear
-            end          
-            item
-              Grid.Color = cl3DLight
-              Grid.Style = psSolid
-              Alignment = calBottom
-              Marks.Format = '%2:s'
-              Marks.LabelBrush.Style = bsClear
-              Marks.OverlapPolicy = opHideNeighbour
-              Marks.Source = DateTimeIntervalChartSource1
-              Marks.Style = smsLabel
-              Minors = <>
-              Title.Caption = 'Hour'
-              Title.LabelBrush.Style = bsClear
-            end>
-          GUIConnector = ChartGUIConnectorBGRA1
-          Legend.Alignment = laTopCenter
-          Legend.BackgroundBrush.Style = bsClear
-          Legend.ColumnCount = 3
-          Legend.Frame.Visible = False
-          Legend.Visible = True
-          MarginsExternal.Right = 8
-          Title.Brush.Style = bsClear
-          Title.Font.CharSet = ANSI_CHARSET
-          Title.Font.Color = clBlack
-          Title.Font.Pitch = fpVariable
-          Title.Font.Quality = fqDraft
-          Title.Text.Strings = (
-            'System Flow Volumes'
-          )
-          Align = alClient
-          Color = clWindow
-          object Chart1AreaSeries1: TAreaSeries
-            Legend.Multiplicity = lmStyle
-            Transparency = 128
-            AreaLinesPen.Style = psClear
-            Source = ListChartSource1
-            Styles = ChartStyles1
-          end
+        Color = clWindow
+        object Chart1AreaSeries1: TAreaSeries
+          Legend.Multiplicity = lmStyle
+          Transparency = 128
+          AreaLinesPen.Style = psClear
+          Source = ListChartSource1
+          Styles = ChartStyles1
         end
       end
     end
-    object TabSheet2: TTabSheet
-      Caption = 'Table'
-      ClientHeight = 338
-      ClientWidth = 629
+    object DataPage: TPage
       object DataGrid: TDrawGrid
-        Left = 16
-        Height = 322
+        Left = 0
+        Height = 369
         Top = 0
-        Width = 597
+        Width = 637
         Align = alClient
         AutoFillColumns = True
-        BorderSpacing.Left = 16
-        BorderSpacing.Right = 16
-        BorderSpacing.Bottom = 16
+        BorderStyle = bsNone
         DefaultRowHeight = 24
         ExtendedSelect = False
-        FixedColor = clWindow
         FixedCols = 0
         Flat = True
         GridLineColor = cl3DLight
@@ -122,11 +97,11 @@ object SysFlowFrame: TSysFlowFrame
         OnDrawCell = DataGridDrawCell
         OnPrepareCanvas = DataGridPrepareCanvas
         ColWidths = (
-          120
-          119
-          119
-          119
-          119
+          128
+          128
+          127
+          127
+          127
         )
       end
     end
@@ -162,6 +137,16 @@ object SysFlowFrame: TSysFlowFrame
     ImagesWidth = 16
     Left = 88
     Top = 80
+    object MnuChart: TMenuItem
+      Caption = 'View Chart'
+      ImageIndex = 10
+      OnClick = MnuChartClick
+    end
+    object MnuData: TMenuItem
+      Caption = 'View Table'
+      ImageIndex = 26
+      OnClick = MnuDataClick
+    end
     object MnuTimeOfDay: TMenuItem
       Caption = 'Plot Time of Day'
       Checked = True

@@ -1,11 +1,11 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.0
+ Version:      1.0.3
  Module:       tseriesselector
  Description:  A frame used to select network objects and parameters
                to display in a time series report.
  License:      see LICENSE
- Last Updated: 03/07/2026
+ Last Updated: 06/19/2026
 =====================================================================}
 
 unit tseriesselector;
@@ -91,7 +91,7 @@ implementation
 {$R *.lfm}
 
 uses
-  main, config, project, mapthemes, utils, reportviewer, sysresults,
+  main, config, project, mapthemes, utils, reportframe, sysresults,
   resourcestrings;
 
 const
@@ -111,7 +111,7 @@ var
 begin
   // Clear the SeriesListBox
   Color := config.CreamTheme;
-  TopPanel.Color := config.ThemeColor;
+  config.SetHeaderColor(TopPanel);
   HasChanged := false;
   SeriesListBox.Clear;
   SeriesListBox.ItemIndex := -1;
@@ -201,9 +201,9 @@ procedure TTseriesSelectorFrame.CancelBtn1Click(Sender: TObject);
 begin
   Visible := false;
   if NoDataSeries then
-    ReportViewerForm.Close
+    MainForm.ReportFrame.CloseReport
   else
-    ReportViewerForm.Show;
+    MainForm.ShowPage(MainForm.ReportPage);
 end;
 
 procedure TTseriesSelectorFrame.CancelBtn2Click(Sender: TObject);
@@ -286,11 +286,12 @@ procedure TTseriesSelectorFrame.ViewBtnClick(Sender: TObject);
 begin
   Visible := false;
   if TimeOfDayBox.Checked <> TimeOfDayPlot then HasChanged := true;
-  with ReportViewerForm.Report as TTimeSeriesFrame do
+  with MainForm.ReportFrame.Report as TTimeSeriesFrame do
+  begin
     SetDataSeries(TempDataSeries, TimeOfDayBox.Checked, HasChanged);
-  if ReportViewerForm.WindowState = wsMinimized then
-    ReportViewerForm.WindowState := wsNormal;
-  ReportViewerForm.Show;
+  end;
+  MainForm.ReportFrame.Show;
+  MainForm.ShowPage(MainForm.ReportPage);
 end;
 
 procedure TTseriesSelectorFrame.UpBtnClick(Sender: TObject);

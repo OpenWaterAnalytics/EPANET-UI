@@ -1,21 +1,24 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.0
+ Version:      1.0.3
  Module:       networkrpt
- Description:  A frame that displays a table of computed results
+ Description:  A frame to display a table of computed results
                for all network nodes or links
  License:      see LICENSE
- Last Updated: 03/07/2026
+ Last Updated: 06/19/2026
 =====================================================================}
 
 unit networkrpt;
 
-{  This unit contains a frame that displays simulation results for all
-   network nodes or links in a table that can be sorted and filtered.
+{
+ This unit contains a frame that displays simulation results for all
+ network nodes or links in a table that can be sorted and filtered.
+ Results are from the current time period selected from the main
+ form's MapViewerFrame.
 
-   A TNotebook has a TablePage to display the results in a TDrawGrid
-   and a FilterPage to define filters to limit the results shown in
-   the TablePage.
+ A TNotebook has a TablePage to display the results in a TDrawGrid
+ and a FilterPage to define filters to limit the results shown in
+ the TablePage.
 }
 
 {$mode ObjFPC}{$H+}
@@ -40,12 +43,11 @@ end;
   { TNetworkRptFrame }
 
   TNetworkRptFrame = class(TFrame)
+    DataGrid: TDrawGrid;
     Notebook1:         TNotebook;
     TablePage:         TPage;
     FilterPage:        TPage;
-    DataGrid:          TDrawGrid;
     Label1:            TLabel;
-    Panel1:            TPanel;
     BottomPanel:       TPanel;
     GroupBox1:         TGroupBox;
     ParamCheckGroup:   TCheckGroup;
@@ -105,7 +107,7 @@ implementation
 {$R *.lfm}
 
 uses
-  project, main, mapthemes, results, config, utils, reportviewer,
+  project, main, mapthemes, results, config, utils, reportframe,
   epanet2, resourcestrings;
 
 const
@@ -207,8 +209,6 @@ end;
 
 procedure TNetworkRptFrame.InitReport(aReportType: Integer);
 begin
-//  DataGrid.AlternateColor := config.AlternateColor;
-//  DataGrid.FixedColor := $00F2E4D7;
   TableType := ctNodes;
   if aReportType = ctLinks then TableType := ctLinks;
   TimePeriod := mapthemes.TimePeriod;
@@ -254,7 +254,7 @@ begin
     S := rsLinkResults;
   if results.Nperiods > 1 then
     S := S + Format(rsAtTimePeriod, [results.GetTimeStr(TimePeriod)]);
-  ReportViewerForm.TopPanel.Caption := S;
+  MainForm.ReportFrame.TopPanel.Caption := S;
 
   // Display network results at specified time period
   RefreshGrid;
@@ -266,8 +266,6 @@ var
   S: string;
 begin
   // Set visibility of grid columns
-  DataGrid.FixedColor:= config.ThemeColor;
-  FilterPage.Color:= config.ThemeColor;
   for I := 0 to DataGrid.Columns.Count - 1 do
     DataGrid.Columns[I].Visible := ParamCheckGroup.Checked[I];
 
@@ -353,15 +351,19 @@ begin
   for I := 0 to ThemeCount do
   begin
     ParamCheckGroup.Checked[I] := true;
+    // Don't show node design and pressure dependent demand parameters
     if (TableType = ctNodes)
-    and (I in [ntElevation, ntBaseDemand, ntEmittance, ntLeakage]) then
+    and (I in [ntElevation, ntBaseDemand, ntDmndDfct, ntEmittance, ntLeakage]) then
     begin
       ParamCheckGroup.Checked[I] := false
     end
-    else if (TableType = ctLinks)
-    and (I in [ltDiameter, ltLength, ltRoughness]) then
+
+    // Don't show design and setting parameters
+    else if (TableType = ctLinks) then
     begin
-      ParamCheckGroup.Checked[I] := false;
+      if (I in [ltDiameter, ltLength, ltRoughness]) then
+        ParamCheckGroup.Checked[I] := false;
+      if I = ThemeCount then ParamCheckGroup.Checked[I] := false;
     end;
   end;
 end;
@@ -567,7 +569,7 @@ var
   S: string;
 begin
   Result := ColIndex - 1;
-  if TableType = ctLinks then
+  if (TableType = ctLinks) and (ColIndex > 0) then
   begin
     S := self.DataGrid.Columns[ColIndex-1].Title.Caption;
     if SameText(S, rsStatus) then
@@ -778,13 +780,14 @@ var
   I: Integer;
   R: Integer;
   S: string;
-  ColName: string;
+  S1, S2: string;
 begin
   with DataGrid do
   begin
     // Add title lines to the Slist
     S := project.GetTitle(0);
     Slist.Add(S);
+    Slist.Add('');
     if TableType = ctNodes then
       S := rsNodesReport
     else
@@ -793,36 +796,62 @@ begin
     Slist.Add(S);
     Slist.Add('');
 
-    // Add first line of each visible column
-    S := '                    ';
+    // Re-construct the header lines (1st column is 20 spaces, all others 12)
+    S1 := '                    ';
+    if TableType = ctNodes then
+      S2 := rsNode + '                '
+    else
+      S2 := rsLink + '                ';
+
     for I := 0 to Columns.Count - 1 do
     begin
       if not Columns[I].Visible then continue;
-      if TableType = ctNodes then
-        ColName := mapthemes.NodeThemes[I+1].Name
+
+      // Column displays object type or link status or setting
+      S := DataGrid.Columns[I].Title.Caption;
+      if SameText(S, rsType)
+      or SameText(S, rsStatus)
+      or SameText(S, rsSetting) then
+      begin
+        S1 := S1 + #9 + '            ';
+        S2 := S2 + #9 + Format('%-12S', [S])
+      end
+
+      // Column displays a parameter
       else
-        ColName := mapthemes.LinkThemes[I+1].Name;
-      S := S + #9 + Format('%20s', [ColName]);
-    end;
-    Slist.Add(S);
+      begin
+        // Get parameter name
+        if TableType = ctNodes then
+          S := mapthemes.NodeThemes[I].Name
+        else
+          S := mapthemes.LinkThemes[I].Name;
+        S1 := S1 + #9 + Format('%-12S', [S]);
 
-    // Add second line of each visible column
-    S := Format('%-20s', [GetTableCellValue(0, 0)]);
-    for I := 0 to Columns.Count - 1 do
-    begin
-      if not Columns[I].Visible then continue;
-      S := S + #9 + Format('%20s', [mapthemes.GetThemeUnits(TableType, I+1)]);
+        // Get parameter units
+        if TableType = ctNodes then
+          S := mapthemes.GetThemeUnits(ctNodes, I)
+        else
+          S := mapthemes.GetThemeUnits(ctLinks, I);
+        S2 := S2 + #9 + Format('%-12S', [S]);
+      end;
     end;
-    Slist.Add(S);
 
-    // Add contents of each row
+    // Add header lines to Slist
+    Slist.Add(S1);
+    Slist.Add(S2);
+
+    // Now add contents of each row >= 1
     for R := 1 to RowCount - 1 do
     begin
-      S := Format('%-22s', [GetTableCellValue(0, R)]);
-      for I := 1 to Columns.Count-1 do
+      // Object ID from column 0
+      S := Format('%-20s', [GetTableCellValue(0, R)]);
+
+      // Parameter values from remaining columns
+      for I := 0 to Columns.Count-1 do
       begin
         if not Columns[I].Visible then continue;
-        S := S + #9 + Format('%20s', [GetTableCellValue(I+1, R)]);
+        S1 := Format('%-12S', [GetTableCellValue(I+1, R)]);
+        S := S + #9 + S1;
       end;
       Slist.Add(S);
     end;

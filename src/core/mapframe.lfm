@@ -20,6 +20,7 @@ object MapFrame: TMapFrame
     ShowHint = True
     OnChangeBounds = MapBoxChangeBounds
     OnClick = MapBoxClick
+    OnDblClick = MapBoxDblClick
     OnMouseDown = MapBoxMouseDown
     OnMouseMove = MapBoxMouseMove
     OnMouseUp = MapBoxMouseUp

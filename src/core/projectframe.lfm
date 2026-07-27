@@ -36,9 +36,10 @@ object ProjectFrame: TProjectFrame
         Width = 241
         Align = alTop
         BevelOuter = bvNone
-        BorderStyle = bsSingle
         Caption = '  Project Explorer'
         Font.Style = [fsBold]
+        ParentBackground = False
+        ParentColor = False
         ParentFont = False
         TabOrder = 0
       end
@@ -188,6 +189,7 @@ object ProjectFrame: TProjectFrame
               TitleFont.CharSet = ANSI_CHARSET
               OnButtonClick = PropEditorButtonClick
               OnEditingDone = PropEditorEditingDone
+              OnExit = PropEditorExit
               OnPrepareCanvas = PropEditorPrepareCanvas
               OnSelectCell = PropEditorSelectCell
               OnValidateEntry = PropEditorValidateEntry
@@ -227,17 +229,17 @@ object ProjectFrame: TProjectFrame
         Width = 241
         Align = alTop
         BevelOuter = bvNone
-        BorderStyle = bsSingle
         Caption = '  Project Title / Notes'
         ClientHeight = 28
         ClientWidth = 241
         Font.Style = [fsBold]
         ParentBackground = False
+        ParentColor = False
         ParentFont = False
         TabOrder = 1
         object EditTitleBtn: TSpeedButton
-          Left = 191
-          Height = 24
+          Left = 195
+          Height = 28
           Hint = 'Edit'
           Top = 0
           Width = 23
@@ -251,8 +253,8 @@ object ProjectFrame: TProjectFrame
         end
         object NextItemBtn: TSpeedButton
           Tag = 1
-          Left = 214
-          Height = 24
+          Left = 218
+          Height = 28
           Hint = 'Next Item'
           Top = 0
           Width = 23
@@ -268,7 +270,7 @@ object ProjectFrame: TProjectFrame
         object PrevItemBtn: TSpeedButton
           Tag = -1
           Left = 0
-          Height = 24
+          Height = 28
           Hint = 'Previous Item'
           Top = 0
           Width = 23

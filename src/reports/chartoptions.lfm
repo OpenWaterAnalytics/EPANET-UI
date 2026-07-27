@@ -19,7 +19,7 @@ object ChartOptionsForm: TChartOptionsForm
     Width = 75
     Caption = 'OK'
     ModalResult = 1
-    TabOrder = 1
+    TabOrder = 0
   end
   object CancelBtn: TButton
     Left = 312
@@ -28,15 +28,7 @@ object ChartOptionsForm: TChartOptionsForm
     Width = 75
     Caption = 'Cancel'
     ModalResult = 2
-    TabOrder = 2
-  end
-  object CheckBox1: TCheckBox
-    Left = 16
-    Height = 25
-    Top = 356
-    Width = 126
-    Caption = 'Set as Defaults'
-    TabOrder = 0
+    TabOrder = 1
   end
   object Panel1: TPanel
     Left = 16
@@ -49,7 +41,7 @@ object ChartOptionsForm: TChartOptionsForm
     Color = clWindow
     ParentBackground = False
     ParentColor = False
-    TabOrder = 3
+    TabOrder = 2
     object PageControl1: TPageControl
       Left = 0
       Height = 324
@@ -62,32 +54,32 @@ object ChartOptionsForm: TChartOptionsForm
       TabOrder = 0
       object GeneralTab: TTabSheet
         Caption = 'General'
-        ClientHeight = 291
-        ClientWidth = 368
+        ClientHeight = 293
+        ClientWidth = 364
         object Label1: TLabel
           Left = 28
-          Height = 19
+          Height = 15
           Top = 33
-          Width = 118
+          Width = 93
           Caption = 'Chart Panel Color'
         end
         object Label2: TLabel
           Left = 28
-          Height = 19
+          Height = 15
           Top = 81
-          Width = 103
+          Width = 80
           Caption = 'Plot Area Color'
         end
         object Label3: TLabel
           Left = 28
-          Height = 19
+          Height = 15
           Top = 164
-          Width = 71
+          Width = 55
           Caption = 'Chart Title'
         end
         object ChartAreaColorBox: TColorBox
           Left = 159
-          Height = 27
+          Height = 22
           Top = 26
           Width = 150
           DefaultColorColor = 16316664
@@ -98,7 +90,7 @@ object ChartOptionsForm: TChartOptionsForm
         end
         object PlotAreaColorBox: TColorBox
           Left = 159
-          Height = 27
+          Height = 22
           Top = 74
           Width = 150
           DefaultColorColor = 16316664
@@ -109,7 +101,7 @@ object ChartOptionsForm: TChartOptionsForm
         end
         object ChartTitleEdit: TEdit
           Left = 28
-          Height = 27
+          Height = 23
           Top = 188
           Width = 312
           TabOrder = 3
@@ -117,9 +109,9 @@ object ChartOptionsForm: TChartOptionsForm
         object TitleFontLabel: TLabel
           Cursor = crHandPoint
           Left = 118
-          Height = 19
+          Height = 15
           Top = 164
-          Width = 100
+          Width = 80
           Caption = 'Change Font ...'
           Font.Color = clBlue
           Font.Style = [fsUnderline]
@@ -128,22 +120,22 @@ object ChartOptionsForm: TChartOptionsForm
         end
         object FramePlotAreaBox: TCheckBox
           Left = 159
-          Height = 25
+          Height = 19
           Top = 121
-          Width = 133
+          Width = 102
           Caption = 'Frame Plot Area'
           TabOrder = 2
         end
       end
       object TabSheet2: TTabSheet
         Caption = 'Axes'
-        ClientHeight = 291
-        ClientWidth = 368
+        ClientHeight = 293
+        ClientWidth = 364
         object AxisBtn0: TRadioButton
           Left = 16
-          Height = 25
+          Height = 19
           Top = 24
-          Width = 84
+          Width = 62
           Caption = 'Left Axis'
           Checked = True
           TabOrder = 0
@@ -153,9 +145,9 @@ object ChartOptionsForm: TChartOptionsForm
         object AxisBtn1: TRadioButton
           Tag = 1
           Left = 122
-          Height = 25
+          Height = 19
           Top = 26
-          Width = 108
+          Width = 82
           Caption = 'Bottom Axis'
           TabOrder = 1
           OnClick = AxisBtnClick
@@ -163,26 +155,26 @@ object ChartOptionsForm: TChartOptionsForm
         object AxisBtn2: TRadioButton
           Tag = 2
           Left = 248
-          Height = 25
+          Height = 19
           Top = 26
-          Width = 93
+          Width = 70
           Caption = 'Right Axis'
           TabOrder = 2
           OnClick = AxisBtnClick
         end
         object Label5: TLabel
           Left = 16
-          Height = 19
+          Height = 15
           Top = 121
-          Width = 62
+          Width = 47
           Caption = 'Axis Title'
         end
         object AxisTitleFontLabel: TLabel
           Cursor = crHandPoint
           Left = 241
-          Height = 19
+          Height = 15
           Top = 121
-          Width = 100
+          Width = 80
           Caption = 'Change Font ...'
           Font.Color = clBlue
           Font.Style = [fsUnderline]
@@ -191,16 +183,16 @@ object ChartOptionsForm: TChartOptionsForm
         end
         object AxisTitleEdit: TEdit
           Left = 16
-          Height = 27
+          Height = 23
           Top = 145
           Width = 325
           TabOrder = 4
         end
         object GridVisibleCheckBox: TCheckBox
           Left = 16
-          Height = 25
+          Height = 19
           Top = 78
-          Width = 92
+          Width = 70
           Caption = 'Grid Lines'
           TabOrder = 3
         end
@@ -214,9 +206,9 @@ object ChartOptionsForm: TChartOptionsForm
         object AxisMarksFontLabel: TLabel
           Cursor = crHandPoint
           Left = 171
-          Height = 19
+          Height = 15
           Top = 198
-          Width = 100
+          Width = 80
           Caption = 'Change Font ...'
           Font.Color = clBlue
           Font.Style = [fsUnderline]
@@ -225,26 +217,26 @@ object ChartOptionsForm: TChartOptionsForm
         end
         object AxisMarksLabel: TLabel
           Left = 16
-          Height = 19
+          Height = 15
           Top = 198
-          Width = 135
+          Width = 106
           Caption = 'Axis Tic Mark Labels'
         end
       end
       object TabSheet3: TTabSheet
         Caption = 'Legend'
-        ClientHeight = 291
-        ClientWidth = 368
+        ClientHeight = 293
+        ClientWidth = 364
         object Label7: TLabel
           Left = 28
-          Height = 19
+          Height = 15
           Top = 32
-          Width = 109
+          Width = 85
           Caption = 'Legend Position'
         end
         object LgndPositionComboBox: TComboBox
           Left = 159
-          Height = 27
+          Height = 21
           Top = 26
           Width = 150
           ItemHeight = 15
@@ -253,30 +245,30 @@ object ChartOptionsForm: TChartOptionsForm
         end
         object LgndVisibleCheckBox: TCheckBox
           Left = 30
-          Height = 25
+          Height = 19
           Top = 66
-          Width = 70
+          Width = 52
           Caption = 'Visible'
           TabOrder = 1
         end
         object LgndFramedCheckBox: TCheckBox
           Left = 118
-          Height = 25
+          Height = 19
           Top = 66
-          Width = 76
+          Width = 58
           Caption = 'Framed'
           TabOrder = 2
         end
         object Label8: TLabel
           Left = 28
-          Height = 19
+          Height = 15
           Top = 113
-          Width = 121
+          Width = 96
           Caption = 'Background Color'
         end
         object LgndColorBox: TColorBox
           Left = 159
-          Height = 27
+          Height = 22
           Top = 104
           Width = 150
           DefaultColorColor = 16316664
@@ -287,22 +279,22 @@ object ChartOptionsForm: TChartOptionsForm
         end
         object LgndOnPanelCheckBox: TCheckBox
           Left = 223
-          Height = 25
+          Height = 19
           Top = 66
-          Width = 86
+          Width = 66
           Caption = 'On Panel'
           TabOrder = 3
         end
         object Label9: TLabel
           Left = 28
-          Height = 19
+          Height = 15
           Top = 157
-          Width = 97
+          Width = 79
           Caption = 'Column Count'
         end
         object LgndColumnsSpinEdit: TSpinEdit
           Left = 159
-          Height = 28
+          Height = 23
           Top = 149
           Width = 50
           MaxValue = 6
@@ -312,14 +304,14 @@ object ChartOptionsForm: TChartOptionsForm
         end
         object Label10: TLabel
           Left = 30
-          Height = 19
+          Height = 15
           Top = 199
-          Width = 94
+          Width = 75
           Caption = 'Symbol Width'
         end
         object LgndWidthSpinEdit: TSpinEdit
           Left = 159
-          Height = 28
+          Height = 23
           Top = 191
           Width = 50
           MinValue = 8
@@ -328,9 +320,9 @@ object ChartOptionsForm: TChartOptionsForm
         end
         object Label20: TLabel
           Left = 8
-          Height = 19
+          Height = 15
           Top = 240
-          Width = 336
+          Width = 269
           Caption = 'Select the Series page to set legend labels and font.'
           Font.Style = [fsItalic]
           ParentFont = False
@@ -338,18 +330,18 @@ object ChartOptionsForm: TChartOptionsForm
       end
       object TabSheet4: TTabSheet
         Caption = 'Series'
-        ClientHeight = 291
-        ClientWidth = 368
+        ClientHeight = 293
+        ClientWidth = 364
         object Label11: TLabel
           Left = 28
-          Height = 19
+          Height = 15
           Top = 22
-          Width = 76
+          Width = 57
           Caption = 'Data Series'
         end
         object DataSeriesComboBox: TComboBox
           Left = 132
-          Height = 27
+          Height = 21
           Top = 16
           Width = 100
           ItemHeight = 15
@@ -359,17 +351,17 @@ object ChartOptionsForm: TChartOptionsForm
         end
         object Label12: TLabel
           Left = 28
-          Height = 19
+          Height = 15
           Top = 51
-          Width = 90
+          Width = 70
           Caption = 'Legend Label'
         end
         object LgndFontLabel: TLabel
           Cursor = crHandPoint
           Left = 240
-          Height = 19
+          Height = 15
           Top = 51
-          Width = 100
+          Width = 80
           Caption = 'Change Font ...'
           Font.Color = clBlue
           Font.Style = [fsUnderline]
@@ -378,7 +370,7 @@ object ChartOptionsForm: TChartOptionsForm
         end
         object SeriesTitleEdit: TEdit
           Left = 28
-          Height = 27
+          Height = 23
           Top = 75
           Width = 312
           TabOrder = 1
@@ -394,18 +386,18 @@ object ChartOptionsForm: TChartOptionsForm
           TabOrder = 2
           object SeriesLinesTab: TTabSheet
             Caption = 'Line'
-            ClientHeight = 127
-            ClientWidth = 310
+            ClientHeight = 129
+            ClientWidth = 306
             object Label17: TLabel
               Left = 41
-              Height = 19
+              Height = 15
               Top = 23
-              Width = 37
+              Width = 29
               Caption = 'Color'
             end
             object LineColorBox: TColorBox
               Left = 97
-              Height = 27
+              Height = 22
               Top = 16
               Width = 150
               Style = [cbStandardColors, cbExtendedColors, cbCustomColor, cbPrettyNames, cbCustomColors]
@@ -416,14 +408,14 @@ object ChartOptionsForm: TChartOptionsForm
             end
             object Label18: TLabel
               Left = 41
-              Height = 19
+              Height = 15
               Top = 62
-              Width = 34
+              Width = 25
               Caption = 'Style'
             end
             object LineStyleComboBox: TComboBox
               Left = 97
-              Height = 27
+              Height = 21
               Top = 56
               Width = 150
               ItemHeight = 15
@@ -432,14 +424,14 @@ object ChartOptionsForm: TChartOptionsForm
             end
             object Label19: TLabel
               Left = 41
-              Height = 19
+              Height = 15
               Top = 102
-              Width = 42
+              Width = 32
               Caption = 'Width'
             end
             object LineWidthSpinEdit: TSpinEdit
               Left = 97
-              Height = 28
+              Height = 23
               Top = 94
               Width = 50
               MaxValue = 16
@@ -449,49 +441,49 @@ object ChartOptionsForm: TChartOptionsForm
             end
             object LineVisibleCheckBox: TCheckBox
               Left = 177
-              Height = 25
+              Height = 19
               Top = 96
-              Width = 70
+              Width = 52
               Caption = 'Visible'
               TabOrder = 3
             end
           end
           object SeriesPointsTab: TTabSheet
             Caption = 'Markers'
-            ClientHeight = 127
-            ClientWidth = 310
+            ClientHeight = 129
+            ClientWidth = 306
             object Label14: TLabel
               Left = 41
-              Height = 19
+              Height = 15
               Top = 23
-              Width = 37
+              Width = 29
               Caption = 'Color'
             end
             object Label15: TLabel
               Left = 41
-              Height = 19
+              Height = 15
               Top = 62
-              Width = 34
+              Width = 25
               Caption = 'Style'
             end
             object Label16: TLabel
               Left = 41
-              Height = 19
+              Height = 15
               Top = 102
-              Width = 27
+              Width = 20
               Caption = 'Size'
             end
             object PointsVisibleCheckBox: TCheckBox
               Left = 177
-              Height = 25
+              Height = 19
               Top = 96
-              Width = 70
+              Width = 52
               Caption = 'Visible'
               TabOrder = 3
             end
             object PointsColorBox: TColorBox
               Left = 97
-              Height = 27
+              Height = 22
               Top = 16
               Width = 150
               Style = [cbStandardColors, cbExtendedColors, cbCustomColor, cbPrettyNames, cbCustomColors]
@@ -501,7 +493,7 @@ object ChartOptionsForm: TChartOptionsForm
             end
             object PointsStyleComboBox: TComboBox
               Left = 97
-              Height = 27
+              Height = 21
               Top = 56
               Width = 150
               ItemHeight = 15
@@ -510,7 +502,7 @@ object ChartOptionsForm: TChartOptionsForm
             end
             object PointsSizeSpinEdit: TSpinEdit
               Left = 97
-              Height = 28
+              Height = 23
               Top = 94
               Width = 50
               MaxValue = 16

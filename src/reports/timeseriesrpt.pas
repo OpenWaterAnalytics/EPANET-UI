@@ -1,13 +1,22 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.1
+ Version:      1.0.3
  Module:       timeseriesrpt
- Description:  A frame that displays a time series report
+ Description:  A frame to report time series of computed values
  License:      see LICENSE
- Last Updated: 03/13/2026
+ Last Updated: 06/19/2026
 =====================================================================}
 
 unit timeseriesrpt;
+
+{
+ This frame contains a Notebook with two Pages. One displays a
+ collection of up to 6 time series of computed parameter values in a
+ chart while the other does the same in tabular form.
+
+ The main form's TseriesSelectorFrame is used to select which network
+ objects and parameters to view.
+}
 
 {$mode ObjFPC}{$H+}
 
@@ -37,10 +46,11 @@ type
   { TTimeSeriesFrame }
 
   TTimeSeriesFrame = class(TFrame)
-    PageControl1:      TPageControl;
-    ChartTabSheet:     TTabSheet;
-    TableTabSheet:     TTabSheet;
+    Notebook1:         TNotebook;
+    ChartPage:         TPage;
+    DataPage:          TPage;
     Chart1:            TChart;
+    DataGrid:          TDrawGrid;
     Chart1LineSeries1: TLineSeries;
     Chart1LineSeries2: TLineSeries;
     Chart1LineSeries3: TLineSeries;
@@ -53,15 +63,17 @@ type
     LeftChartAxisTransformations:  TChartAxisTransformations;
     ChartGUIConnectorBGRA1:        TChartGUIConnectorBGRA;
     DateTimeIntervalChartSource1:  TDateTimeIntervalChartSource;
-    Panel1:            TPanel;
-    DataGrid:          TDrawGrid;
     PopupMenu1:        TPopupMenu;
+    ChartMenuItem:     TMenuItem;
+    TableMenuItem:     TMenuItem;
+    Separator2:        TMenuItem;
     DataMenuItem:      TMenuItem;
     SettingsMenuItem:  TMenuItem;
     Separator1:        TMenuItem;
     CopyMenuItem:      TMenuItem;
     SaveMenuItem:      TMenuItem;
 
+    procedure ChartMenuItemClick(Sender: TObject);
     procedure CopyMenuItemClick(Sender: TObject);
     procedure DataGridDrawCell(Sender: TObject; aCol, aRow: Integer;
       aRect: TRect; aState: TGridDrawState);
@@ -70,9 +82,9 @@ type
     procedure DataMenuItemClick(Sender: TObject);
     procedure SaveMenuItemClick(Sender: TObject);
     procedure SettingsMenuItemClick(Sender: TObject);
+    procedure TableMenuItemClick(Sender: TObject);
 
   private
-    ShowingChart:  Boolean;
     PlotTimeOfDay: Boolean;
     Xstart:        TDateTime;
     Xstep:         TDateTime;
@@ -109,7 +121,7 @@ implementation
 
 uses
   main, project, config, mapthemes, results, sysresults, utils, chartoptions,
-  reportviewer, resourcestrings;
+  resourcestrings;
 
 const
   SeriesColors: array[1..MaxSeries] of TColor =
@@ -136,9 +148,8 @@ begin
     Chart1.AxisList[I].Title.LabelFont.Size := FontSize;
   Chart1.Legend.Font.Size := FontSize;
   Nseries := 0;
-  ShowingChart := true;
   PlotTimeOfDay := false;
-  PageControl1.ActivePageIndex := 0;
+  Notebook1.PageIndex := 0;
   Chart1.Visible := true;
   ShowTimeSeriesSelector;
 end;
@@ -155,7 +166,6 @@ end;
 
 procedure TTimeSeriesFrame.ShowTimeSeriesSelector;
 begin
-  ReportViewerForm.Hide;
   MainForm.HideHintPanelFrames;
   MainForm.TseriesSelectorFrame.Visible := true;
   MainForm.TseriesSelectorFrame.Init(DataSeries, PlotTimeOfDay);
@@ -171,12 +181,13 @@ end;
 
 procedure TTimeSeriesFrame.DataMenuItemClick(Sender: TObject);
 begin
+  MainForm.ShowPage(MainForm.MapPage);
   ShowTimeSeriesSelector;
 end;
 
 procedure TTimeSeriesFrame.SaveMenuItemClick(Sender: TObject);
 begin
-  if ShowingChart then
+  if Notebook1.ActivePage = 'ChartPage' then
     SaveChart
   else
     SaveTable;
@@ -239,11 +250,16 @@ begin
   end;
 end;
 
+procedure TTimeSeriesFrame.TableMenuItemClick(Sender: TObject);
+begin
+  Notebook1.PageIndex := 1;
+end;
+
 procedure TTimeSeriesFrame.CopyMenuItemClick(Sender: TObject);
 var
   Slist: TStringList;
 begin
-  if ShowingChart then
+  if Notebook1.ActivePage = 'ChartPage' then
     Chart1.CopyToClipboardBitmap
   else
   begin
@@ -255,6 +271,11 @@ begin
       Slist.Free;
     end;
   end;
+end;
+
+procedure TTimeSeriesFrame.ChartMenuItemClick(Sender: TObject);
+begin
+  Notebook1.PageIndex := 0;
 end;
 
 procedure TTimeSeriesFrame.DataGridDrawCell(Sender: TObject; aCol,
@@ -297,11 +318,13 @@ begin
     CloseReport;
     exit;
   end;
+
   if not HasChanged then
   begin
     if not Chart1.Visible then CloseReport;
     exit;
   end;
+
   for I := 0 to High(DataSeries) do
   begin
     DataSeries[I] := NewDataSeries[I];
@@ -556,19 +579,19 @@ begin
   // a separate row to the contents' stringlist
   with DataGrid do
   begin
-    S := 'Elapsed   ' + #9 + 'Time      ';
+    S := rsElapsed + '   ' + #9 + rsRptTime + '      ';
     for I := 1 to Nseries do
       S := S + #9 +
         Format('%-20s',
           [GetObjStr(DataSeries[I-1].ObjType, DataSeries[I-1].ObjIndex - 1)]);
     Slist.Add(S);
-    S := 'Time      ' + #9 + 'of        ';
+    S := rsRptTime + '      ' + #9 + rsOf + '        ';
     for I := 1 to Nseries do
       S := S + #9 +
         Format('%-20s',
           [GetParamStr(DataSeries[I-1].ObjType, DataSeries[I-1].ObjParam)]);
     Slist.Add(S);
-    S := '(hrs)      ' + #9 + 'Day       ';
+    S := '(' + rsHrs + ')      ' + #9 + rsDay + '       ';
     for I := 1 to Nseries do
       S := S + #9 +
         Format('%-20s',

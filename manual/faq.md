@@ -23,7 +23,7 @@ Yes. This could prove useful in making side-by-side comparisons of two or more d
 <i>How can I create a report of my analysis that can be printed or saved as a PDF file?</i>
 </summary>
 <br>
-While EPANET-UI is running, create a new document in a word processing program, such as MS Word or LibreOffice Writer, and paste into it items like the network map and analysis results that were copied to the clipboard. Later on you can reformat the document and add additional text as needed, and then save or print it.
+While EPANET-UI is running, create a new document in a word processing program, such as MS Word or LibreOffice Writer, and paste into it items like the Network Map and analysis results that were copied to the clipboard. Later on you can reformat the document and add additional text as needed, and then save or print it.
 </details>
 
 ## Hydraulics
@@ -59,15 +59,6 @@ Replace the pump with a Pressure Breaker Valve oriented in the opposite directio
 </summary>
 <br>
 Replace the reservoirs with junctions that have negative demands equal to the schedule of source flows. Make sure there is at least one tank or remaining reservoir in the network, otherwise EPANET will issue an error message. You might also need to allow tanks to overflow to avoid a condition where total source flow exceeds total demand and all tanks are full.
-</details>
-<br>
-<details>
-<summary>
-<i>How can I analyze fire flow conditions for a particular junction node?</i>
-</summary>
-<br>
-<p>To determine the maximum pressure available at a node when the flow demanded must be increased to suppress a fire, add the fire flow to the node’s normal demand, run the analysis, and note the resulting pressure at the node.</p>
-<p>To determine the maximum flow available at a particular pressure, set the emitter coeffcient at the node to a large value (e.g., 100 times the maximum expected flow) and add the required pressure head (2.3 times the pressure in psi) to the node’s elevation. After running the analysis, the available fire flow equals the emitter demand reported for the node. (If the reported pressure is not close to 0 then increase the emitter coefficient.)</p>
 </details>
 <br>
 <details>

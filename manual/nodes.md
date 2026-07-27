@@ -4,7 +4,7 @@
 
 |                   |                                                                   |
 |-------------------|-------------------------------------------------------------------|
-| Junction ID       | A unique label used to identify the junction. It can consist of a combination of up to 31 numerals or characters. It cannot be the same as the ID for any other node.|
+| Junction ID       | A unique label used to identify the junction. It can consist of a combination of up to 31 numerals or characters, with no spaces or semicolons. It cannot be the same as the ID for any other node.|
 | Description       | An optional text string that describes other significant information about the junction.|
 | Tag               | An optional text string (with no spaces) used to assign the junction to a category, such as a pressure zone.|
 | Elevation         | The elevation (in feet or meters) above some common reference of the junction.  Elevation is used to determine the pressure at the junction from its computed hydraulic head.|
@@ -19,7 +19,7 @@
 
 |                   |                                                                   |
 |-------------------|-------------------------------------------------------------------|
-| Reservoir ID      | A unique label used to identify the reservoir. It can consist of a combination of up to 31 numerals or characters. It cannot be the same as the ID for any other node.|
+| Reservoir ID      | A unique label used to identify the reservoir. It can consist of a combination of up to 31 numerals or characters, with no spaces or semicolons. It cannot be the same as the ID for any other node.|
 | Description       | An optional text string that describes other significant information about the reservoir.|
 | Tag               | An optional text string (with no spaces) used to assign the reservoir to a category, such as a pressure zone.|
 | Elevation         | The elevation (in feet or meters) of water in the reservoir.|
@@ -31,10 +31,10 @@
 
 |                   |                                                                   |
 |-------------------|-------------------------------------------------------------------|
-| Tank ID           | A unique label used to identify the tank. It can consist of a combination of up to 31 numerals or characters. It cannot be the same as the ID for any other node.|
+| Tank ID           | A unique label used to identify the tank. It can consist of a combination of up to 31 numerals or characters, with no spaces or semicolons. It cannot be the same as the ID for any other node.|
 | Description       | An optional text string that describes other significant information about the tank.|
 | Tag               | An optional text string (with no spaces) used to assign the tank to a category, such as a pressure zone.|
-| Elevation         | The elevation (in feet or meters) of the tank's bottom (not the ground elevation). |
+| Elevation         | The elevation (in feet or meters) of the tank's bottom (not necessarily the ground elevation). |
 | Initial Level     | The height (in feet or meters) of the water surface above the bottom elevation of the tank at the start of the simulation.|
 | Minimum Level     | The minimum height (in feet or meters) of the water surface above the bottom elevation that will be maintained. The tank will not be allowed to drop below this level.|
 | Maximum Level     | The maximum height (in feet or meters) of the water surface above the bottom elevation that will be maintained. The tank will not be allowed to rise above this level.|

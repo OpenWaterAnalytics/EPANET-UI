@@ -1,10 +1,10 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.0
+ Version:      1.0.3
  Module:       mapoptions
  Description:  a dialog form used to set network map display options
  License:      see LICENSE
- Last Updated: 03/07/2026
+ Last Updated: 06/19/2026
 =====================================================================}
 unit mapoptions;
 
@@ -234,6 +234,8 @@ begin
     EditorPage      := Notebook1.PageIndex;
   end;
   MainForm.MapPanel.Color := Options.BackColor;
+  MainForm.MapFrame.NodeLegend.SetTextColor;
+  MainForm.MapFrame.LinkLegend.SetTextColor;
 end;
 
 procedure TMapOptionsForm.BackColorClbGetColors(Sender: TCustomColorListBox;

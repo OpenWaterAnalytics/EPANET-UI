@@ -1,10 +1,12 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.0
+ Version:      1.0.3
  Module:       welcome
- Description:  a form presenting a welcome screen to EPANET users
+ Description:  a form presenting a welcome screen to EPANET-UI users
+ Authors:      see AUTHORS
+ Copyright:    see AUTHORS
  License:      see LICENSE
- Last Updated: 03/07/2026
+ Last Updated: 06/19/2026
 =====================================================================}
 
 unit welcome;
@@ -22,40 +24,43 @@ type
   { TWelcomeForm }
 
   TWelcomeForm = class(TForm)
-    DevelopBtn1: TSpeedButton;
-    DevelopBtn2: TSpeedButton;
-    GetStartedBtn1: TSpeedButton;
-    GetStartedBtn2: TSpeedButton;
-    Image2: TImage;
-    ImageList2: TImageList;
-    Label4: TLabel;
-    Label6: TLabel;
+    Panel1:              TPanel;
+    Panel2:              TPanel;
+    TitleImage:          TImage;
+    ImageList1:          TImageList;
+    OpenProjectLabel:    TLabel;
+    TitleLabel:          TLabel;
+    LearnLabel:          TLabel;
+    DevelopLabel:        TLabel;
     NoRecentProjectsLbl: TLabel;
-    Label2: TLabel;
-    Label5: TLabel;
-    Panel2: TPanel;
-    RecentFileBtn0: TSpeedButton;
-    RecentFileBtn1: TSpeedButton;
-    RecentFileBtn2: TSpeedButton;
-    RecentFileBtn3: TSpeedButton;
-    RecentFileBtn4: TSpeedButton;
-    RecentFileBtn5: TSpeedButton;
-    RecentFileBtn6: TSpeedButton;
-    RecentFileBtn7: TSpeedButton;
-    ShowStartPageCB: TCheckBox;
+    DevelopBtn1:         TSpeedButton;
+    DevelopBtn2:         TSpeedButton;
+    GetStartedBtn1:      TSpeedButton;
+    GetStartedBtn2:      TSpeedButton;
+    RecentFileBtn0:      TSpeedButton;
+    RecentFileBtn1:      TSpeedButton;
+    RecentFileBtn2:      TSpeedButton;
+    RecentFileBtn3:      TSpeedButton;
+    RecentFileBtn4:      TSpeedButton;
+    RecentFileBtn5:      TSpeedButton;
+    RecentFileBtn6:      TSpeedButton;
+    RecentFileBtn7:      TSpeedButton;
+    ShowStartPageCB:     TCheckBox;
+
     procedure DevelopBtn1Click(Sender: TObject);
     procedure DevelopBtn2Click(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-    procedure FormShow(Sender: TObject);
     procedure GetStartedBtn1Click(Sender: TObject);
     procedure GetStartedBtn2Click(Sender: TObject);
     procedure RecentFileBtnClick(Sender: TObject);
+
   private
     RecentFileCount: Integer;
     RecentFileNames: array [0..7] of String;
     procedure LoadRecentProjects;
+
   public
     SelectedFile: String;
     SelectedAction: Integer;
@@ -85,12 +90,12 @@ uses
 
 procedure TWelcomeForm.FormCreate(Sender: TObject);
 begin
-  Color := ThemeColor;
+  Color := config.ThemeColor;
   Font.Size := config.FontSize;
 
   // The 'No Recent Projects' label shares space with the first
   // Recent File speed button
-  NoRecentProjectsLbl.Left := Label4.Left;
+  NoRecentProjectsLbl.Left := OpenProjectLabel.Left;
   NoRecentProjectsLbl.Top := RecentFileBtn0.Top;
   NoRecentProjectsLbl.Visible := False;
 
@@ -108,12 +113,6 @@ procedure TWelcomeForm.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if Key = VK_ESCAPE then ModalResult := mrOK;
-end;
-
-procedure TWelcomeForm.FormShow(Sender: TObject);
-begin
-  if Screen.PixelsPerInch > 96 then
-    Image2.Stretch := true;
 end;
 
 procedure TWelcomeForm.GetStartedBtn1Click(Sender: TObject);
@@ -159,9 +158,9 @@ var
 begin
   J := 0;
   RecentFileCount := 0;
-  for I := 0 to MainForm.MruMenuMgr.Recent.Count - 1 do
+  for I := 0 to MainForm.MRUMenuMgr.Recent.Count - 1 do
   begin
-    S := MainForm.MruMenuMgr.Recent[I];
+    S := MainForm.MRUMenuMgr.Recent[I];
     if Length(S) = 0 then break;
     if  not FileExists(S) then continue;
     SpeedBtn := Self.FindComponent('RecentFileBtn' + IntToStr(J)) as TSpeedButton;
@@ -174,7 +173,7 @@ begin
     if J = High(RecentFileNames) then break;
     Inc(J);
   end;
-  NoRecentProjectsLbl.Visible := (RecentFileCount = 0);
+  NoRecentProjectsLbl.Visible :=  (RecentFileCount = 0);
 end;
 
 end.

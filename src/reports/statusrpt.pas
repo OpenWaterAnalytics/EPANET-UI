@@ -1,10 +1,11 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.0
+ Version:      1.0.3
  Module:       statusrpt
- Description:  a frame that displays a status report
+ Description:  a frame to display a simulation's status report
+               or an opened project file's error/warning report
  License:      see LICENSE
- Last Updated: 03/07/2026
+ Last Updated: 06/19/2026
 =====================================================================}
 
 unit statusrpt;
@@ -26,7 +27,6 @@ type
     Memo1: TMemo;
     MnuSave:    TMenuItem;
     MnuCopy:    TMenuItem;
-    Panel1: TPanel;
 
     procedure MnuCopyClick(Sender: TObject);
     procedure MnuSaveClick(Sender: TObject);
@@ -114,6 +114,7 @@ begin
   begin
     Memo1.SelStart := Result - 1;
     Memo1.SelLength := Length(Txt);
+////    Memo1.SetFocus;
   end;
 end;
 

@@ -1,10 +1,10 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.0
+ Version:      1.0.3
  Module:       projtransform
  Description:  transforms one map projection to another
  License:      see LICENSE
- Last Updated: 03/07/2026
+ Last Updated: 06/19/2026
 =====================================================================}
 
 {
@@ -42,13 +42,15 @@ unit projtransform;
 interface
 
 uses
-  Classes, SysUtils, utils, proj;
+  Classes, SysUtils, LCLtype, Dialogs, utils, proj;
 
 type
   TProjTransform = class(TObject)
     private
-      SrcProj, DstProj: proj.ProjHandle;
-      IsSrcLatLong, IsDstLatLong: Integer;
+      SrcProj,
+      DstProj: proj.ProjHandle;
+      IsSrcLatLong,
+      IsDstLatLong: Integer;
       function GetProjHandle(EPSGcode: string): proj.ProjHandle;
     public
       constructor Create;
@@ -78,6 +80,7 @@ function TProjTransform.GetProjHandle(EPSGcode: string): proj.ProjHandle;
 var
   Url: string;
   ProjStr: string;
+  EpsgErr: string;
 begin
   // Obtain the projection's string from its EPSG code
   Result := 0;
@@ -87,8 +90,7 @@ begin
     if utils.HttpRequest(Url, ProjStr) then
       Result := proj.pj_init_plus(PAnsiChar(ProjStr));
   except
-    On E: Exception do
-      Result := 0;
+    Result := 0;
   end;
 end;
 

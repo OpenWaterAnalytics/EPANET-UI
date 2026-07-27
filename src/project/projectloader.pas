@@ -1,10 +1,10 @@
 {====================================================================
  project:      EPANET-UI
- Version:      1.0.0
+ Version:      1.0.3
  Module:       projectloader
  Description:  form that loads an EPANET input file
  License:      see LICENSE
- Last Updated: 03/07/2026
+ Last Updated: 06/19/2026
 =====================================================================}
 
 unit projectloader;
@@ -71,19 +71,20 @@ var
   WebMapSource: Integer;  // Web map service provider code (see webmap.pas)
 begin
   // Check for valid web basemap source
-  WebMapSource := -1;
+  WebMapSource := 0;
   inifile.ReadProjectDefaults(ChangeFileExt(InpFileName, '.ini'), WebMapSource);
-  if (WebMapSource >= 0) then
+  if (WebMapSource > 0) then
   begin
+    // Check for internet connection
     Panel1.Caption := rsLoadBasemap;
-    Application.ProcessMessages;
     if (not utils.HasInternetConnection()) then
-      WebMapSource := -1
+      WebMapSource := 0
 
+    // Set map CRS to WGS84 (EPSG 4326) if no CRS set and map units are degrees
     else if project.MapEPSG = 0 then
     begin
       if project.MapUnits <> muDegrees then
-        WebMapSource := -1
+        WebMapSource := 0
       else
         project.MapEPSG := 4326;
     end;

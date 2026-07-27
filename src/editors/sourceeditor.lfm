@@ -57,8 +57,8 @@ object SourceEditorForm: TSourceEditorForm
     BorderSpacing.Around = 16
     BevelOuter = bvNone
     BorderStyle = bsSingle
-    ClientHeight = 164
-    ClientWidth = 319
+    ClientHeight = 160
+    ClientWidth = 315
     Color = clWindow
     ParentBackground = False
     ParentColor = False

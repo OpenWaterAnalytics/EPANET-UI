@@ -1,10 +1,10 @@
 {====================================================================
  project:      EPANET-UI
- Version:      1.0.0
+ Version:      1.0.3
  Module:       projectsetup
  Description:  form that edits project default settings
  License:      see LICENSE
- Last Updated: 03/07/2026
+ Last Updated: 06/19/2026
 =====================================================================}
 
 unit projectsetup;
@@ -115,16 +115,17 @@ var
 
 procedure TProjectSetupForm.FormCreate(Sender: TObject);
 begin
-  Color := config.FormColor;
+  Color := config.ThemeColor;
   Font.Size := config.FontSize;
   ValueListEditor1.FixedColor := config.ThemeColor;
   ValueListEditor1.DefaultColWidth := ValueListEditor1.ClientWidth div 2;
-  RadioGroup1.Color := config.ThemeColor;
+  RadioGroup1.Color := Color; //config.ThemeColor;
 end;
 
 procedure TProjectSetupForm.FormShow(Sender: TObject);
 begin
-  MapExtentRect := MainForm.MapFrame.GetExtent;
+  MapExtentRect := MainForm.MapFrame.Map.Extent;
+  MainForm.MapFrame.TransformExtent(MapExtentRect);
   TmpMapExtents[1] := Utils.Float2Str(MapExtentRect.LowerLeft.X, 6);
   TmpMapExtents[2] := Utils.Float2Str(MapExtentRect.LowerLeft.Y, 6);
   TmpMapExtents[3] := Utils.Float2Str(MapExtentRect.UpperRight.X, 6);
@@ -139,7 +140,7 @@ begin
   OldFlowUnits := TmpDefOptions[htFlowUnits];
   OldPressUnits := TmpDefOptions[htPressUnits];
   OldHlossModel := TmpDefOptions[htHlossModel];
-  SetUnitSystemLabel(TmpDefOptions[1]);
+  SetUnitSystemLabel(TmpDefOptions[htFlowUnits]);
 
   HintPanel.Caption := HintLabels[0];
   RadioGroup1.ItemIndex := 0;
@@ -177,7 +178,7 @@ begin
   begin
     // Save flow & pressure units
     project.SetFlowUnits(TmpDefOptions[htFlowUnits]);
-    project.SetPressUnits(TmpDefOptions[htPressUnits]);
+    project.SetPressureUnits(TmpDefOptions[htPressUnits]);
 
     // Save current pipe roughness values if head loss model has changed
     if ConversionType >= 0 then
@@ -301,7 +302,7 @@ begin
       end;
 
       OptionList.Clear;
-      OptionList.AddStrings(project.PressUnitsStr, true);
+      OptionList.AddStrings(project.PressureUnitsStr, true);
       with ItemProps[rsPressUnits] do
       begin
         EditStyle := esPickList;
@@ -634,10 +635,10 @@ var
   I:   Integer;
   X:   Single = 0;
   D:   Single = 0;   // Pipe diameter (meters)
-  C:   Single;   // H-W C-Factor (dimensionless)
-  E:   Single;   // D-W roughness height (meters)
-  Dcf: Single;   // Pipe diameter units conversion factor
-  Ecf: Single;   // D-W roughness units conversion factor
+  C:   Single;       // H-W C-Factor (dimensionless)
+  E:   Single;       // D-W roughness height (meters)
+  Dcf: Single;       // Pipe diameter units conversion factor
+  Ecf: Single;       // D-W roughness units conversion factor
 begin
   if GetUnitsSystem = usUS then
   begin

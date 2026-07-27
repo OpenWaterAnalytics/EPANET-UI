@@ -1,21 +1,20 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.0
- Module:       reportviewer
- Description:  a form that displays results of a network simulation.
+ Version:      1.0.3
+ Module:       reportframe
+ Description:  a frame that displays results of a network simulation.
  License:      see LICENSE
- Last Updated: 03/07/2026
+ Last Updated: 06/19/2026
 =====================================================================}
 
-unit reportviewer;
+unit reportframe;
 
 {$mode ObjFPC}{$H+}
 
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ComCtrls, ExtCtrls,
-  LCLtype, Buttons;
+  Classes, SysUtils, Forms, Controls, ExtCtrls, Buttons, Graphics;
 
 type
 
@@ -33,33 +32,25 @@ type
                  rtFireFlow,      // Fire flow report
                  rtNone);
 
-  { TReportViewerForm }
 
-  { This is an auto-created, stay-on-top form used to display the results
-    of a simulation in one of the formats listed above. It contains a top
-    panel with a button used to popup menu of actions specific to each
-    type of report.
+  { TReportFrame }
 
-    The form's Report variable is a TFrame that holds a reference to a
-    report-specific TFrame responsible for generating the report's contents.
-
-    The form is activated when one of the options from the Report item on
-    the MainForm's MainMenuFrame is selected.
-  }
-
-  TReportViewerForm = class(TForm)
+  TReportFrame = class(TFrame)
+    CloseBtn: TSpeedButton;
+    MainPanel: TPanel;
     MenuBtn: TSpeedButton;
+    ReportPanel: TPanel;
     TopPanel: TPanel;
-    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
-    procedure FormCreate(Sender: TObject);
-    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure CloseBtnClick(Sender: TObject);
     procedure MenuBtnClick(Sender: TObject);
+
   private
     ReportType : TReportType;
     procedure CreateReport(RptType: TReportType);
 
   public
     Report: TFrame;
+    procedure Init;
     procedure ShowReport(RptType: TReportType);
     procedure ChangeColor(aColor: TColor);
     procedure ChangeTimePeriod;
@@ -67,56 +58,25 @@ type
     procedure UpdateReport;
     procedure ClearReport;
     procedure CloseReport;
-  end;
 
-var
-  ReportViewerForm: TReportViewerForm;
+  end;
 
 implementation
 
 {$R *.lfm}
 
 uses
-  project, config, statusrpt, sysflowrpt, pumpingrpt, timeseriesrpt, networkrpt,
-  energyrpt, pcntilerpt, profilerpt, calibrationrpt, fireflowrpt,
+  main, project, config, statusrpt, sysflowrpt, pumpingrpt, timeseriesrpt,
+  networkrpt, energyrpt, pcntilerpt, profilerpt, calibrationrpt, fireflowrpt,
   resourcestrings;
 
 const
   ReportTypeStr: array[0..10] of string =
     (rsStatusReport, rsPumpingReport, rsCalibReport, rsNodesReport,
      rsLinksReport, rsTseriesReport, rsProfileReport, rsSysFlowReport,
-     rsEnergyReport, rsVariationReport, rsFireFlowReport);
+     rsEnergyReport, rsPcntilesReport, rsFireFlowReport);
 
-{ TReportViewerForm }
-
-procedure TReportViewerForm.FormCreate(Sender: TObject);
-begin
-  Font.Size := config.FontSize;
-  ReportType := rtNone;
-  Report := nil;
-end;
-
-procedure TReportViewerForm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
-begin
-  CloseReport;
-  Hide;
-end;
-
-procedure TReportViewerForm.FormKeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
-//
-//  Escape key closes the report.
-//
-begin
-  if Key = VK_ESCAPE then
-  begin
-    Key := 0;
-    CloseReport;
-    Hide;
-  end;
-end;
-
-procedure TReportViewerForm.MenuBtnClick(Sender: TObject);
+procedure TReportFrame.MenuBtnClick(Sender: TObject);
 begin
   if Report = nil then exit;
   case ReportType of
@@ -144,9 +104,16 @@ begin
   end;
 end;
 
-procedure TReportViewerForm.CreateReport(RptType: TReportType);
+procedure TReportFrame.CloseBtnClick(Sender: TObject);
+begin
+  CloseReport;
+  MainForm.MapViewerFrame.ReportRadioButton.Enabled := false;
+  MainForm.ShowPage(MainForm.MapPage);
+end;
+
+procedure TReportFrame.CreateReport(RptType: TReportType);
 var
-  HideForm: Boolean = false;
+  HideReport: Boolean = false;
 begin
   if Report <> nil then CloseReport;
   ReportType := RptType;
@@ -155,6 +122,7 @@ begin
       begin
         Report := TStatusRptFrame.Create(self);
         TStatusRptFrame(Report).InitReport;
+        Show;
       end;
     rtEnergy:
       begin
@@ -170,13 +138,12 @@ begin
       begin
         Report := TPcntileRptFrame.Create(self);
         TPcntileRptFrame(Report).InitReport;
-        HideForm := true;
       end;
     rtProfile:
       begin
         Report := TProfileRptFrame.Create(self);
         TProfileRptFrame(Report).InitReport;
-        HideForm := true;
+        HideReport := true;
       end;
     rtSysFlow:
       Report := TSysFlowFrame.Create(self);
@@ -189,7 +156,7 @@ begin
       begin
         Report := TTimeSeriesFrame.Create(self);
         TTimeSeriesFrame(Report).InitReport;
-        HideForm := true;
+        HideReport := true;
       end;
     rtNodes:
       begin
@@ -203,22 +170,45 @@ begin
       begin
         Report := TFireFlowFrame.Create(self);
         TFireFlowFrame(Report).InitReport;
-        HideForm := true;
       end;
   end;
   TopPanel.Caption := ReportTypeStr[QWord(ReportType)];
-  Report.Parent := Self;
+  Report.Parent := ReportPanel;
   Report.Align := alClient;
 
-  // If HideForm is true then hide this form while the report's InitReport
+  // If HideReport is true then hide the report while its InitReport
   // procedure collects information on what to report.
-  if HideForm then
-    Hide
+  if HideReport then
+  begin
+    MainForm.ShowPage(MainForm.MapPage);
+  end
   else
+  begin
     RefreshReport;
+    MainForm.MapViewerFrame.ReportRadioButton.Enabled := true;
+    MainForm.ShowPage(MainForm.ReportPage);
+  end;
 end;
 
-procedure TReportViewerForm.ShowReport(RptType: TReportType);
+procedure TReportFrame.Init;
+begin
+  {$IFDEF UNIX}
+  ReportPanel.BevelOuter := bvSpace;
+  {$ENDIF}
+  Color := config.ThemeColor;
+  config.SetHeaderColor(TopPanel);
+  Font.Size := config.FontSize;
+  ReportType := rtNone;
+  Report := nil;
+
+  Visible := false;
+end;
+
+procedure TReportFrame.ShowReport(RptType: TReportType);
+//
+//  Show a results report of type RptType. Called from a choice made
+//  on the MainForm's MainMenuFrame Report menu.
+//
 begin
   // Report type hasn't changed
   if RptType = ReportType then
@@ -229,8 +219,6 @@ begin
         TTimeSeriesFrame(Report).ShowTimeSeriesSelector;
       rtProfile:
         TProfileRptFrame(Report).ShowProfileSelector;
-      rtPcntile:
-        TPcntileRptFrame(Report).ShowPercentileSelector;
     end;
   end
 
@@ -241,22 +229,41 @@ begin
   end;
 end;
 
-procedure TReportViewerForm.ClearReport;
+procedure TReportFrame.ChangeColor(aColor: TColor);
+//
+//  Change the form's background color in response to a change in
+//  Program Preferences.
+//
 begin
+  Color := aColor;
   if Report = nil then exit;
   case ReportType of
-    rtStatus:
-      TStatusRptFrame(Report).ClearReport;
-    rtCalib:
-      TCalibRptFrame(Report).ClearReport;
+    rtPumping:
+      TPumpingRptFrame(Report).RefreshGrid;
     rtSysFlow:
-      TSysFlowFrame(Report).ClearReport;
+      TSysFlowFrame(Report).RefreshGrid;
     rtTimeSeries:
-      TTimeSeriesFrame(Report).ClearReport;
+      TTimeSeriesFrame(Report).RefreshGrid;
+    rtNodes,
+    rtLinks:
+      TNetworkRptFrame(Report).RefreshGrid;
   end;
 end;
 
-procedure TReportViewerForm.RefreshReport;
+procedure TReportFrame.ChangeTimePeriod;
+//
+//  Update time-dependent reports when a change in time period is
+//  made on the View panel of the MainForm's MapViewerFrame.
+//
+begin
+  if Report = nil then exit;
+  if ReportType in [rtNodes, rtLinks] then
+    TNetworkRptFrame(Report).RefreshReport
+  else if ReportType = rtProfile then
+    TProfileRptFrame(Report).RefreshReport;
+end;
+
+procedure TReportFrame.RefreshReport;
 begin
   if Report = nil then exit;
   case ReportType of
@@ -287,51 +294,33 @@ begin
         TNetworkRptFrame(Report).RefreshReport;
       end;
   end;
-  if ReportType <> rtFireFlow then Show;
+  Show;
+  MainForm.ShowPage(MainForm.ReportPage);
 end;
 
-procedure TReportViewerForm.UpdateReport;
+procedure TReportFrame.UpdateReport;
 begin
   if Report = nil then exit;
   if ReportType in [rtNodes, rtLinks] then
     TNetworkRptFrame(Report).RefreshGrid;
 end;
 
-procedure TReportViewerForm.ChangeColor(aColor: TColor);
-//
-//  Change the form's background color in response to a change in
-//  Program Preferences.
-//
+procedure TReportFrame.ClearReport;
 begin
-  Color := aColor;
   if Report = nil then exit;
   case ReportType of
-    rtPumping:
-      TPumpingRptFrame(Report).RefreshGrid;
+    rtStatus:
+      TStatusRptFrame(Report).ClearReport;
+    rtCalib:
+      TCalibRptFrame(Report).ClearReport;
     rtSysFlow:
-      TSysFlowFrame(Report).RefreshGrid;
+      TSysFlowFrame(Report).ClearReport;
     rtTimeSeries:
-      TTimeSeriesFrame(Report).RefreshGrid;
-    rtNodes,
-    rtLinks:
-      TNetworkRptFrame(Report).RefreshGrid;
+      TTimeSeriesFrame(Report).ClearReport;
   end;
 end;
 
-procedure TReportViewerForm.ChangeTimePeriod;
-//
-//  Update time-dependent reports when a change in time period is
-//  made on the View panel of the MainForm's MainMenuFrame.
-//
-begin
-  if Report = nil then exit;
-  if ReportType in [rtNodes, rtLinks] then
-    TNetworkRptFrame(Report).RefreshReport
-  else if ReportType = rtProfile then
-    TProfileRptFrame(Report).RefreshReport;
-end;
-
-procedure TReportViewerForm.CloseReport;
+procedure TReportFrame.CloseReport;
 begin
   if Report = nil then exit;
   case ReportType of
@@ -354,6 +343,8 @@ begin
     TNetworkRptFrame(Report).CloseReport;
   FreeAndNil(Report);
   ReportType := rtNone;
+  Hide;
+  MainForm.ShowPage(MainForm.MapPage);
 end;
 
 end.

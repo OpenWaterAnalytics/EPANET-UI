@@ -1,36 +1,35 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.0
+ Version:      1.0.3
  Module:       mainmenu
  Description:  a frame containing the program's main menu
  License:      see LICENSE
- Last Updated: 03/07/2026
+ Last Updated: 06/19/2026
 =====================================================================}
-{
-The layout of EPANET's main menu frame is as follows:
- __________________________________________________________
-|            |            |      MenuBarPanel             |
-| MenuPanel1 | MenuPanel2 | etc.                          |
-|____________|____________|_______________________________|
-|                                                         |
-|                MenuNotebook                             |
-|_________________________________________________________|
-
-The MenuBarPanel (housed in Panel2) contains a collection of panels
-(MenuPanel1 .. MenuPanel6) that activate a page of MenuNotebook when
-clicked on.
-
-The MenuNotebook contains a collection of pages corresponding
-to each top level menu panel (Page1 for MenuPanel1, Page2 for
-MenuPanel2, etc.).
-
-Each MenuNotebook page contains a toolbar (EditToolbar, MapToolbar, etc.)
-with toolbuttons for the menu commands belonging to its coresponding top
-level menu panel. An exception is the File menu (MenuPanel1) which displays
-its own FileMenu form when selected.
-}
 
 unit mainmenu;
+
+{
+ This frame is placed on the main form's MenuPanel and serves as the
+ application's main menu. Its layout looks as follows:
+  __________________________________________________________
+ |            |            |      MenuBarPanel             |
+ | MenuPanel1 | MenuPanel2 | etc.                          |
+ |____________|____________|_______________________________|
+ |                                                         |
+ |                MenuNotebook                             |
+ |_________________________________________________________|
+
+ The MenuBarPanel contains a collection of panels (MenuPanel1 ..
+ MenuPanel6) that activate a page of MenuNotebook when clicked on.
+
+ The MenuNotebook contains a collection of pages corresponding to each top
+ level menu panel (Page1 for MenuPanel1, Page2 for MenuPanel2, etc.).
+
+ Each MenuNotebook page contains a toolbar (EditToolbar, MapToolbar, etc.)
+ with toolbuttons for the menu commands belonging to its coresponding top
+ level menu panel.
+}
 
 {$mode ObjFPC}{$H+}
 
@@ -38,7 +37,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, StdCtrls, ComCtrls, ExtCtrls, Buttons,
-  Menus, LCLintf, LCLtype, Dialogs, Graphics, ImgList;
+  Menus, LCLintf, LCLtype, Dialogs, Graphics, ImgList, Clipbrd;
 
 type
 
@@ -59,26 +58,16 @@ type
     BasemapLoadItem:      TMenuItem;
     BasemapMenu:          TPopupMenu;
     BasemapUnloadItem:    TMenuItem;
-    FileSaveAsBtn:        TToolButton;
     EditCopyBtn:          TToolButton;
-    FileNewBtn:           TToolButton;
     EditPasteBtn:         TToolButton;
-    FileOpenBtn:          TToolButton;
     EditReverseBtn:       TToolButton;
-    FileSaveBtn:          TToolButton;
     EditSep1:             TToolButton;
     EditSep2:             TToolButton;
-    FileSep1:             TToolButton;
-    FileSep2:             TToolButton;
     EditToolBar:          TToolBar;
-    FileToolBar:          TToolBar;
     EditVertexBtn:        TToolButton;
     ExportMapToClipboard: TMenuItem;
     ExportMapToFile:      TMenuItem;
-    FilePanel:            TPanel;
-    FilePreferencesBtn:   TToolButton;
     GroupEditBtn:         TToolButton;
-    FileImportBtn:        TToolButton;
     HelpAboutBtn:         TToolButton;
     HelpErrorsBtn:        TToolButton;
     HelpSep1:             TToolButton;
@@ -92,7 +81,7 @@ type
     MapOptionsBtn:        TToolButton;
     MapQueryBtn:          TToolButton;
     MapSep1:              TToolButton;
-    MapSep3:              TToolButton;
+    MapSep2:              TToolButton;
     BasemapAlignItem:     TMenuItem;
     MapToolBar:           TToolBar;
     MapZoomInBtn:         TToolButton;
@@ -100,16 +89,20 @@ type
     ConvertMenuItem1:     TMenuItem;
     ConvertMenuItem2:     TMenuItem;
     ConvertMenuItem3:     TMenuItem;
-    ImportMenu:           TPopupMenu;
     DxfFileMenuItem:      TMenuItem;
-    MruMenu:              TPopupMenu;
+    ExportMenu: TPopupMenu;
+    MapToFileMenuItem: TMenuItem;
+    MapToClipbrdMenuItem: TMenuItem;
     TextFileMenuItem:     TMenuItem;
     ShapefileMenuItem:    TMenuItem;
+    LinksMenuItem:        TMenuItem;
+    NodesMenuItem:        TMenuItem;
+    ImportMenu:           TPopupMenu;
+    MruMenu:              TPopupMenu;
+    GroupEditMenu:        TPopupMenu;
     SpeedPanel:           TPanel;
     SpeedBar:             TToolBar;
     ToolButton1:          TToolButton;
-    FileQuitBtn:          TToolButton;
-    FileSep3: TToolButton;
     ToolButton2:          TToolButton;
     ToolButton3:          TToolButton;
     ToolButton4:          TToolButton;
@@ -121,22 +114,21 @@ type
     ToValveMenuItem:      TMenuItem;
     ToPumpMenuItem:       TMenuItem;
     ToPipeMenuItem:       TMenuItem;
+    FilePanel:            TPanel;
+    Panel1:               TPanel;
+    Panel2:               TPanel;
+    MenuBarPanel:         TPanel;
+    MenuPanel1:           TPanel;
     MenuPanel2:           TPanel;
     MenuPanel3:           TPanel;
     MenuPanel4:           TPanel;
     MenuPanel5:           TPanel;
-    MenuPanel6:           TPanel;
     MenuNotebook:         TNotebook;
     Page1:                TPage;
     Page2:                TPage;
     Page3:                TPage;
     Page4:                TPage;
     Page5:                TPage;
-    Page6:                TPage;
-    Panel1:               TPanel;
-    Panel2:               TPanel;
-    MenuBarPanel:         TPanel;
-    MenuPanel1:           TPanel;
     ConvertMenu:          TPopupMenu;
     ProjectAddBtn:        TToolButton;
     ProjectAnalyzeBtn:    TToolButton;
@@ -163,7 +155,7 @@ type
     RptTseriesItem:       TMenuItem;
     RptFireFlowItem:      TMenuItem;
     Separator1:           TMenuItem;
-    Separator11:          TMenuItem;
+    Separator2:           TMenuItem;
     Separator3:           TMenuItem;
     Separator4:           TMenuItem;
     Separator5:           TMenuItem;
@@ -172,23 +164,10 @@ type
     Separator8:           TMenuItem;
     GroupDeleteBtn:       TToolButton;
     EditConvertBtn:       TToolButton;
-    ViewAnimateBtn:       TSpeedButton;
-    ViewBevel1:           TBevel;
-    ViewBevel2:           TBevel;
-    ViewLinkCombo:        TComboBox;
-    ViewLinkLbl:          TLabel;
-    ViewLinkLegendBtn:    TSpeedButton;
-    ViewNodeCombo:        TComboBox;
-    ViewNodeLbl:          TLabel;
-    ViewNodeLegendBtn:    TSpeedButton;
-    ViewPanel:            TPanel;
-    ViewTimePanel:        TPanel;
-    ViewTrackBar:         TTrackBar;
 
     procedure AddLabelItemClick(Sender: TObject);
     procedure AddLinkItemClick(Sender: TObject);
     procedure AddNodeItemClick(Sender: TObject);
-    procedure AnimationTimerTimer(Sender: TObject);
 
     procedure BasemapAlignItemClick(Sender: TObject);
     procedure BasemapGeorefItemClick(Sender: TObject);
@@ -197,18 +176,8 @@ type
     procedure BasemapLoadItemClick(Sender: TObject);
     procedure BasemapMenuPopup(Sender: TObject);
     procedure BasemapUnloadItemClick(Sender: TObject);
-
     procedure ConvertMenuItemClick(Sender: TObject);
     procedure ConvertMenuPopup(Sender: TObject);
-    procedure DxfFileMenuItemClick(Sender: TObject);
-    procedure FileNewBtnClick(Sender: TObject);
-    procedure FileOpenBtnClick(Sender: TObject);
-    procedure FilePreferencesBtnClick(Sender: TObject);
-    procedure FileQuitBtnClick(Sender: TObject);
-    procedure FileSaveAsBtnClick(Sender: TObject);
-    procedure FileSaveBtnClick(Sender: TObject);
-    procedure MenuMeasureItem(Sender: TObject; ACanvas: TCanvas;
-      var AWidth, AHeight: Integer);
 
     procedure EditCopyBtnClick(Sender: TObject);
     procedure EditPasteBtnClick(Sender: TObject);
@@ -222,17 +191,21 @@ type
     procedure HelpTopicsBtnClick(Sender: TObject);
     procedure HelpTutorialBtnClick(Sender: TObject);
     procedure HelpUnitsBtnClick(Sender: TObject);
+    procedure LinksMenuItemClick(Sender: TObject);
 
-    procedure MapCopyMapBtnClick(Sender: TObject);
     procedure MapExtentsBtnClick(Sender: TObject);
     procedure MapOptionsBtnClick(Sender: TObject);
     procedure MapQueryBtnClick(Sender: TObject);
+    procedure MapToFileMenuItemClick(Sender: TObject);
     procedure MapZoomInBtnClick(Sender: TObject);
     procedure MapZoomOutBtnClick(Sender: TObject);
 
     procedure MenuPanel1MouseEnter(Sender: TObject);
     procedure MenuPanel1MouseLeave(Sender: TObject);
     procedure MenuPanelClick(Sender: TObject);
+    procedure MenuMeasureItem(Sender: TObject; ACanvas: TCanvas;
+      var AWidth, AHeight: Integer);
+    procedure NodesMenuItemClick(Sender: TObject);
 
     procedure ProjectAnalyzeBtnClick(Sender: TObject);
     procedure ProjectDeleteBtnClick(Sender: TObject);
@@ -253,37 +226,18 @@ type
     procedure RptStatusItemClick(Sender: TObject);
     procedure RptSysFlowItemClick(Sender: TObject);
     procedure RptTseriesItemClick(Sender: TObject);
-    procedure ShapefileMenuItemClick(Sender: TObject);
-    procedure TextFileMenuItemClick(Sender: TObject);
+    procedure MapToClipbrdMenuItemClick(Sender: TObject);
     procedure ToolButton1Click(Sender: TObject);
-
-    procedure ViewAnimateBtnClick(Sender: TObject);
-    procedure ViewLinkComboChange(Sender: TObject);
-    procedure ViewLinkLegendBtnClick(Sender: TObject);
-    procedure ViewNodeComboChange(Sender: TObject);
-    procedure ViewNodeLegendBtnClick(Sender: TObject);
-    procedure ViewTrackBarChange(Sender: TObject);
-    procedure ViewTrackBarKeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
-    procedure ViewTrackBarKeyUp(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
-    procedure ViewTrackBarMouseDown(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
-    procedure ViewTrackBarMouseUp(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
 
   private
     MenuPanel: TPanel;
-    function GetViewTime(Period: Integer): string;
+    procedure ExportMap(FileName: string);
 
   public
     procedure Init;
-    procedure InitMapThemes;
-    procedure InitViewTimeTrackBar(const N: Integer);
     procedure Reset;
     procedure SelectMenuItem(Key: Word);
     procedure SelectProjectMenu;
-    procedure ResetMapThemes;
     procedure SetColorTheme;
     procedure UpdateEditMenuBtns;
   end;
@@ -293,66 +247,33 @@ implementation
 {$R *.lfm}
 
 uses
-  main, basemapmenu, project, projectsummary, projectviewer, config,
-  mapthemes, simulator, results, reportviewer, about, utils, resourcestrings;
+  main, filemenu, basemapmenu, project, projectsummary, projectviewer, config,
+  mapthemes, simulator, results, reportframe, about, resourcestrings;
 
 const
-  MenuPanelHoverColor: TColor = clHighlight; //00D1B499
+  MenuPanelHoverColor: TColor =  clHighlight; //00804C23 00D1B499
 
 { TMainMenuFrame }
 
 procedure TMainMenuFrame.Init;
-var
-  I: Integer;
 begin
-  Color := config.ThemeColor;
-  MenuBarPanel.Color := $00745146;     //0068370F;  //009C6D4E;
-
+  Color := clWindow;
+  MenuBarPanel.Color := config.menuColor;
   Font.Size := config.FontSize;
-  MenuPanel := MenuPanel5;  // "Project" menu panel
+  
+  // Start with Project menu
+  MenuPanel := MenuPanel4;
   MenuPanelClick(MenuPanel);
-
-  // Initialize contents of the main form's LegendTreeView
-  mapthemes.InitThemes(MainForm.LegendTreeView);
-  mapthemes.InitColors;
-
-  // Initialize contents of the controls on the View menu panel
-  for I := 0 to High(mapthemes.NodeThemes) do
-    ViewNodeCombo.Items.Add(mapthemes.NodeThemes[I].Name);
-  for I := 0 to High(mapthemes.LinkThemes) do
-    ViewLinkCombo.Items.Add(mapthemes.LinkThemes[I].Name);
-  ViewNodeCombo.ItemIndex := 0;
-  ViewLinkCombo.ItemIndex := 0;
-  ViewNodeLegendBtn.Enabled := false;
-  ViewLinkLegendBtn.Enabled := false;
 end;
 
 procedure TMainMenuFrame.Reset;
 //
 //  Reset frame contents when a new project is started.
 //
-var
-  I: Integer;
 begin
-  Color := config.ThemeColor;
   BasemapGrayscaleItem.Checked := false;
   BasemapLightenItem.Checked := false;
-  InitViewTimeTrackBar(0);
-  mapthemes.InitThemes(MainForm.LegendTreeView);
-
-  ViewNodeCombo.Items.Clear;
-  ViewLinkCombo.Items.Clear;
-  for I := 0 to mapthemes.NodeThemeCount - 1 do
-    ViewNodeCombo.Items.Add(mapthemes.NodeThemes[I].Name);
-  for I := 0 to mapthemes.LinkThemeCount - 1 do
-    ViewLinkCombo.Items.Add(mapthemes.LinkThemes[I].Name);
-  ViewNodeCombo.ItemIndex := 1;
-  ViewNodeComboChange(self);
-  ViewLinkCombo.ItemIndex := 1;
-  ViewLinkComboChange(self);
-  ViewAnimateBtn.Down := false;
-  ViewAnimateBtn.Enabled := false;
-  AnimationTimer.Enabled := false;
+  mapthemes.InitThemes;
 
   ProjectDeleteBtn.Enabled := false;
   EditCopyBtn.Enabled := false;
@@ -360,12 +281,12 @@ begin
   EditVertexBtn.Enabled := false;
   EditReverseBtn.Enabled := false;
   EditConvertBtn.Enabled := false;
-  MenuPanelClick(MenuPanel5);
+  MenuPanelClick(MenuPanel4);
 end;
 
 procedure TMainMenuFrame.MenuPanel1MouseEnter(Sender: TObject);
 //
-//  Shared by MenuPanel1 to MenuPanel6
+//  Shared by MenuPanel1 to MenuPanel5
 //
 var
   EnteredMenuPanel: TPanel;
@@ -378,7 +299,7 @@ end;
 
 procedure TMainMenuFrame.MenuPanel1MouseLeave(Sender: TObject);
 //
-//  Shared by MenuPanel1 to MenuPanel6
+//  Shared by MenuPanel1 to MenuPanel5
 //
 var
   LeftMenuPanel: TPanel;
@@ -391,19 +312,30 @@ end;
 
 procedure TMainMenuFrame.MenuPanelClick(Sender: TObject);
 //
-// MenuPanel1 thru MenuPanel6 clicked.
+// MenuPanel1 thru MenuPanel5 clicked.
 //
 var
   NewMenuPanel: TPanel;
 begin
+  if Assigned(MainForm.FileMenuFrame) then
+    MainForm.FileMenuFrame.Visible := false;
   with Sender As TPanel do
     NewMenuPanel := TPanel(Sender);
-  MenuPanel.Color := MenuBarPanel.Color;   //config.ThemeColor;
+  MenuPanel.Color := MenuBarPanel.Color;
   MenuPanel.Font.Color := clWhite;
   MenuPanel := NewMenuPanel;
   MenuPanel.Color := MenuNotebook.Color;
   MenuPanel.Font.Color := clBlack;
   MenuNotebook.PageIndex := MenuPanel.Tag;
+
+  // MenuPanel1 is for the File menu, which is displayed in a separate frame
+  if MenuPanel.Tag = 0 then
+    MainForm.FileMenuFrame.ShowFrame;
+
+  // Show Map page if Edit or Map menu chosen
+  case MenuPanel.Tag of
+    1, 2: MainForm.ShowPage(MainForm.MapPage);
+  end;
 end;
 
 procedure TMainMenuFrame.MenuMeasureItem(Sender: TObject;
@@ -412,7 +344,7 @@ procedure TMainMenuFrame.MenuMeasureItem(Sender: TObject;
 // Sets the height of items displayed in a popup menu.
 //
 begin
-  ACanvas.Font.Name := 'Segoe UI';
+  ACanvas.Font.Name := MainForm.Font.Name;
   ACanvas.Font.Size := config.FontSize;
   with Sender as TMenuItem do
   begin
@@ -434,69 +366,18 @@ begin
       MenuPanelClick(MenuPanel1);
     VK_E:
       MenuPanelClick(MenuPanel2);
-    VK_V:
-      MenuPanelClick(MenuPanel3);
     VK_M:
-      MenuPanelClick(MenuPanel4);
+      MenuPanelClick(MenuPanel3);
     VK_P:
-      MenuPanelClick(MenuPanel5);
+      MenuPanelClick(MenuPanel4);
     VK_H:
-      MenuPanelClick(MenuPanel6);
+      MenuPanelClick(MenuPanel5);
   end;
 end;
 
 procedure TMainMenuFrame.SelectProjectMenu;
 begin
-  MenuPanelClick(MenuPanel5);
-end;
-
-//---------------------------------------------------------
-//  File menu actions
-//---------------------------------------------------------
-
-procedure TMainMenuFrame.FileNewBtnClick(Sender: TObject);
-begin
-  MainForm.FileNew(True);
-end;
-
-procedure TMainMenuFrame.FileOpenBtnClick(Sender: TObject);
-begin
-  MainForm.FileOpen;
-end;
-
-procedure TMainMenuFrame.FilePreferencesBtnClick(Sender: TObject);
-begin
-  MainForm.FileConfigure;
-end;
-
-procedure TMainMenuFrame.FileQuitBtnClick(Sender: TObject);
-begin
-  MainForm.FileQuit;
-end;
-
-procedure TMainMenuFrame.FileSaveAsBtnClick(Sender: TObject);
-begin
-  MainForm.FileSaveAs;
-end;
-
-procedure TMainMenuFrame.FileSaveBtnClick(Sender: TObject);
-begin
-  MainForm.FileSave;
-end;
-
-procedure TMainMenuFrame.ShapefileMenuItemClick(Sender: TObject);
-begin
-  MainForm.FileImport('shp');
-end;
-
-procedure TMainMenuFrame.DxfFileMenuItemClick(Sender: TObject);
-begin
-  MainForm.FileImport('dxf');
-end;
-
-procedure TMainMenuFrame.TextFileMenuItemClick(Sender: TObject);
-begin
-  MainForm.FileImport('csv');
+  MenuPanelClick(MenuPanel4);
 end;
 
 //---------------------------------------------------------
@@ -534,18 +415,28 @@ end;
 
 procedure TMainMenuFrame.GroupEditBtnClick(Sender: TObject);
 begin
+  if GroupEditBtn.Down then exit;
+end;
+
+procedure TMainMenuFrame.NodesMenuItemClick(Sender: TObject);
+begin
   GroupEditBtn.Down := True;
-  if config.ShowNotifiers then
-    MainForm.ShowHintPanel(rsGroupSelect, rsToGroupSelect);
-  MainForm.MapFrame.EnterFenceLiningMode('GroupEditing');
+  MainForm.HideHintPanelFrames;
+  MainForm.GroupEditorFrame.Init(ctNodes);
+end;
+
+procedure TMainMenuFrame.LinksMenuItemClick(Sender: TObject);
+begin
+  GroupEditBtn.Down := True;
+  MainForm.HideHintPanelFrames;
+  MainForm.GroupEditorFrame.Init(ctLinks);
 end;
 
 procedure TMainMenuFrame.GroupDeleteBtnClick(Sender: TObject);
 begin
   GroupDeleteBtn.Down := True;
-  if config.ShowNotifiers then
-    MainForm.ShowHintPanel(rsGroupSelect, rsToGroupSelect);
-  MainForm.MapFrame.EnterFenceLiningMode('GroupEditing');
+  MainForm.ShowHintPanel(rsGroupSelect, rsToGroupSelect);
+  MainForm.MapFrame.EnterFenceLiningMode('GroupDeletion');
 end;
 
 procedure TMainMenuFrame.ConvertMenuPopup(Sender: TObject);
@@ -570,156 +461,8 @@ begin
 end;
 
 //---------------------------------------------------------
-//  View menu actions
-//---------------------------------------------------------
-
-procedure TMainMenuFrame.ViewAnimateBtnClick(Sender: TObject);
-begin
-  MainForm.MapFrame.HiliteObject(0, 0);
-  AnimationTimer.Enabled := ViewAnimateBtn.Down
-end;
-
-procedure TMainMenuFrame.ViewLinkComboChange(Sender: TObject);
-begin
-  mapthemes.ChangeTheme(MainForm.LegendTreeView, ctLinks, ViewLinkCombo.ItemIndex);
-  MainForm.MapFrame.RedrawMap;
-  ViewLinkLegendBtn.Enabled := (ViewLinkCombo.ItemIndex > 0);
-end;
-
-procedure TMainMenuFrame.ViewLinkLegendBtnClick(Sender: TObject);
-begin
-  if mapthemes.EditLinkLegend then
-  begin
-    MainForm.LegendTreeView.Refresh;
-    MainForm.MapFrame.RedrawMap;
-  end;
-end;
-
-procedure TMainMenuFrame.ViewNodeComboChange(Sender: TObject);
-begin
-  mapthemes.ChangeTheme(MainForm.LegendTreeView, ctNodes, ViewNodeCombo.ItemIndex);
-  MainForm.MapFrame.RedrawMap;
-  ViewNodeLegendBtn.Enabled := (ViewNodeCombo.ItemIndex > 0);
-end;
-
-procedure TMainMenuFrame.ViewNodeLegendBtnClick(Sender: TObject);
-begin
-  if mapthemes.EditNodeLegend then
-  begin
-    MainForm.LegendTreeView.Refresh;
-    MainForm.MapFrame.RedrawMap;
-  end;
-end;
-
-procedure TMainMenuFrame.ViewTrackBarChange(Sender: TObject);
-begin
-  if project.HasResults then
-  begin
-     ViewTimePanel.Caption := GetViewTime(ViewTrackBar.Position);
-     if ViewTrackBar.Tag = 1 then
-     begin
-       ViewTrackBar.Tag := 0;
-       mapthemes.ChangeTimePeriod(ViewTrackBar.Position);
-       MainForm.ProjectFrame.UpdateResultsDisplay;
-       ReportViewerForm.ChangeTimePeriod;
-     end;
-  end;
-end;
-
-procedure TMainMenuFrame.ViewTrackBarKeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
-begin
-    if Key in
-      [VK_LEFT, VK_RIGHT, VK_UP, VK_DOWN, VK_HOME, VK_END, VK_PRIOR, VK_NEXT]
-    then ViewTrackBar.Tag := 0;
-end;
-
-procedure TMainMenuFrame.ViewTrackBarKeyUp(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
-begin
-  if Key in
-    [VK_LEFT, VK_RIGHT, VK_UP, VK_DOWN, VK_HOME, VK_END, VK_PRIOR, VK_NEXT]
-  then
-  begin
-    ViewTrackBar.Tag := 1;
-    ViewTrackBarChange(Sender);
-  end;
-end;
-
-procedure TMainMenuFrame.ViewTrackBarMouseDown(Sender: TObject;
-  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-begin
-  ViewTrackBar.Tag := 0;
-end;
-
-procedure TMainMenuFrame.ViewTrackBarMouseUp(Sender: TObject;
-  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-begin
-  ViewTrackBar.Tag := 1;
-  ViewTrackBarChange(Sender);
-end;
-
-procedure TMainMenuFrame.InitViewTimeTrackBar(const N: Integer);
-// N = number of time periods in simulation
-var
-  I: Integer;
-begin
-  mapthemes.TimePeriod := 0;
-  ViewTrackBar.Position:=0;
-  ViewTrackBar.Visible := false;
-  ViewTimePanel.Caption := '';
-  ViewAnimateBtn.Visible := false;
-  if N > 0 then
-  begin
-    I := project.GetStatisticsType;
-    if I = 0 then
-    begin
-      if N > 1 then
-      begin
-        ViewTrackBar.Visible := True;
-        ViewTrackBar.Max := N - 1;
-        ViewAnimateBtn.Visible := (N > 1);
-        ViewTimePanel.Caption := GetViewTime(0);
-      end;
-    end
-    else
-      ViewTimePanel.Caption := rsThemesAre + project.StatisticStr[I];
-  end;
-end;
-
-procedure TMainMenuFrame.AnimationTimerTimer(Sender: TObject);
-begin
-  with ViewTrackBar do
-  begin
-    if Position = Max then
-      Position := 0
-    else
-      Position := Position + 1;
-  end;
-  mapthemes.ChangeTimePeriod(ViewTrackBar.Position);
-  MainForm.ProjectFrame.UpdateResultsDisplay;
-  ReportViewerForm.ChangeTimePeriod;
-end;
-
-function TMainMenuFrame.GetViewTime(Period: Integer): string;
-var
-  T: Integer;
-begin
-  Result := rsTime + results.GetTimeStr(Period);
-  T := project.StartTime + (Period * results.Rstep) + results.Rstart;
-  Result := Result + '  (' + utils.TimeOfDayStr(T) + ')';
-end;
-
-//---------------------------------------------------------
 //  Map menu actions
 //---------------------------------------------------------
-
-procedure TMainMenuFrame.MapCopyMapBtnClick(Sender: TObject);
-begin
-  MainForm.HideHintPanelFrames;
-  MainForm.ExporterFrame.Init;
-  MainForm.ExporterFrame.Show;
-end;
 
 procedure TMainMenuFrame.MapExtentsBtnClick(Sender: TObject);
 begin
@@ -755,9 +498,9 @@ procedure TMainMenuFrame.ProjectAnalyzeBtnClick(Sender: TObject);
 var
   SF: TSimulationForm;
 begin
-  ViewAnimateBtn.Down := false;
-  ViewAnimateBtn.Enabled := false;
-  AnimationTimer.Enabled := false;
+  MainForm.MapViewerFrame.AnimateBtn.Checked := false;
+  MainForm.MapViewerFrame.AnimateBtn.Enabled := false;
+  MainForm.MapViewerFrame.AnimationTimer.Enabled := false;
   SF := TSimulationForm.Create(Self);
   try
     SF.ShowModal;
@@ -766,20 +509,23 @@ begin
     begin
       project.ResultsStatus := rsUpToDate;
       MainForm.UpdateStatusBar(sbResults, rsResultsCurrent);
-      InitViewTimeTrackBar(results.Nperiods);
-      ViewAnimateBtn.Enabled := (results.Nperiods > 1);
+      MainForm.MapViewerFrame.InitTimeGroupBox(results.Nperiods);
       mapthemes.ChangeTimePeriod(0);
-      ReportViewerForm.RefreshReport;
+      if project.SimStatus <> ssWarning then
+        MainForm.ReportFrame.RefreshReport;
     end
     else
     begin
-      InitViewTimeTrackBar(0);
+      MainForm.MapViewerFrame.InitTimeGroupBox(0);
       project.ResultsStatus := rsNotAvailable;
       MainForm.UpdateStatusBar(sbResults, rsNoResults);
     end;
     MainForm.ProjectFrame.UpdateResultsDisplay;
     if project.SimStatus in [ssFailed, ssError, ssWarning] then
-      ReportViewerForm.ShowReport(rtStatus);
+    begin
+      MainForm.ReportFrame.CloseReport;
+      MainForm.ReportFrame.ShowReport(rtStatus);
+    end;
   finally
     SF.Free;
   end;
@@ -900,61 +646,63 @@ end;
 
 procedure TMainMenuFrame.RptCalibItemClick(Sender: TObject);
 begin
-  ReportViewerForm.ShowReport(rtCalib);
+  MainForm.ReportFrame.ShowReport(rtCalib);
 end;
 
 procedure TMainMenuFrame.RptEnergyItemClick(Sender: TObject);
 begin
-  ReportViewerForm.ShowReport(rtEnergy);
+  MainForm.ReportFrame.ShowReport(rtEnergy);
 end;
 
 procedure TMainMenuFrame.RptFireFlowItemClick(Sender: TObject);
 begin
-  ReportViewerForm.ShowReport(rtFireFlow);
+  MainForm.ReportFrame.ShowReport(rtFireFlow);
 end;
 
 procedure TMainMenuFrame.RptNetLinksItemClick(Sender: TObject);
 begin
-  ReportViewerForm.ShowReport(rtLinks);
+  MainForm.ReportFrame.ShowReport(rtLinks);
 end;
 
 procedure TMainMenuFrame.RptNetNodesItemClick(Sender: TObject);
 begin
-  ReportViewerForm.ShowReport(rtNodes);
+  MainForm.ReportFrame.ShowReport(rtNodes);
 end;
 
 procedure TMainMenuFrame.RptPercentileItemClick(Sender: TObject);
 begin
-  ReportViewerForm.ShowReport(rtPcntile);
+  MainForm.ReportFrame.ShowReport(rtPcntile);
 end;
 
 procedure TMainMenuFrame.RptProfileItemClick(Sender: TObject);
 begin
-  ReportViewerForm.ShowReport(rtProfile);
+  MainForm.ReportFrame.ShowReport(rtProfile);
 end;
 
 procedure TMainMenuFrame.RptPumpItemClick(Sender: TObject);
 begin
-  ReportViewerForm.ShowReport(rtPumping);
+  MainForm.ReportFrame.ShowReport(rtPumping);
 end;
 
 procedure TMainMenuFrame.RptStatusItemClick(Sender: TObject);
 begin
-  ReportViewerForm.ShowReport(rtStatus);
+  MainForm.ReportFrame.ShowReport(rtStatus);
 end;
 
 procedure TMainMenuFrame.RptSysFlowItemClick(Sender: TObject);
 begin
- ReportViewerForm.ShowReport(rtSysFlow);
+  MainForm.ReportFrame.ShowReport(rtSysFlow);
 end;
 
 procedure TMainMenuFrame.RptTseriesItemClick(Sender: TObject);
 begin
-  ReportViewerForm.ShowReport(rtTimeSeries);
+  MainForm.ReportFrame.ShowReport(rtTimeSeries);
 end;
 
 procedure TMainMenuFrame.ToolButton1Click(Sender: TObject);
+//
 // This event handler is shared by all buttons on SpeedToolbar1.
+//
 begin
   with Sender as TToolButton do
   case Tag of
@@ -1091,53 +839,78 @@ begin
   BasemapGrayscaleItem.Checked := false;
 end;
 
+//---------------------------------------------------------
+//  ExportMenu actions
+//---------------------------------------------------------
+
+procedure TMainMenuFrame.MapToClipbrdMenuItemClick(Sender: TObject);
+begin
+  ExportMap('');
+end;
+
+procedure TMainMenuFrame.MapToFileMenuItemClick(Sender: TObject);
+begin
+  with MainForm.SavePictureDialog1 do
+  begin
+    if project.InpFile.Length > 0 then
+    begin
+      InitialDir := ExtractFileDir(project.InpFile);
+      FileName := ChangeFileExt(ExtractFileName(project.InpFile), '.png');
+    end;
+    if Execute then ExportMap(FileName);
+  end;
+end;
+
+procedure TMainMenuFrame.ExportMap(FileName: string);
+//
+//  Paints the network map & its legend onto a bitmap which is either
+//  copied to the clipboard or saved to a file.
+//
+var
+  W, H:      Integer;
+  Bitmap:    TBitmap;
+begin
+  with MainForm do
+  begin
+    H := MapFrame.Height;
+    W := MapFrame.Width;
+  end;
+
+  // Create a bitmap that will contain the exported map
+  Bitmap := TBitmap.Create;
+  try
+    // Copy the network map's bitmap image into the exported bitmap
+    Bitmap.SetSize(W, H);
+    MainForm.MapFrame.PaintTo(Bitmap.Canvas, 0, 0);
+
+    // Draw a frame around the exported bitmap
+    Bitmap.Canvas.Brush.Style := bsClear;
+    Bitmap.Canvas.Rectangle(0, 0, W, H);
+
+    // Send the exported bitmap to either the clipboard or to a file
+    if Length(FileName) = 0 then
+      Clipboard.Assign(Bitmap)
+    else
+      Bitmap.SaveToFile(FileName);
+  finally
+    Bitmap.Free;
+  end;
+end;
+
 procedure TMainMenuFrame.SetColorTheme;
 var
   MenuBarPanelColor: TColor;
 begin
   MenuBarPanelColor := MenuBarPanel.Color;
-  Color := config.ThemeColor;
+  Color := config.FormColor;
   MenuBarPanel.Color := MenuBarPanelColor;
   MenuPanel.Color := MenuNotebook.Color;
 end;
 
-procedure TMainMenuFrame.ResetMapThemes;
-var
-  I: Integer;
-  J: Integer;
-begin
-  J := ViewNodeCombo.ItemIndex;
-  if J >= NodeThemeCount then J := 0;
-  ViewNodeCombo.Items.Clear;
-  for I := 0 to NodeThemeCount - 1 do
-    ViewNodeCombo.Items.Add(mapthemes.NodeThemes[I].Name);
-  ViewNodeCombo.ItemIndex := J;
-
-  J := ViewLinkCombo.ItemIndex;
-  if J >= LinkThemeCount then J := 0;
-  ViewLinkCombo.Items.Clear;
-  for I := 0 to LinkThemeCount - 1 do
-    ViewLinkCombo.Items.Add(mapthemes.LinkThemes[I].Name);
-  ViewLinkCombo.ItemIndex := J;
-
-  mapthemes.ChangeTheme(MainForm.LegendTreeView, ctNodes, ViewNodeCombo.ItemIndex);
-  ViewNodeLegendBtn.Enabled := (ViewNodeCombo.ItemIndex > 0);
-  mapthemes.ChangeTheme(MainForm.LegendTreeView, ctLinks, ViewLinkCombo.ItemIndex);
-  ViewLinkLegendBtn.Enabled := (ViewLinkCombo.ItemIndex > 0);
-end;
-
-procedure TMainMenuFrame.InitMapThemes;
-begin
-  ViewNodeCombo.ItemIndex := ntElevation;
-  ViewNodeLegendBtn.Enabled := true;
-  ViewLinkCombo.ItemIndex := ltDiameter;
-  ViewLinkLegendBtn.Enabled := true;
-  mapthemes.SetInitialTheme(ctNodes, ntElevation);
-  mapthemes.SetInitialTheme(ctLinks, ltDiameter);
-  SelectProjectMenu;
-end;
-
-procedure TMainMenuFrame.UpdateEditmenuBtns;
+procedure TMainMenuFrame.UpdateEditMenuBtns;
+//
+//  Updates the state of menu items when user selects a network object.
+//
 var
   BtnEnabled: Boolean;
 begin

@@ -31,7 +31,7 @@ More detailed information on modeling water distribution systems can be found in
 
 The EPANET-UI workspace is shown in the picture below. It is divided into several panels that display program commands and information about the water distribution system being analyzed.
 
-![](images/workspace-8-annotated.png)
+![](images/AnnotatedWorkspace.png)
 
 The **Menu Bar** panel across the top of the workspace contains a collection of toolbars that execute various program commands.
 
@@ -41,9 +41,11 @@ The upper portion of the **Project Explorer** panel is used to select a category
 
 The **Network Map** panel occupies the middle portion of the workspace. It displays the layout of the pipe network being analyzed and can include a basemap backdrop to show the network's physical location.
 
-The **Map Legend** panel shows the symbology used to color code themes displayed on the map. 
+The **Map Viewer** panel controls what themes, legends and layers are displayed on the Network Map. 
 
 The **Status Bar** panel along the bottom of the workspace displays several key project options as well as the coordinates of the mouse pointer as it is moved across the Network Map.
+
+Not shown is the **Report Panel** that shares space with the Network Map panel and displays the contents of output reports selected from the Project menu. The **View** radio buttons on the Map Viewer are used to switch between the two panels.
 
 
 # Project Setup
@@ -159,7 +161,7 @@ At this point we have completed drawing the example network. Your network should
 </p>
 
 <p>
-To reshape the curved pipe 8 select <b>Edit > Reshape Link</b> on the Menu Bar. This will display the vertex points of the link as small squares. Follow the instructions in the panel that appears above the Map Legend to add, delete or move vertices.
+To reshape the curved pipe 8 select <b>Edit > Reshape Link</b> on the Menu Bar. This will display the vertex points of the link as small squares. Follow the instructions in the panel that appears above the Map Viewer to add, delete or move vertices.
 </p>
 
 <imgc images/shapelink.png>
@@ -262,11 +264,11 @@ We now have enough information to run a single period (or snapshot) hydraulic an
 If the run was unsuccessful then a <b>Status Report</b> window will appear indicating what the problem was. If it ran successfully you can view the computed results in a variety of ways. Try some of the following:
 </p>
 
-- Select <b>Pressure</b> from the Node Theme list box on the <b>View</b> tab of the Menu Bar to view computed nodal pressure in color-coded fashion. Click its associated <b>Legend</b> icon if you want to change the theme colors and their intervals.
+- Select <b>Pressure</b> from the Nodes Themes list box on the <b>Map Viewer</b> panel to view computed nodal pressure in color-coded fashion on the Network Map. Click its associated <b>Legend</b> check box to add a legend to the map.
 
 <imgl images/viewmaptheme.png><br><br>
 
-- Click on any node or link and note how its computed results are displayed at the end of the Property Editor. 
+- Click on any node or link on the map and note how its computed results are displayed at the end of the Property Editor. 
 
 - Create a tabular listing of results by selecting either a <b>Node Results Table</b> or <b>Link Results Table</b> report from the drop-down menu of the <b>Report</b> button on the <b>Project</b> tab of the Menu Bar.
 
@@ -346,11 +348,9 @@ Pattern 1 has now been assigned as the default demand pattern for all junction n
 We are now ready to run the extended period hydraulic analysis. Once again select <b>Project > Analyze</b> from the Menu Bar.  For extended period analysis you have several more ways in which to view results:
 </p>
 
-- Select the <b>View</b> Menu Bar tab and use the slider control to display the network map at different points in time. 
+- <imgr images/timeslider.png>Use the slider control in the **Time** group box of the Map Viewer panel to display the Network Map at different points in time. 
 
-- Click the <b>Animate</b> button next to the slider control to animate the map through time. Click it again to stop the animation.
-
-<imgl images/epsview.png><br>
+- Click the <b>Animate</b> button under the slider control to animate the map through time. Click it again to stop the animation.
 
 - Create a time series plot for any node or link. For example, to see how the water elevation in the tank changes with time:
 
@@ -358,7 +358,7 @@ We are now ready to run the extended period hydraulic analysis. Once again selec
 
   2.Select <b>Project > Report > Time Series Report</b>.
 
-  3.A <b>Time Series Selector</b> panel will appear above the Map Legend with a time series for Tank 8's pressure listed. Since we want to plot water surface elevation (i.e., hydraulic head) click the <imgt images/pencil.png><b>(Edit)</b> button so we can change the variable to be plotted.
+  3.A <b>Time Series Selector</b> panel will appear above the Map Viewer panel with a time series for Tank 8's pressure listed. Since we want to plot water surface elevation (i.e., hydraulic head) click the <imgt images/pencil.png><b>(Edit)</b> button so we can change the variable to be plotted.
 
   4.On the new page of the Time Series Selector that appears, select <b>Head</b> as the parameter to plot and hit <ui2>  Accept  </ui2> to return to the time series list page.
 
@@ -382,20 +382,20 @@ The simplest type of water quality analysis to run is tracking the age of water 
 
 1.In the <b>Project Explorer</b> panel select the <b>Quality</b> category of Analysis Options.
 
-2.In the <b>Property Editor</b> for this category click the <ui2>...</ui2> button (or press <kbd>Enter</kbd>) in the Single-Species data field.
+2.In the <b>Property Editor</b> for this category click the <ui2>...</ui2> button (or press <kbd>Enter</kbd>) in the **Single-Species** data field.
 
 3.A <b>Single Species Water Quality Editor</b> dialog will appear. Select `Water Age` for the choice of Type of Quality Analysis and close the dialog.
 
 4.Run the analysis.
 
-5.To visualize the growth of water age over time, select <b>Water Age</b> as the map's Node and Link themes on the <b>View</b> tab and click the <b>Animate</b> button. 
+5.To visualize the growth of water age over time, select <b>Water Age</b> as the map's Node and Link themes on the <b>Map Viewer</b> panel and click the <b>Animate</b> button. 
 
 <p>
-If you create a time series plot for Water Age for the tank Node 8 you will see that unlike water level, 72 hours is not enough time for the tank's water age to reach a periodic behavior when it begins with an initial age of 0. Try repeating the analysis after setting the tank's <i>Initial Quality</i> to `84` (you can leave the time series plot open while doing this -- it will refresh after the new run is completed).
+If you create a time series plot for Water Age for the tank Node 8 you will see that unlike water level, 72 hours is not enough time for the tank's water age to reach a periodic behavior when it begins with an initial age of 0. Try repeating the analysis after setting the tank's **Initial Quality** to `84` (you can leave the time series plot open while doing this -- it will refresh after the new run is completed).
 </p>
 
 <p>
-Afterwards, reset the tank's <i>Initial Quality</i> to `0` once again in preparation for the next analysis.
+Afterwards, reset the tank's Initial Quality to `0` once again in preparation for the next analysis.
 </p>
 
 ## Chlorine Decay Analysis
@@ -426,13 +426,16 @@ NOTE:
 An easier way to set a property for all links (or nodes) is to select <b>Edit > Group Edit</b> from the Menu Bar, hit <kbd>Enter</kbd> to select the entire network, and then select a property and its new value in the <b>Group Editor</b> dialog that appears.
 
 <p>
-Run the model and from the <b>View</b> Menu Bar tab select <b>Chlorine</b> for both the Node and Link map themes. After doing this you will notice that the default concentration intervals shown in the Map Legend are much too high for the conditions being modelled. To correct this, click on the Node Theme Legend icon to launch the Legend Editor. Click on the <ui2>  Interval Scale  </ui2> button to display a form in which you can enter a reasonable range of CL2 values, such as `0` to `1.0` mg/L. Afterwards the legend will be modified to have equal intervals between these values. This process is shown in the figure below and should be repeated for the Link Theme Legend as well.
+Run the model and from the Map Viewer panel select <b>Chlorine</b> for both the Node and Link map themes. Also make the legends visible on the map using their respective check boxes. After doing this you will notice that the default concentration intervals shown in the legends are much too high for the conditions being modelled. To correct this, click on the <imgt images/pencil.png> icon next to the Node Legend checkbox to launch the <b>Legend Editor</b>. In the editor, click on the <ui2>  Interval Scale  </ui2> button to display a form in which you can enter a reasonable range of concentration values, such as `0` to `1.0` mg/L. Afterwards the legend will be modified to have equal intervals between these values. This process is shown in the figure below and should be repeated for the Link Legend as well.
 </p>
 
 <imgl images/legendscale.png> <br>
 
+NOTE:
+The legends can be repositioned on the Network Map by dragging them with the left mouse button held down. Right clicking on an empty area of a legend will launch its Legend Editor. Double clicking will hide the legend.
+
 <p>
-You can use the slider control on the <b>View</b> tab of the Menu Bar to display the network map at different points in time. When doing so you will notice that nodes 5, 6 and 7 see depressed chlorine levels due to being fed low chlorine water from the tank. The time series plot shown below contrasts chlorine levels in node 3 near the reservoir source with node 5 and the tank node 8.
+You can use the slider control on the <b>Time</b> group box on the Map Viewer panel to display the Network Map at different points in time. When doing so you will notice that nodes 5, 6 and 7 see depressed chlorine levels due to being fed low chlorine water from the tank. The time series plot shown below contrasts chlorine levels in node 3 near the reservoir source with node 5 and the tank node 8.
 </p>
 
 <imgl images/cl2results.png>
@@ -449,7 +452,7 @@ We have only touched the surface of of EPANET-UI's capabilities. Some additional
 
 - exploring different Map Options, such as making node size be related to value 
 
-- attaching a basemap image (such as a street map) to the network map 
+- attaching a basemap image (such as a street map) to the Network Map 
 
 - creating reports for system energy balance, pumping utilization, pressure variablity, hydraulic profile, and fire flow analysis
 

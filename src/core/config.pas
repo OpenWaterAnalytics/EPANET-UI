@@ -1,10 +1,10 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.2
+ Version:      1.0.3
  Module:       config
- Description:  reads, saves and edits program preferenecs
+ Description:  reads, saves and edits program preferences
  License:      see LICENSE
- Last Updated: 03/18/2026
+ Last Updated: 06/19/2026
 =====================================================================}
 
 unit config;
@@ -14,14 +14,18 @@ unit config;
 interface
 
 uses
-  Classes, Graphics, SysUtils, Controls, Forms, IniFiles, LCLIntf, Registry;
+  Classes, Graphics, SysUtils, Controls, Forms, IniFiles, ExtCtrls, LCLIntf;
 
 const
   WinFontSize = 9;
   NixFontSize = 9;
-  GrayTheme: Integer = $00F0F0F0;  //00F8F8F8; //$00EEEEEE;  //$00F9F4F0;
-  BlueTheme: Integer =  $00FDEEE3;  //Pale Blue
-  CreamTheme: Integer = $00F0FBFF;
+
+  GrayTheme: Integer   = $00F3F3F3;   //00F0F0F0 00F8F8F8 00EEEEEE 00F9F4F0;
+  BlueTheme: Integer   = $00FDEEE3;   //Pale Blue
+  CreamTheme: Integer  = $00F0FBFF;   //clCream
+  MenuColor: Integer   = $00804C23;   //00B56C36 004F4F4F 00737A7D  00BE6E10
+  HeaderColor: Integer = $00F3F3F3;   //004F4F4F 00B56C36 00BE6E10  00737A7D 004C4641
+
   MonoFonts: array[1..3] of string =
     ('Noto Mono', 'Liberation Mono', 'DejaVu Sans Mono');
 
@@ -44,12 +48,13 @@ var
   procedure ReadPreferences(FileName: string);
   procedure SavePreferences(FileName: string);
   procedure EditPreferences(var ClearFileList: Boolean);
+  procedure SetHeaderColor(aHeader: TPanel);
   function  IsDefaultBrowserChromium: Boolean;
 
 implementation
 
 uses
-  main, project, reportviewer, configeditor;
+  main, project, reportframe, configeditor;
 
 function GetSysMonoFont: string;
 var
@@ -79,7 +84,7 @@ begin
   OpenLastFile := true;
   BackupFile := false;
   ThemeColor := GrayTheme;
-  FormColor := GrayTheme;  //clWindow;
+  FormColor := clWindow;
   AlternateColor := $00F6F6F3;
   DecimalPlaces := 2;
 
@@ -102,8 +107,10 @@ begin
       OpenLastFile := Ini.ReadBool('Preferences', 'Open Last File', true);
       BackupFile := Ini.ReadBool('Preferences', 'Backup File', false);
       DecimalPlaces := Ini.ReadInteger('Preferences', 'Decimal Places', 2);
-      ThemeColor := Ini.ReadInteger('Preferences', 'Theme Color', ThemeColor);
-      FormColor := ThemeColor;
+
+      // Deprecated
+//    ThemeColor := Ini.ReadInteger('Preferences', 'Theme Color', ThemeColor);
+
     finally
       Ini.Free;
     end;
@@ -123,7 +130,10 @@ begin
     Ini.WriteBool('Preferences', 'Open Last File', OpenLastFile);
     Ini.WriteBool('Preferences', 'Backup File', BackupFile);
     Ini.WriteInteger('Preferences', 'Decimal Places', DecimalPlaces);
-    Ini.WriteInteger('Preferences', 'Theme Color', ThemeColor);
+
+    // Deprecated
+//  Ini.WriteInteger('Preferences', 'Theme Color', ThemeColor);
+
   finally
     Ini.Free;
   end;
@@ -145,45 +155,32 @@ begin
     if ModalResult = mrOK then
     begin
       GetPreferences(ClearFileList);
+{
+      // Deprecated
       if OldThemeColor <> ThemeColor then
       begin
         with MainForm do
         begin
           Color := ThemeColor;
+          MapViewerFrame.Color := ThemeColor;
           MainMenuFrame.SetColorTheme;
           if not project.HasResults then
             StatusBarFrame.SetPanelColor(Ord(sbResults), Color);
         end;
-        ReportViewerForm.ChangeColor(ThemeColor);
+        MainForm.ReportFrame.ChangeColor(ThemeColor);
       end;
+}
     end;
   finally
     Free;
   end;
 end;
 
-function GetDefaultBrowserProgId: string;
-//
-//  Return the ID of Windows default web browser.
-//
-var
-  Reg: TRegistry;
-  ProgId: string;
+procedure SetHeaderColor(aHeader: TPanel);
 begin
-  Result := '';
-  Reg := TRegistry.Create(KEY_READ);
-  try
-    Reg.RootKey := HKEY_CURRENT_USER;
-    if Reg.OpenKeyReadOnly(
-'Software\Microsoft\Windows\Shell\Associations\UrlAssociations\http\UserChoiceLatest\ProgId') then
-    begin
-      ProgId := Reg.ReadString('ProgId');
-      Reg.CloseKey;
-      Result := ProgId;
-    end;
-  finally
-    Reg.Free;
-  end;
+  aHeader.Color := HeaderColor;
+  aHeader.BorderStyle := bsSingle;
+//  aHeader.Font.Color := clWhite;
 end;
 
 function IsDefaultBrowserChromium: Boolean;
@@ -191,21 +188,16 @@ function IsDefaultBrowserChromium: Boolean;
 //  Determine if Windows default web browser is Chromium-based (Edge or Chrome)
 //
 var
-  ProgId: string;
+  Path:   string;
+  Params: string;
 begin
-  ProgId := GetDefaultBrowserProgId;
-  // Check for common Edge/Chrome ProgIds
-  if (Pos('Edge', ProgId) > 0)
-  or (Pos('MicrosoftEdge', ProgId) > 0)
-  or (Pos('MSEdge', ProgId) > 0)
-  or (Pos('Chrome', ProgId) > 0) then
-  begin
+  Result := false;
+  FindDefaultBrowser(Path, Params);
+  if (Pos('Edge', Path) > 0)
+  or (Pos('MicrosoftEdge', Path) > 0)
+  or (Pos('MSEdge', Path) > 0)
+  or (Pos('Chrome', Path) > 0) then
     Result := True;
-  end
-  else
-  begin
-    Result := False;
-  end;
 end;
 
 end.

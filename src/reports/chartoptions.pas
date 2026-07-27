@@ -1,10 +1,10 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.0
+ Version:      1.0.3
  Module:       chartoptions
  Description:  a form that selects display options for a TChart
  License:      see LICENSE
- Last Updated: 03/07/2026
+ Last Updated: 06/19/2026
 =====================================================================}
 
 unit chartoptions;
@@ -15,11 +15,11 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ComCtrls, StdCtrls,
-  ColorBox, Spin, ExtCtrls, Buttons, Math, TAGraph, TASeries, TALegend, TATypes,
+  ColorBox, Spin, ExtCtrls, Buttons, TAGraph, TASeries, TALegend, TATypes,
   SpinEx, FPCanvas;
 
 const
-  MaxSeries = 6;
+  MaxSeries = 6; // Maximum number of data series plotted
 
 type
   TSeriesOptions = record
@@ -78,7 +78,6 @@ type
     LgndPositionComboBox:  TComboBox;
     LineStyleComboBox:     TComboBox;
     PointsStyleComboBox:   TComboBox;
-    CheckBox1:             TCheckBox;
     LineVisibleCheckBox:   TCheckBox;
     FramePlotAreaBox:      TCheckBox;
     LgndFramedCheckBox:    TCheckBox;

@@ -1,13 +1,21 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.0
+ Version:      1.0.3
  Module:       properties
  Description:  retrieves property values of a project's objects
  License:      see LICENSE
- Last Updated: 03/07/2026
+ Last Updated: 06/19/2026
 =====================================================================}
 
 unit properties;
+
+{
+ This unit fetches property values from the internal database of the
+ EPANET project being analyzed. Its procedures are called by those
+ inside editor.pas to fill in the PropEditor grid in the main form's
+ ProjectFrame. Requested property values are retrieved using
+ EPANET API calls.
+}
 
 {$mode objfpc}{$H+}
 

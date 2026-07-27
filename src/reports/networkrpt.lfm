@@ -6,7 +6,10 @@ object NetworkRptFrame: TNetworkRptFrame
   Align = alClient
   ClientHeight = 394
   ClientWidth = 605
+  Color = clDefault
   LCLVersion = '4.4.0.0'
+  ParentBackground = False
+  ParentColor = False
   TabOrder = 0
   DesignLeft = 1211
   DesignTop = 14
@@ -20,20 +23,22 @@ object NetworkRptFrame: TNetworkRptFrame
     TabOrder = 0
     object TablePage: TPage
       object BottomPanel: TPanel
-        Left = 12
+        Left = 0
         Height = 35
         Top = 359
-        Width = 593
+        Width = 605
         Align = alBottom
         Alignment = taLeftJustify
-        BorderSpacing.Left = 12
         BevelOuter = bvNone
-        Caption = ' Filters (None)'
+        BorderStyle = bsSingle
+        Caption = '    Filters (None)'
         ClientHeight = 35
-        ClientWidth = 593
+        ClientWidth = 605
+        ParentBackground = False
+        ParentColor = False
         TabOrder = 0
         object Label1: TLabel
-          Left = 400
+          Left = 404
           Height = 15
           Top = 10
           Width = 165
@@ -43,50 +48,35 @@ object NetworkRptFrame: TNetworkRptFrame
           ParentColor = False
         end
       end
-      object Panel1: TPanel
+      object DataGrid: TDrawGrid
         Left = 0
         Height = 359
         Top = 0
         Width = 605
         Align = alClient
-        BevelOuter = bvNone
-        ClientHeight = 359
-        ClientWidth = 605
+        AlternateColor = clNone
+        AutoFillColumns = True
+        BorderStyle = bsNone
+        ColCount = 1
+        ColumnClickSorts = True
+        DefaultColWidth = 112
+        DefaultRowHeight = 24
+        ExtendedSelect = False
+        Flat = True
+        GridLineColor = cl3DLight
+        Options = [goFixedVertLine, goFixedHorzLine, goHorzLine, goColSizing, goThumbTracking, goSmoothScroll, goHeaderPushedLook, goFixedColSizing]
+        RowCount = 1
         TabOrder = 1
-        object DataGrid: TDrawGrid
-          Left = 16
-          Height = 343
-          Top = 16
-          Width = 573
-          Align = alClient
-          AlternateColor = clNone
-          AutoFillColumns = True
-          BorderSpacing.Left = 16
-          BorderSpacing.Top = 16
-          BorderSpacing.Right = 16
-          ColCount = 1
-          ColumnClickSorts = True
-          DefaultColWidth = 112
-          DefaultRowHeight = 24
-          ExtendedSelect = False
-          FixedColor = clWindow
-          Flat = True
-          GridLineColor = cl3DLight
-          Options = [goFixedVertLine, goFixedHorzLine, goHorzLine, goColSizing, goThumbTracking, goSmoothScroll, goHeaderPushedLook, goFixedColSizing]
-          RowCount = 1
-          TabOrder = 0
-          OnClick = DataGridClick
-          OnDrawCell = DataGridDrawCell
-          OnHeaderClick = DataGridHeaderClick
-          OnPrepareCanvas = DataGridPrepareCanvas
-          ColWidths = (
-            605
-          )
-        end
+        OnClick = DataGridClick
+        OnDrawCell = DataGridDrawCell
+        OnHeaderClick = DataGridHeaderClick
+        OnPrepareCanvas = DataGridPrepareCanvas
+        ColWidths = (
+          605
+        )
       end
     end
     object FilterPage: TPage
-      Color = clWindow
       object FiltersAcceptBtn: TButton
         Left = 373
         Height = 25

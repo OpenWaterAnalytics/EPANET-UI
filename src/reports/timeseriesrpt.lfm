@@ -10,155 +10,132 @@ object TimeSeriesFrame: TTimeSeriesFrame
   TabOrder = 0
   DesignLeft = 1167
   DesignTop = 270
-  object PageControl1: TPageControl
+  object Notebook1: TNotebook
     Left = 0
     Height = 382
     Top = 0
     Width = 715
-    ActivePage = ChartTabSheet
+    PageIndex = 0
     Align = alClient
-    Style = tsFlatButtons
-    TabIndex = 0
     TabOrder = 0
-    object ChartTabSheet: TTabSheet
-      Caption = 'Chart'
-      ClientHeight = 351
-      ClientWidth = 707
-      object Panel1: TPanel
-        Left = 16
-        Height = 335
+    object ChartPage: TPage
+      object Chart1: TChart
+        Left = 0
+        Height = 382
         Top = 0
-        Width = 675
+        Width = 715
+        AntialiasingMode = amOn
+        AxisList = <        
+          item
+            Grid.Color = cl3DLight
+            Grid.Style = psSolid
+            Marks.LabelBrush.Style = bsClear
+            Minors = <>
+            Title.Distance = 10
+            Title.LabelFont.Orientation = 900
+            Title.LabelFont.Style = [fsBold]
+            Title.Visible = True
+            Title.LabelBrush.Style = bsClear
+            Transformations = LeftChartAxisTransformations
+          end        
+          item
+            Grid.Color = cl3DLight
+            Grid.Style = psSolid
+            Alignment = calBottom
+            Margin = 10
+            Marks.Format = '%2:s'
+            Marks.LabelBrush.Style = bsClear
+            Marks.OverlapPolicy = opHideNeighbour
+            Marks.Source = DateTimeIntervalChartSource1
+            Marks.Style = smsLabel
+            Minors = <>
+            Title.LabelFont.Style = [fsBold]
+            Title.Caption = 'Hour'
+            Title.LabelBrush.Style = bsClear
+          end        
+          item
+            Grid.Color = cl3DLight
+            Grid.Style = psSolid
+            Grid.Visible = False
+            Alignment = calRight
+            Marks.LabelBrush.Style = bsClear
+            Minors = <>
+            Title.LabelFont.Orientation = -900
+            Title.LabelFont.Style = [fsBold]
+            Title.Visible = True
+            Title.LabelBrush.Style = bsClear
+            Transformations = RightChartAxisTransformations
+          end>
+        BackColor = clWhite
+        Foot.Brush.Color = clBtnFace
+        Foot.Font.Color = clBlue
+        GUIConnector = ChartGUIConnectorBGRA1
+        Legend.Alignment = laTopCenter
+        Legend.BackgroundBrush.Style = bsClear
+        Legend.ColumnCount = 3
+        Legend.Frame.Visible = False
+        Legend.SymbolFrame.Visible = False
+        Legend.Visible = True
+        Title.Brush.Color = clBtnFace
+        Title.Brush.Style = bsClear
+        Title.Font.CharSet = ANSI_CHARSET
+        Title.Font.Color = clBlue
+        Title.Font.Height = -16
+        Title.Font.Name = 'Segoe UI'
+        Title.Font.Pitch = fpVariable
+        Title.Font.Quality = fqDraft
+        Title.Font.Style = [fsBold]
+        Title.Text.Strings = (
+          ''
+        )
+        Title.Visible = True
         Align = alClient
-        BorderSpacing.Left = 16
-        BorderSpacing.Right = 16
-        BorderSpacing.Bottom = 16
-        BevelOuter = bvNone
-        BorderStyle = bsSingle
-        ClientHeight = 335
-        ClientWidth = 675
-        TabOrder = 0
-        object Chart1: TChart
-          Left = 0
-          Height = 331
-          Top = 0
-          Width = 671
-          AntialiasingMode = amOn
-          AxisList = <          
-            item
-              Grid.Color = cl3DLight
-              Grid.Style = psSolid
-              Marks.LabelBrush.Style = bsClear
-              Minors = <>
-              Title.Distance = 10
-              Title.LabelFont.Orientation = 900
-              Title.Visible = True
-              Title.LabelBrush.Style = bsClear
-              Transformations = LeftChartAxisTransformations
-            end          
-            item
-              Grid.Color = cl3DLight
-              Grid.Style = psSolid
-              Alignment = calBottom
-              Margin = 10
-              Marks.Format = '%2:s'
-              Marks.LabelBrush.Style = bsClear
-              Marks.OverlapPolicy = opHideNeighbour
-              Marks.Source = DateTimeIntervalChartSource1
-              Marks.Style = smsLabel
-              Minors = <>
-              Title.Caption = 'Hour'
-              Title.LabelBrush.Style = bsClear
-            end          
-            item
-              Grid.Color = cl3DLight
-              Grid.Style = psSolid
-              Grid.Visible = False
-              Alignment = calRight
-              Marks.LabelBrush.Style = bsClear
-              Minors = <>
-              Title.LabelFont.Orientation = -900
-              Title.Visible = True
-              Title.LabelBrush.Style = bsClear
-              Transformations = RightChartAxisTransformations
-            end>
-          BackColor = clWhite
-          Foot.Brush.Color = clBtnFace
-          Foot.Font.Color = clBlue
-          GUIConnector = ChartGUIConnectorBGRA1
-          Legend.Alignment = laTopCenter
-          Legend.BackgroundBrush.Style = bsClear
-          Legend.ColumnCount = 3
-          Legend.Frame.Visible = False
-          Legend.SymbolFrame.Visible = False
-          Legend.Visible = True
-          Title.Brush.Color = clBtnFace
-          Title.Brush.Style = bsClear
-          Title.Font.CharSet = ANSI_CHARSET
-          Title.Font.Color = clBlue
-          Title.Font.Height = -16
-          Title.Font.Name = 'Segoe UI'
-          Title.Font.Pitch = fpVariable
-          Title.Font.Quality = fqDraft
-          Title.Font.Style = [fsBold]
-          Title.Text.Strings = (
-            ''
-          )
-          Title.Visible = True
-          Align = alClient
-          Color = clWindow
-          object Chart1LineSeries1: TLineSeries
-            Active = False
-            LinePen.Color = 12489328
-            LinePen.Width = 2
-          end
-          object Chart1LineSeries2: TLineSeries
-            Active = False
-            LinePen.Color = 1959605
-            LinePen.Width = 2
-          end
-          object Chart1LineSeries3: TLineSeries
-            Active = False
-            LinePen.Color = 2588671
-            LinePen.Width = 2
-          end
-          object Chart1LineSeries4: TLineSeries
-            Active = False
-            LinePen.Color = 15391129
-            LinePen.Width = 2
-          end
-          object Chart1LineSeries5: TLineSeries
-            Active = False
-            LinePen.Color = 969215
-            LinePen.Width = 2
-          end
-          object Chart1LineSeries6: TLineSeries
-            Active = False
-            LinePen.Width = 2
-          end
+        Color = clWindow
+        object Chart1LineSeries1: TLineSeries
+          Active = False
+          LinePen.Color = 12489328
+          LinePen.Width = 2
+        end
+        object Chart1LineSeries2: TLineSeries
+          Active = False
+          LinePen.Color = 1959605
+          LinePen.Width = 2
+        end
+        object Chart1LineSeries3: TLineSeries
+          Active = False
+          LinePen.Color = 2588671
+          LinePen.Width = 2
+        end
+        object Chart1LineSeries4: TLineSeries
+          Active = False
+          LinePen.Color = 15391129
+          LinePen.Width = 2
+        end
+        object Chart1LineSeries5: TLineSeries
+          Active = False
+          LinePen.Color = 969215
+          LinePen.Width = 2
+        end
+        object Chart1LineSeries6: TLineSeries
+          Active = False
+          LinePen.Width = 2
         end
       end
     end
-    object TableTabSheet: TTabSheet
-      Caption = 'Table'
-      ClientHeight = 351
-      ClientWidth = 707
+    object DataPage: TPage
       object DataGrid: TDrawGrid
-        Left = 16
-        Height = 335
+        Left = 0
+        Height = 382
         Top = 0
-        Width = 675
+        Width = 715
         Align = alClient
         AlternateColor = clDefault
         AutoFillColumns = True
-        BorderSpacing.Left = 16
-        BorderSpacing.Right = 16
-        BorderSpacing.Bottom = 16
+        BorderStyle = bsNone
         ColCount = 8
         DefaultColWidth = 64
         DefaultRowHeight = 24
         ExtendedSelect = False
-        FixedColor = clWindow
         FixedCols = 0
         Flat = True
         GridLineColor = cl3DLight
@@ -167,14 +144,14 @@ object TimeSeriesFrame: TTimeSeriesFrame
         OnDrawCell = DataGridDrawCell
         OnPrepareCanvas = DataGridPrepareCanvas
         ColWidths = (
-          85
-          85
-          84
-          84
-          84
-          84
-          84
-          84
+          90
+          90
+          90
+          89
+          89
+          89
+          89
+          89
         )
       end
     end
@@ -186,15 +163,28 @@ object TimeSeriesFrame: TTimeSeriesFrame
   object PopupMenu1: TPopupMenu
     Images = mainForm.PopupImageList
     ImagesWidth = 16
-    Left = 132
-    Top = 192
+    Left = 128
+    Top = 180
+    object ChartMenuItem: TMenuItem
+      Caption = 'View Chart'
+      ImageIndex = 10
+      OnClick = ChartMenuItemClick
+    end
+    object TableMenuItem: TMenuItem
+      Caption = 'View Table'
+      ImageIndex = 26
+      OnClick = TableMenuItemClick
+    end
+    object Separator2: TMenuItem
+      Caption = '-'
+    end
     object DataMenuItem: TMenuItem
-      Caption = 'Series Data'
+      Caption = 'Change Series Data'
       ImageIndex = 25
       OnClick = DataMenuItemClick
     end
     object SettingsMenuItem: TMenuItem
-      Caption = 'Chart Settings'
+      Caption = 'Change Chart Settings'
       ImageIndex = 8
       OnClick = SettingsMenuItemClick
     end

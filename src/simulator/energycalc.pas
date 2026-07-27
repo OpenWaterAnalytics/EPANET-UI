@@ -1,10 +1,10 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.0
+ Version:      1.0.3
  Module:       energycalc
  Description:  calculates an energy balance for the project
  License:      see LICENSE
- Last Updated: 03/07/2026
+ Last Updated: 06/19/2026
 =====================================================================}
 
 unit energycalc;
@@ -17,14 +17,15 @@ uses
   Classes, SysUtils, Dialogs;
 
 const
-  eInflows  = 1;
-  ePumping  = 2;
-  eTankOut  = 3;
-  eDemands  = 4;
-  eLeakage  = 5;
-  eFriction = 6;
-  eTankIn   = 7;
-  eMinUse   = 8;
+  // Energy balance components
+  eInflows  = 1; // External sources
+  ePumping  = 2; // Internal pumping
+  eTankOut  = 3; // Storage outflow
+  eDemands  = 4; // Consumer demand
+  eLeakage  = 5; // Leakage loss
+  eFriction = 6; // Friction loss
+  eTankIn   = 7; // Storage inflow
+  eMinUse   = 8; // Energy to meet demand at stipulated pressure
 
 var
   Energy:   array[eInflows..eMinUse] of Double;
@@ -50,6 +51,9 @@ var
   SpGrav: Single;
 
 procedure Start;
+//
+// Initialize the energy balance.
+//
 var
   I: Integer;
   DmndModel: Integer = 0;
@@ -68,7 +72,7 @@ begin
   // Preq is the service pressure used by a Pressure Dependent
   // Demand model. It is used here to determine the minimum energy
   // required to meet demands at that pressure. It is converted to
-  // feet if using US units or the meters for SI units.
+  // feet if using US units or to meters for SI units.
   case Round(Punits) of
     EN_PSI:
       begin
@@ -101,6 +105,10 @@ begin
 end;
 
 procedure UpdateNodeEnergy(Dt: Integer);
+//
+// Update energy contained in external flows at junction nodes and
+// internal flows from storage nodes over time step Dt.
+//
 var
   I:    Integer;
   N:    Integer;
@@ -176,6 +184,9 @@ begin
 end;
 
 procedure UpdateLinkEnergy(Dt: Integer);
+//
+// Update energy added by pumping and lost by friction over time period Dt.
+//
 var
   I:  Integer;
   N:  Integer;
@@ -202,6 +213,10 @@ begin
 end;
 
 procedure Update(T: Integer; Dt: Integer);
+//
+// Update energy balance components over a full day for a snapshot
+// analysis or for time period Dt for extended period analysis.
+//
 begin
   if Dt = 0 then
   begin
@@ -216,6 +231,10 @@ begin
 end;
 
 procedure Finish;
+//
+// Complete energy balance by converting cumulative H*Q units to kwh/day
+// for each energy balance component.
+//
 var
   I: Integer;
   Ecf: Double;
@@ -225,7 +244,7 @@ begin
   Ecf := project.FlowUcf[EN_GPM] / project.FlowUcf[project.FlowUnits] / 5310;
   if project.GetUnitsSystem = usSI then Ecf := Ecf / MperFt;
 
-  // Tcf adjusts from kw-sec to kw-hr/day
+  // Tcf adjusts from kw-sec to kwh/day
   Tcf := SECperDAY / SECperHR / Tsum;
 
   // Energy used by each category in kwh/day

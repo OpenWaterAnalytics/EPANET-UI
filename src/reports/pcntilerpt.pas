@@ -1,13 +1,23 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.0
+ Version:      1.0.3
  Module:       pcntilerpt
- Description:  a frame that plots percentile ranges
+ Description:  a frame to report the variablity of a computed variable
+               throughout the network over time
  License:      see LICENSE
- Last Updated: 03/07/2026
+ Last Updated: 06/19/2026
 =====================================================================}
 
 unit pcntilerpt;
+
+{
+ This frame contains a chart that displays a lower percentile, upper
+ percentile, and mid-percentile range for the computed values of a
+ specific parameter (e.g., pressure) in each simulation time period.
+
+ The selection of parameter and percentiles to display is made in
+ the main form's TPercentileSelector frame (see pcntileselector.pas).
+}
 
 {$mode ObjFPC}{$H+}
 
@@ -25,7 +35,7 @@ type
   { TPcntileRptFrame }
 
   TPcntileRptFrame = class(TFrame)
-    Chart1:                       TChart;
+    Chart1: TChart;
     Chart1AreaSeries1:            TAreaSeries;
     Chart1LineSeries1:            TLineSeries;
     Chart1LineSeries2:            TLineSeries;
@@ -35,16 +45,12 @@ type
     ChartStyles1:                 TChartStyles;
     DateTimeIntervalChartSource1: TDateTimeIntervalChartSource;
     ListChartSource1:             TListChartSource;
-    Panel1:                       TPanel;
     ExportMenu:                   TPopupMenu;
-    MnuSettings:                  TMenuItem;
-    Separator1:                   TMenuItem;
     MnuCopy:                      TMenuItem;
     MnuSave:                      TMenuItem;
 
     procedure MnuCopyClick(Sender: TObject);
     procedure MnuSaveClick(Sender: TObject);
-    procedure MnuSettingsClick(Sender: TObject);
 
   private
     PlotTimeOfDay:  Boolean;
@@ -59,6 +65,7 @@ type
     Ymax:           Double;
     Vlist:          TDoubleList;
 
+    procedure ShowPercentileSelector;
     procedure SetupChartAxes;
     procedure GetPlotParamRange(T: Integer);
     function  GetNodeParamValue(I, T: Integer): Single;
@@ -67,14 +74,11 @@ type
     procedure PlotSinglePeriodResults;
 
   public
-    ChartIsShowing: Boolean;
-
     procedure InitReport;
     procedure ClearReport;
     procedure RefreshReport;
     procedure CloseReport;
     procedure ShowPopupMenu;
-    procedure ShowPercentileSelector;
     procedure SetPlotParams(aParamType, aPlotParam, aPmin, aPmid, aPmax: Integer;
       aPlotTimeOfDay: Boolean);
   end;
@@ -122,11 +126,6 @@ begin
   end;
 end;
 
-procedure TPcntileRptFrame.MnuSettingsClick(Sender: TObject);
-begin
-  ShowPercentileSelector;
-end;
-
 procedure TPcntileRptFrame.ShowPercentileSelector;
 begin
   MainForm.HideHintPanelFrames;
@@ -148,7 +147,6 @@ end;
 
 procedure TPcntileRptFrame.InitReport;
 begin
-  ChartIsShowing := false;
   SetPlotParams(ctNodes, ntPressure, 5, 50, 95, false);
   ShowPercentileSelector;
 end;
@@ -229,7 +227,6 @@ begin
       Chart1LineSeries2.AddXY(X, Ymax);
       T := T + Dt;
     end;
-    ChartIsShowing := true;
   finally
     MainForm.Cursor := crDefault;
     Vlist.Free;
@@ -304,7 +301,6 @@ begin
       end;
     end;
     Chart1AreaSeries1.AddXY(100, Vlist[N-1]);
-    ChartIsShowing := true;
   finally
     Vlist.Free;
   end;

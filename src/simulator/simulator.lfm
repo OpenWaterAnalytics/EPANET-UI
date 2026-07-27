@@ -9,6 +9,7 @@ object SimulationForm: TSimulationForm
   ClientHeight = 132
   ClientWidth = 255
   Color = clWindow
+  KeyPreview = True
   ParentFont = True
   Position = poMainFormCenter
   LCLVersion = '4.4.0.0'

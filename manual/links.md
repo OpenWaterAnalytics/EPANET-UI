@@ -2,7 +2,7 @@
 
 |                   |                                                                   |
 |-------------------|-------------------------------------------------------------------|
-| Pipe ID           | A unique label used to identify the pipe. It can consist of a combination of up to 31 numerals or characters. It cannot be the same as the ID for any other link.|
+| Pipe ID           | A unique label used to identify the pipe. It can consist of a combination of up to 31 numerals or characters, with no spaces or semicolons. It cannot be the same as the ID for any other link.|
 | Start Node        | The ID of the node where the pipe begins.|
 | End Node          | The ID of the node where the pipe ends.|
 | Description       | An optional text string that describes other significant information about the pipe.|
@@ -14,32 +14,32 @@
 | Initial Status    | Determines whether the pipe is initially open, closed, or contains a check valve. If a check valve is specified then any flow in the pipe must be from the Start node to the End node.|
 | Bulk Coefficient  | The bulk reaction coefficient for the pipe. Use a positive value for growth and a negative value for decay. Time units are 1/days.|
 | Wall Coefficient  | The wall reaction coefficient for the pipe. Use a positive value for growth and a negative value for decay. Time units are 1/days.|
-| Leak Area         | The average area of a leak opening in square millimeters times the number of leaks per 100 units of pipe length.|
-| Leak Expansion    | The rate of leak expansion in square millimeters per unit of pressure head (ft or m) times the number of leaks per 100 units of pipe length. Typical values per leak for plastic pipe are between 0.1 and 0.001 and would be 0 for rigid iron pipe.|
+| Leak Area         | The average area of a leak opening in square millimeters times the number of leaks per 100 units of pipe length. Leak area and expansion are always expressed in metric units.|
+| Leak Expansion    | The rate of leak expansion in square millimeters per meter of pressure head times the number of leaks per 100 units of pipe length. Typical values per leak for plastic pipe are between 0.1 and 0.001 and would be 0 for rigid iron pipe.|
 
 ## Pump Properties
 
 |                   |                                                                   |
 |-------------------|-------------------------------------------------------------------|
-| Pump ID           | A unique label used to identify the pump. It can consist of a combination of up to 31 numerals or characters. It cannot be the same as the ID for any other link.|
+| Pump ID           | A unique label used to identify the pump. It can consist of a combination of up to 31 numerals or characters, with no spaces or semicolons. It cannot be the same as the ID for any other link.|
 | Start Node        | The ID of the node on the suction side of the pump.|
 | End Node          | The ID of the node on the discharge side of the pump.|
 | Description       | An optional text string that describes other significant information about the pump.|
 | Tag               | An optional text string (with no spaces) used to assign the pump to a category, perhaps one based on age, size or location.|
-| Pump Curve        | Click the <imgt images/Ellipsis.png> button to select a data curve used to describe the relationship between the head delivered by the pump and the flow through it . If the pump will be a constant energy pump (see below) then it's not necessary to define a pump curve.|
-| Power             | The power supplied by the pump in horsepower (kw). It assumes that the pump supplies the same amount of energy no matter what the flow is. This value is ignored if a pump curve is assigned.|
+| Pump Curve        | Click the <imgt images/Ellipsis.png> button to select a data curve used to describe the relationship between the head delivered by the pump and the flow through it . If the pump will be a fixed power pump (see below) then it's not necessary to define a pump curve.|
+| Power             | The fixed power supplied by the pump in horsepower (kw). It assumes that the pump supplies the same amount of energy no matter what the flow is. This value is ignored if a pump curve is assigned.|
 | Speed             | The relative speed setting of the pump (unitless). For example, a speed setting of 1.2 implies that the rotational speed of the pump is 20% higher than the normal setting.|
 | Speed Pattern     | Click the <imgt images/Ellipsis.png> button to select a time pattern used to control the pump's operation. The multipliers of the pattern represent the pump's speed settings. A multiplier of zero implies that the pump will be shut off during the corresponding time period.|
 | Initial Status    | The initial state of the pump (OPEN for online, CLOSED for offline) at the start of the simulation period. |
-| Efficiency Curve  | Click the <imgt images/Ellipsis.png> button to select a data curve that represents the pump's wire-to-water efficiency (in percent) as a function of flow rate. This information is used only to compute energy usage. If no curve is supplied then the global pump efficiency supplied with the project's Energy Options will be used.|
-| Energy Price      | The average or nominal price of energy in monetary units per kw-hr. Used only for computing the cost of energy usage. If set to 0 then the global value supplied with the project's Energy Options will be used.|
-| Price Pattern     | Click the <imgt images/Ellipsis.png> button to select a time pattern used to describe the variation in energy price throughout the day. Each multiplier in the pattern is applied to the pump's Energy Price to determine a time-of-day pricing for the corresponding period. If no pattern is selected then the global pricing pattern specified in the project's Energy Options will be used.|
+| Efficiency Curve  | Click the <imgt images/Ellipsis.png> button to select a data curve that represents the pump's wire-to-water efficiency (in percent) as a function of flow rate. This information is used only to compute energy usage. If no curve is supplied then the global pump efficiency supplied with the project's <u>[Energy Options]</u> will be used.|
+| Energy Price      | The average or nominal price of energy in monetary units per kw-hr. Used only for computing the cost of energy usage. If set to 0 then the global value supplied with the project's <u>[Energy Options]</u> will be used.|
+| Price Pattern     | Click the <imgt images/Ellipsis.png> button to select a time pattern used to describe the variation in energy price throughout the day. Each multiplier in the pattern is applied to the pump's Energy Price to determine a time-of-day pricing for the corresponding period. If no pattern is selected then the global pricing pattern specified in the project's <u>[Energy Options]</u> will be used.|
 
 ## Valve Properties
 
 |                   |                                                                   |
 |-------------------|-------------------------------------------------------------------|
-| Valve ID          | A unique label used to identify the valve. It can consist of a combination of up to 31 numerals or characters. It cannot be the same as the ID for any other link.|
+| Valve ID          | A unique label used to identify the valve. It can consist of a combination of up to 31 numerals or characters, with no spaces or semicolons. It cannot be the same as the ID for any other link.|
 | Start Node        | The ID of the node on the nominal upstream or inflow side of the valve. (PRVs and PSVs maintain flow in only a single direction.)|
 | End Node          | The ID of the node on the nominal downstream or discharge side of the valve.|
 | Description       | An optional text string that describes other significant information about the valve.|

@@ -1,11 +1,11 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.0
+ Version:      1.0.3
  Module:       mapthemes
  Description:  Manages the display of node and link themes on
                the pipe network map
  License:      see LICENSE
- Last Updated: 03/07/2026
+ Last Updated: 06/19/2026
 =====================================================================}
 
 unit mapthemes;
@@ -47,18 +47,20 @@ const
   ltStatus  = 98;
   ltSetting = 97;
 
-  MISSING = -1.E10;   //Missing value
-  MAXLEVELS = 4;      //Number of color-coded theme levels
+  MISSING = -1.E10;   // Missing value
+  MAXLEVELS = 4;      // Number of color-coded theme levels
 
   DefLegendColors: array[0..MAXLEVELS] of TColor =  //order is BB GG RR
     ($00BE9270, $00EAD999, $001DE6B5, $000EC9FF, $00277FFF);
-//    ($00540144, $008b513b, $008d9021, $0063c85c, $0025e7fd); //Viridis Scale
+
+//  Viridis Scale
+//  ($00540144, $008b513b, $008d9021, $0063c85c, $0025e7fd); //
 
 type
   TMapTheme = record
-    Name:         string;                 //Theme name
-    SourceIndex:  Integer;                //Index used by data source
-    DefIntervals: array[1..MAXLEVELS] of string;  //Default display intervals
+    Name:         string;                 // Theme name
+    SourceIndex:  Integer;                // Index used by data source
+    DefIntervals: array[1..MAXLEVELS] of string;  // Default display intervals
 end;
 
   TLegendIntervals = record
@@ -82,7 +84,7 @@ var
   TimePeriod:       Integer;
 
 procedure ChangeTimePeriod(NewTimePeriod: Integer);
-procedure ChangeTheme(MapLegend: TTreeView; ThemeType: Integer; NewTheme: Integer);
+procedure ChangeTheme(ThemeType: Integer; NewTheme: Integer);
 
 function  EditNodeLegend: Boolean;
 function  EditLinkLegend: Boolean;
@@ -98,18 +100,17 @@ function  GetStatusStr(Status: Integer): String;
 function  GetThemeUnits(ThemeType: Integer; aTheme: Integer): string;
 
 procedure InitColors;
-procedure InitThemes(MapLegend: TTreeView);
+procedure InitThemes;
 
 procedure ResetThemes;
-procedure SetBaseMapVisible(IsVisible: Boolean);
 procedure SetInitialTheme(ThemeType: Integer; aTheme: Integer);
-procedure UpdateLegend(StartNode: TTreeNode; ThemeType: Integer);
-procedure UpdateLegendMarkers(LegendType: Integer; Colors: array of TColor);
+procedure UpdateLegend(ThemeType: Integer; ThemeIndex: Integer;
+  ThemeName: string; ThemeUnits: string);
 
 implementation
 
 uses
-  main, project, legendeditor, results, utils, resourcestrings;
+  main, project, groupeditor, legendeditor, results, utils, resourcestrings;
 
 const
   BaseNodeThemes: array[0..ntPressure] of TMapTheme =
@@ -364,41 +365,17 @@ begin
   end;
 end;
 
-procedure InitThemes(MapLegend: TTreeView);
+procedure InitThemes;
 //
-// Initialize the main form's  MapLegend TreeView.
+// Initialize the main form's  MapViewerFrame.
 //
 var
-  TreeNode: TTreeNode;
   I:        Integer;
   J:        Integer;
   S:        string;
 begin
-  NodeTheme := 0;
-  LinkTheme := 0;
   QualThemeCount := 0;
   TimePeriod := 0;
-
-  // Set StateIndex of all tree nodes in the MapLegend TreeView to 1 (i.e., checked)
-  for I := 0 to MapLegend.Items.Count-1 do
-  begin
-    TreeNode := MapLegend.Items[I];
-    if TreeNode.StateIndex = 0 then TreeNode.StateIndex := 1;
-  end;
-
-  // Hide the betwork node & link themes tree nodes
-  TreeNode := utils.FindTreeNode(Maplegend, rsNodes).GetNext;
-  TreeNode.Visible := false;
-  TreeNode := utils.FindTreeNode(MapLegend, rsLinks).GetNext;
-  TreeNode.Visible := false;
-
-  // Hide the basemap tree node
-  TreeNode := utils.FindTreeNode(MapLegend, rsBasemap);
-  TreeNode.Visible := false;
-
-  // Set StateIndex of 'Overview Map' to 0
-  TreeNode := utils.FindTreeNode(MapLegend, rsOverviewMap);
-  TreeNode.StateIndex := 0;
 
   // Load base node themes
   NodeThemeCount := ntPressure + 1;
@@ -435,6 +412,7 @@ begin
       utils.Str2Float(S, LinkIntervals[I].Values[J]);
     end;
   end;
+  InitColors;
 end;
 
 procedure InitColors;
@@ -524,146 +502,103 @@ begin
     end;
   end;
 
-  MainForm.MainMenuFrame.ResetMapThemes;
+  MainForm.MapViewerFrame.ResetMapThemes;
   MainForm.MapFrame.RedrawMap;
 end;
 
-procedure ChangeTheme(MapLegend: TTreeView; ThemeType: Integer; NewTheme: Integer);
+procedure ChangeTheme(ThemeType: Integer; NewTheme: Integer);
 var
-  TreeNode:      TTreeNode;
-  CategoryName:  string;
   ThemeName:     string;
   ThemeUnits:    string;
 begin
   // Select theme's parameters
   if ThemeType = ctNodes then
   begin
-    CategoryName := rsNodes;
     ThemeName := NodeThemes[NewTheme].Name;
     NodeTheme := NewTheme;
   end
   else if ThemeType = ctLinks then
   begin
-    CategoryName := rsLinks;
     ThemeName := LinkThemes[NewTheme].Name;
     LinkTheme := NewTheme;
   end
   else
     exit;
 
-  // Find the MapLegend TreeView node that contains the theme's name
-  TreeNode := utils.FindTreeNode(MapLegend, CategoryName);
-  if TreeNode <> nil then
-  begin
-    TreeNode := TreeNode.GetNext;
-
-    // Change the theme name
-    if TreeNode <> nil then
-    begin
-      ThemeUnits := GetThemeUnits(ThemeType, NewTheme);
-      if Length(ThemeUnits) > 0 then ThemeUnits := ' (' + ThemeUnits + ')';
-      TreeNode.Text := ThemeName + ThemeUnits;
-      TreeNode.Visible := (NewTheme > 0);
-    end;
-  end;
+  // Update theme's units label on the MapViewerFrame
+  ThemeUnits := GetThemeUnits(ThemeType, NewTheme);
+  if ThemeType = ctNodes then
+    MainForm.MapViewerFrame.NodeUnitsLabel.Caption := ThemeUnits
+  else if ThemeType = ctLinks then
+    MainForm.MapViewerFrame.LinkUnitsLabel.Caption := ThemeUnits;
 
   // Update the theme's legend
-  if NewTheme > 0 then UpdateLegend(TreeNode, ThemeType);
+  UpdateLegend(ThemeType, NewTheme, ThemeName, ThemeUnits);
+
 end;
 
-procedure SetBaseMapVisible(IsVisible: Boolean);
+procedure UpdateLegend(ThemeType: Integer; ThemeIndex: Integer;
+  ThemeName: string; ThemeUnits: string);
 var
-  TreeNode: TTreeNode;
-begin
-  TreeNode := utils.FindTreeNode(MainForm.LegendTreeView, rsBasemap);
-  TreeNode.Visible := IsVisible;
-  if IsVisible then
-    TreeNode.StateIndex := 1
-  else
-    TreeNode.StateIndex := 0;
-end;
-
-procedure UpdateLegend(StartNode: TTreeNode; ThemeType: Integer);
-var
-  I:         Integer;
-  TreeNode:  TTreeNode;
-  S1:        string;
-  S2:        string;
-  Intervals: TLegendIntervals;
+  IsFramed: Boolean;
 begin
   if ThemeType = ctNodes then
-    Intervals := NodeIntervals[NodeTheme]
-  else if ThemeType = ctLinks then
-    Intervals := LinkIntervals[LinkTheme]
-  else
-    exit;
-  TreeNode := StartNode;
-  S1 := Intervals.Labels[1];
-  S2 := S1;
-  for I := 0 to MAXLEVELS do
   begin
-    TreeNode := TreeNode.GetNext;      // Next legend item
-    TreeNode.Visible := true;
-    if I = 0 then
-      TreeNode.Text := ' < ' + S2
-    else if I = MAXLEVELS then
-      TreeNode.Text := ' > ' + S1
+    if ThemeIndex = 0 then
+    begin
+      MainForm.MapFrame.NodeLegend.Visible := false;
+      MainForm.MapViewerFrame.EnableLegend(ctNodes, false);
+    end
     else
     begin
-      S2 := Intervals.Labels[I+1];
-      if SameText(S1, S2) then
-      begin
-        TreeNode.Text := '';
-        TreeNode.Visible := false;
-      end
-      else
-        TreeNode.Text := ' ' + S1 + ' - ' + S2;
-      S1 := S2;
-    end;
-  end;
-end;
 
-procedure UpdateLegendMarkers(LegendType: Integer; Colors: array of TColor);
-var
-  Marker:   TBitmap;
-  R:        TRect;
-  I:        Integer;
-  Ioffset:  Integer;  // Node or Link offset into the LegendImageList
-begin
-  Marker := TBitmap.Create;
-  try
-    Marker.PixelFormat := pf32bit;
-    MainForm.LegendImageList.GetBitmap(0, Marker);
-    Marker.Canvas.Brush.Style := bsSolid;
-    R := Rect(0, 0, Marker.Width, Marker.Height);
-    if LegendType = ctNodes then
-      Ioffset := 2
-    else
-      Ioffset := 7;
-    for I := 0 to MAXLEVELS do
-    begin
-      Marker.Canvas.Brush.Color := Colors[I];
-      Marker.Canvas.Rectangle(R);
-      MainForm.LegendImageList.Replace(I + Ioffset, Marker, nil);
+      MainForm.MapViewerFrame.EnableLegend(ctNodes, true);
+      MainForm.MapFrame.NodeLegend.DrawLegend(NodeColors,
+        NodeIntervals[ThemeIndex].Labels, ThemeName, ThemeUnits);
+      if MainForm.MapViewerFrame.NodeLegendBox.Checked then
+        MainForm.MapFrame.NodeLegend.Visible := true;
+
     end;
-  finally
-    Marker.Free;
   end;
+
+  if ThemeType = ctLinks then
+  begin
+    if ThemeIndex = 0 then
+    begin
+      MainForm.MapFrame.LinkLegend.Visible := false;
+      MainForm.MapViewerFrame.EnableLegend(ctLinks, false);
+    end
+    else
+    begin
+
+      MainForm.MapViewerFrame.EnableLegend(ctLinks, true);
+//      IsFramed := MainForm.MapFrame.LinkLegend.Framed;
+      MainForm.MapFrame.LinkLegend.DrawLegend(LinkColors,
+        LinkIntervals[ThemeIndex].Labels, ThemeName, ThemeUnits); //, IsFramed);
+      if MainForm.MapViewerFrame.LinkLegendBox.Checked then
+        MainForm.MapFrame.LinkLegend.Visible := true;
+
+    end;
+  end;
+
 end;
 
 function EditNodeLegend: Boolean;
+var
+  IsFramed: Boolean;
 begin
   Result := false;
+  IsFramed := MainForm.MapFrame.NodeLegend.Framed;
   with TLegendEditorForm.Create(MainForm) do
   try
     LoadData(ctNodes, NodeThemes[NodeTheme].Name, NodeColors,
-      NodeIntervals[NodeTheme]);
+      NodeIntervals[NodeTheme], IsFramed);
     ShowModal;
     if ModalResult = mrOk then
     begin
-      UnloadData(NodeColors, NodeIntervals[NodeTheme]);
-      UpdateLegendMarkers(ctNodes, NodeColors);
-      ChangeTheme(MainForm.LegendTreeView, ctNodes, NodeTheme);
+      UnloadData(NodeColors, NodeIntervals[NodeTheme], IsFramed);
+      MainForm.MapFrame.NodeLegend.Framed := IsFramed;
+      ChangeTheme(ctNodes, NodeTheme);
       Result := true;
     end;
   finally
@@ -672,18 +607,21 @@ begin
 end;
 
 function EditLinkLegend: Boolean;
+var
+  IsFramed: Boolean;
 begin
   Result := false;
+  IsFramed := MainForm.MapFrame.LinkLegend.Framed;
   with TLegendEditorForm.Create(MainForm) do
   try
     LoadData(ctLinks, LinkThemes[LinkTheme].Name, LinkColors,
-      LinkIntervals[LinkTheme]);
+      LinkIntervals[LinkTheme], IsFramed);
     ShowModal;
     if ModalResult = mrOk then
     begin
-      UnloadData(LinkColors, LinkIntervals[LinkTheme]);
-      UpdateLegendMarkers(ctLinks, LinkColors);
-      ChangeTheme(MainForm.LegendTreeView, ctLinks, LinkTheme);
+      UnloadData(LinkColors, LinkIntervals[LinkTheme], IsFramed);
+      MainForm.MapFrame.LinkLegend.Framed := IsFramed;
+      ChangeTheme(ctLinks, LinkTheme);
       Result := true;
     end;
   finally
@@ -712,6 +650,8 @@ begin
   ColorIndex := 0;
   if MainForm.QueryFrame.Visible then
     Result := MainForm.QueryFrame.GetFilteredNodeColor(NodeIndex)
+  else if MainForm.GroupSelectorFrame.IsActive then
+    Result := MainForm.GroupSelectorFrame.GetSelectedNodeColor(NodeIndex)
   else if NodeTheme <= 0 then
     Result := clGray
   else
@@ -743,6 +683,8 @@ begin
   ColorIndex := 0;
   if MainForm.QueryFrame.Visible then
     Result := MainForm.QueryFrame.GetFilteredLinkColor(LinkIndex)
+  else if MainForm.GroupSelectorFrame.IsActive then
+    Result := MainForm.GroupSelectorFrame.GetSelectedLinkColor(LinkIndex)
   else if LinkTheme <= 0 then
     Result := clGray
   else
@@ -857,7 +799,7 @@ begin
     NodeIntervals[aTheme] := Intervals;
   if ThemeType = ctLinks then
     LinkIntervals[aTheme] := Intervals;
-  ChangeTheme(MainForm.LegendTreeView, ThemeType, aTheme);
+  ChangeTheme(ThemeType, aTheme);
 end;
 
 function  GetThemeUnits(ThemeType: Integer; aTheme: Integer): string;
@@ -878,7 +820,7 @@ begin
     ntEmittance, ntLeakage:
       Result := project.FlowUnitsStr[project.FlowUnits];
     ntPressure:
-      Result := project.PressUnitsStr[project.PressUnits];
+      Result := project.PressureUnitsStr[project.PressureUnits];
     else
       Result := results.GetQualUnits(aTheme - ntPressure - 1);
   end

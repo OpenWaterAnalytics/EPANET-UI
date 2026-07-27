@@ -14,9 +14,9 @@ object FireFlowProgressForm: TFireFlowProgressForm
   OnCreate = FormCreate
   object Label1: TLabel
     Left = 59
-    Height = 19
+    Height = 15
     Top = 18
-    Width = 103
+    Width = 81
     Caption = '0 % Completed'
   end
   object ProgressBar1: TProgressBar

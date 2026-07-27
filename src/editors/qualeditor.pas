@@ -1,11 +1,11 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.0
+ Version:      1.0.3
  Module:       qualeditor
  Description:  a dialog form that edits single species Water
                Quality options
  License:      see LICENSE
- Last Updated: 03/21/2026
+ Last Updated: 06/19/2026
 =====================================================================}
 
 unit qualeditor;
@@ -93,7 +93,7 @@ var
   I: Integer;
   DS: Char;
 begin
-  Color := config.FormColor;
+  Color := config.ThemeColor;
   Font.Size := config.FontSize;
   for I := 0 to High(project.QualModelStr) do
     QualTypeCombo.Items.Add(project.QualModelStr[I]);

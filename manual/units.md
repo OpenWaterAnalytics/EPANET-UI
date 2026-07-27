@@ -12,8 +12,8 @@
 |Energy          | kilowatt-hours          | kilowatt-hours            |
 |Flow  |CFS (cubic feet/second)<br>GPM (gallons/minute)<br>MGD (million gal/day)<br>IMGD (Imperial MGD)<br>AFD (acre-feet/day)|LPS (liters/ second)<br>LPM (liters/minute)<br>MLD (megaliters/day)<br>CMH (cubic meters/hour)<br>CMD (cubic meters/day)<br>CMS (cubic meters/second)|
 |Head            | feet                    | meters                    |
-|Leak Area       | sq mm per 100 feet of pipe  | sq mm per 100 meters of pipe |
-|Leak Expansion  | sq mm per foot of head  | sq mm per meter of head   |
+|Leak Area<sup>1</sup>       | sq mm per 100 feet of pipe  | sq mm per 100 meters of pipe |
+|Leak Expansion<sup>1</sup>  | sq mm per meter of head per 100 feet of pipe  | sq mm per meter of head per 100 meters of pipe   |
 |Length          | feet                    | meters                    |
 |Minor Loss Coeff. | unitless              | unitless                  |
 |Power             | horsepower            | kilowatts                 |
@@ -25,3 +25,5 @@
 |Velocity               | feet/second      | meters/second             |
 |Volume                 | cubic feet       | cubic meters              |
 |Water Age              | hours            | hours                     |
+
+<sup>1</sup>Leak area and leak expansion are always expressed in metric units.

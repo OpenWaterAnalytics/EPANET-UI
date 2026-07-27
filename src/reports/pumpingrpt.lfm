@@ -10,20 +10,22 @@ object PumpingRptFrame: TPumpingRptFrame
   DesignLeft = 1392
   DesignTop = 458
   object Panel1: TPanel
-    Left = 8
+    Left = 0
     Height = 35
     Top = 205
-    Width = 471
+    Width = 479
     Align = alBottom
     Alignment = taLeftJustify
-    BorderSpacing.Left = 8
     BevelOuter = bvNone
+    BorderStyle = bsSingle
     Caption = '  Total Cost: 0   Demand Charge: 0'
     ClientHeight = 35
-    ClientWidth = 471
+    ClientWidth = 479
+    ParentBackground = False
+    ParentColor = False
     TabOrder = 0
     object Label1: TLabel
-      Left = 279
+      Left = 283
       Height = 15
       Top = 10
       Width = 165
@@ -33,49 +35,35 @@ object PumpingRptFrame: TPumpingRptFrame
       ParentColor = False
     end
   end
-  object Panel2: TPanel
+  object StringGrid1: TStringGrid
     Left = 0
     Height = 205
     Top = 0
     Width = 479
     Align = alClient
-    BevelOuter = bvNone
-    ClientHeight = 205
-    ClientWidth = 479
+    AlternateColor = clNone
+    AutoFillColumns = True
+    BorderStyle = bsNone
+    ColCount = 7
+    ColumnClickSorts = True
+    DefaultRowHeight = 28
+    Flat = True
+    GridLineColor = cl3DLight
+    Options = [goFixedVertLine, goFixedHorzLine, goHorzLine, goThumbTracking, goSmoothScroll, goFixedColSizing]
     TabOrder = 1
-    object StringGrid1: TStringGrid
-      Left = 16
-      Height = 189
-      Top = 16
-      Width = 447
-      Align = alClient
-      AlternateColor = clNone
-      AutoFillColumns = True
-      BorderSpacing.Left = 16
-      BorderSpacing.Top = 16
-      BorderSpacing.Right = 16
-      ColCount = 7
-      ColumnClickSorts = True
-      DefaultRowHeight = 28
-      FixedColor = clDefault
-      Flat = True
-      GridLineColor = cl3DLight
-      Options = [goFixedVertLine, goFixedHorzLine, goHorzLine, goThumbTracking, goSmoothScroll, goFixedColSizing]
-      TabOrder = 0
-      TitleFont.Height = -12
-      OnClick = StringGrid1Click
-      OnCompareCells = StringGrid1CompareCells
-      OnPrepareCanvas = StringGrid1PrepareCanvas
-      ColWidths = (
-        69
-        63
-        63
-        63
-        63
-        63
-        62
-      )
-    end
+    TitleFont.Height = -12
+    OnClick = StringGrid1Click
+    OnCompareCells = StringGrid1CompareCells
+    OnPrepareCanvas = StringGrid1PrepareCanvas
+    ColWidths = (
+      69
+      69
+      69
+      68
+      68
+      68
+      68
+    )
   end
   object ExportMenu: TPopupMenu
     Images = mainForm.PopupImageList

@@ -1,11 +1,11 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.0
+ Version:      1.0.3
  Module:       map
  Description:  a class that manages drawing the pipe network and
-               its basemap on a bitmap
+               its basemap onto a bitmap
  License:      see LICENSE
- Last Updated: 03/07/2026
+ Last Updated: 06/19/2026
 =====================================================================}
 
 unit map;
@@ -21,31 +21,29 @@ uses
   mapoptions, mapcoords, webmap;
 
 const
-  PIXTOL   = 5;      // Pixel tolerance in detecting a mouse hit on an object
   MIN_ZOOM = -10;    // Minimum power of 2 when zooming out on the map
   MAX_ZOOM = 20;     // Maximum power of 2 when zooming in on the map
 
 type
-  // Base map image over which the pipe network is drawn
+  // Basemap image over which the pipe network is drawn
   // (Can be either a static image file or a dynamic web mapping service)
   TBaseMap = record
-    Filename   : string;          // File containing basemap image
-    Picture    : TPicture;        // Base map's image picture
+    Picture    : TPicture;        // Basemap's image picture
     LowerLeft  : TDoublePoint;    // Lower left world coordinate
     UpperRight : TDoublePoint;    // Upper right world coordinate
     Brightness : Integer;         // Degree of image brightening (0 - 100)
-    Grayscale  : Boolean;         // true if base map in grayscale
-    Visible    : Boolean;         // true if base map is visible
+    Grayscale  : Boolean;         // true if basemap in grayscale
+    Visible    : Boolean;         // true if basemap is visible
     ZoomLevel0 : Integer;         // Zoom level at full extent
-    WebMap     : TWebMap;         // Base map provided by web service
-    NeedsRedraw: Boolean;         // Base map needs to be redrawn
+    WebMap     : TWebMap;         // Basemap provided by web service
+    NeedsRedraw: Boolean;         // Basemap needs to be redrawn
   end;
 
   // Map class
   TMap = class(TObject)
     Canvas    : TCanvas;         // Display canvas
     Bitmap    : TBitmap;         // Bitmap containing the full map image
-    Basemap   : TBasemap;        // Base map image
+    Basemap   : TBasemap;        // Basemap image
     Options   : TMapOptions;     // Display options (see mapoptions.pas)
     WPP0      : Double;          // World per pixel scaling at 0 zoom
     WPP       : Double;          // World per pixel scaling at current zoom
@@ -53,7 +51,7 @@ type
     CenterW   : TDoublePoint;    // World center point
     CenterP   : TPoint;          // Pixel center point
     MapRect   : TRect;           // Bounding rectangle in pixels
-    Extent    : TDoubleRect;     // World map boundary at full extent
+    Extent    : TDoubleRect;     // Bounding world rectangle at full extent
     ZoomLevel : Integer;         // Current zoom level
     CharHeight: Integer;         // Max. character height
     constructor Create;
@@ -62,9 +60,13 @@ type
     function  LoadBasemapFile(Filename: string): Boolean;
     function  CreateWebBasemap(MapSource: Integer; NorthEast: TDoublePoint;
               SouthWest: TDoublePoint): Boolean;
+    function  GetBounds: TDoubleRect;
     procedure SetBasemapBounds;
     procedure ScaleMapToBasemap;
     procedure ClearBasemap;
+
+    procedure ShiftBasemap(Dx, Dy: Integer);
+
     procedure DrawBasemap;
     procedure DrawWebBasemap;
     procedure DrawBitmap(aBitmap: TBitmap; aPosition: TDoublePoint);
@@ -125,7 +127,6 @@ begin
   Bitmap.PixelFormat := pf24Bit;
 
   // Create a basemap layer
-  Basemap.Filename := '';
   BaseMap.Picture := TPicture.Create;
   BaseMap.Picture.Bitmap.PixelFormat := pf24Bit;
   Basemap.Brightness := 0;
@@ -207,6 +208,22 @@ end;
 //------------------------------------------------------------------------------
 // Map Resizing and Rescaling
 //------------------------------------------------------------------------------
+
+function TMap.GetBounds: TDoubleRect;
+var
+  Bounds: TDoubleRect;
+begin
+  Bounds := mapcoords.GetBounds(Extent);
+  if (Basemap.Picture.Bitmap.Width > 0)
+  and (Basemap.WebMap = nil) then
+  begin
+    Bounds.LowerLeft.X := Min(Bounds.LowerLeft.X, Basemap.LowerLeft.X);
+    Bounds.LowerLeft.Y := Min(Bounds.LowerLeft.Y, Basemap.LowerLeft.Y);
+    Bounds.UpperRight.X := Max(Bounds.UpperRight.X, Basemap.UpperRight.X);
+    Bounds.UpperRight.Y := Max(Bounds.UpperRight.Y, Basemap.UpperRight.Y);
+  end;
+  Result := Bounds;
+end;
 
 procedure TMap.Resize(Rect: TRect);
 begin
@@ -296,7 +313,7 @@ end;
 
 function TMap.LoadBasemapFile(Filename: string): Boolean;
 //
-//  Loads a static base map image from local file system
+//  Load a static base map image from local file system.
 //
 begin
   ClearBasemap;
@@ -321,7 +338,7 @@ end;
 function TMap.CreateWebBasemap(MapSource: Integer; NorthEast: TDoublePoint;
           SouthWest: TDoublePoint): Boolean;
 //
-//  Creates a dynamic base map provided by a web map service
+//  Create a dynamic base map provided by a web map service.
 //
 begin
   ClearBasemap;
@@ -335,6 +352,9 @@ begin
 end;
 
 procedure TMap.SetBasemapBounds;
+//
+// Find world extent of basemap from image file.
+//
 var
   R:    Double;
   Wpic: Double;
@@ -349,25 +369,45 @@ begin
   // Do nothing if basemap doesn't exist
   if Basemap.Picture.Bitmap.Width = 0 then exit;
 
-  // Compute picture & window width & height in world coords.
+  // Find picture & window size in screen coords.
   Wpic := Basemap.Picture.Width;
   Hpic := Basemap.Picture.Height;
   Wwin := MapRect.Width;
   Hwin := MapRect.Height;
 
-  // Re-scale if picture is wider or taller than map window
+  // Adjust picture size if larger than map window
   R := min(Wwin / Wpic, Hwin / Hpic);
   Wpic := R * Wpic;
   Hpic := R * Hpic;
+
+  // Find adjusted lower left X & upper right Y in pixels
   Dx := Round(Wwin - Wpic) div 2;
   Dy := Round(Hwin - Hpic) div 2;
+
+  // Find adjusted picture width & height in pixels
   Dw := Round(Wpic);
   Dh := Round(Hpic);
 
+  // Set world coordinates of basemap extent
   with Basemap do
   begin
     LowerLeft := ScreenToWorld(Dx, Dy + Dh);
     UpperRight := ScreenToWorld(Dx + Dw, Dy);
+  end;
+end;
+
+procedure TMap.ShiftBasemap(Dx, Dy: Integer);
+//
+// Shifts position of an image file basemap relative to the pipe netwrok.
+//
+begin
+  if Basemap.Picture.Bitmap.Width = 0 then exit;
+  with Basemap do
+  begin
+    LowerLeft.X := LowerLeft.X + (Dx * WPP);
+    LowerLeft.Y := LowerLeft.Y - (Dy * WPP);
+    UpperRight.X := UpperRight.X + (Dx * WPP);
+    UpperRight.Y := UpperRight.Y - (Dy * WPP);
   end;
 end;
 
@@ -383,7 +423,7 @@ begin
     NeedsRedraw := false;
   end;
   Options.ShowBackdrop := false;
-  Extent := mapcoords.GetBounds(Extent);
+  Extent := GetBounds;
   ZoomLevel := 0;
   Rescale;
 end;
@@ -423,12 +463,13 @@ procedure TMap.DrawWebBasemap;
 begin
   if Basemap.NeedsRedraw then
   begin
-    // Set bounding world coords. of base map
+    // Set bounding world coords. of basemap
     Basemap.WebMap.SetBoundsRect(MapRect.Width, MapRect.Height);
 
     // If basemap layer should be shown
     if Options.ShowBackdrop then
     begin
+      // Show blank background if max zoom level exceeded
       if Basemap.WebMap.ZoomLevel > webmap.MaxZoomLevel then
         Clear
 
@@ -471,7 +512,7 @@ end;
 
 procedure TMap.AdjustOffset(Dx: Integer; Dy: Integer);
 //
-//  Moves map center by Dx, Dy pixels.
+//  Move map center by Dx, Dy pixels.
 //
 begin
   CenterW.X := CenterW.X - WPP * Dx;
@@ -538,11 +579,11 @@ end;
 
 procedure TMap.ZoomToExtent;
 begin
-  // Determine the zoom level at full extent of a web service base map if used
+  // Determine the zoom level at full extent of a web service basemap if used
   if Basemap.WebMap <> nil then
   begin
     if project.GetItemCount(ctNodes) > 0 then
-      Extent := mapcoords.GetBounds(Extent);
+      Extent := GetBounds;
     Basemap.WebMap.InitZoomLevel(Extent.UpperRight, Extent.LowerLeft, MapRect);
   end;
 
@@ -558,13 +599,12 @@ end;
 
 function TMap.FindNodeHit(MouseX: Integer; MouseY: Integer): Integer;
 //
-//  Finds the index of a network node that mouse is clicked on.
+//  Find the index of a network node that mouse is clicked on.
 //
 var
   I: Integer;
   P: TPoint;
   Pmouse: TPoint;
-  R: TRect;
   X: Double = 0;
   Y: Double = 0;
 begin
@@ -574,8 +614,7 @@ begin
   begin
     if not project.GetNodeCoord(I, X, Y) then continue;
     P := WorldToScreen(X, Y);
-    R := Rect(P.X - PIXTOL, P.Y - PIXTOL, P.X + PIXTOL, P.Y + PIXTOL);
-    if PtInRect(R, Pmouse) then
+    if utils.PointOnPoint(P, Pmouse) then
     begin
       Result := I;
       break;
@@ -610,7 +649,7 @@ end;
 
 function TMap.FindLabelHit(MouseX: Integer; MouseY: Integer): Integer;
 //
-//  Finds the index of a map label that mouse is clicked on.
+//  Find the index of a map label that mouse is clicked on.
 //
 var
   I: Integer;
@@ -635,7 +674,7 @@ end;
 function TMap.GetLinkEndPoints(LinkIndex: Integer; var P1: TPoint;
   var P2: TPoint):Boolean;
 //
-//  Finds the screen pixel coordinates of a link's end points.
+//  Find the screen pixel coordinates of a link's end points.
 //
 var
   N1: Integer = 0;
@@ -654,7 +693,7 @@ end;
 
 function TMap.MouseIsOverLink(LinkIndex: Integer; Pmouse: TPoint): Boolean;
 //
-//  Checks if mouse point Pmouse is over link with index LinkIndex.
+//  Check if mouse point Pmouse is over link with index LinkIndex.
 //
 var
   V: Integer;
@@ -676,14 +715,14 @@ begin
       P3 := WorldToScreen(X, Y);
 
       // Mouse is over line segment so exit with TRUE result
-      if utils.PointOnLine(P1, P3, Pmouse, PIXTOL) then exit;
+      if utils.PointOnLine(Pmouse, P1, P3) then exit;
 
       // Set starting point of next line segment
       P1 := P3;
     end;
 
     // If link has no vertices then check line between endpoints
-    if utils.PointOnLine(P1, P2, Pmouse, PIXTOL) then exit;
+    if utils.PointOnLine(Pmouse, P1, P2) then exit;
   end;
 
   // Wind up here if mouse not over the link
@@ -692,7 +731,7 @@ end;
 
 function TMap.FindLinkHit(MouseX: Integer; MouseY: Integer): Integer;
 //
-//  Finds the index of a network link that mouse is clicked on.
+//  Find the index of a network link that mouse is clicked on.
 //
 var
   LinkIndex: Integer;

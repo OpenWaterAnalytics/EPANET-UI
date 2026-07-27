@@ -1,10 +1,10 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.0
+ Version:      1.0.3
  Module:       msxfileprocs
  Description:  procedures for reading and writing a MSX data file
  License:      see LICENSE
- Last Updated: 03/07/2026
+ Last Updated: 06/19/2026
 =====================================================================}
 
 { This unit references the properties of components
@@ -18,7 +18,7 @@ interface
 
 uses
   Classes, SysUtils, StrUtils, Forms, Controls, ExtCtrls, StdCtrls,
-  Grids, SpinEx, msxeditor,    Dialogs;
+  Grids, SpinEx, msxeditor;
 
 procedure ReadMsxFile(MsxEditorForm: TMsxEditorForm; Filename: string);
 procedure WriteMsxFile(MsxEditorForm: TMsxEditorForm; Filename: string);

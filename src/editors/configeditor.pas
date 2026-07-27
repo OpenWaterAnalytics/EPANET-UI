@@ -1,10 +1,10 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.0
+ Version:      1.0.3
  Module:       configeditor
  Description:  a dialog form that edits program preferences
  License:      see LICENSE
- Last Updated: 03/07/2026
+ Last Updated: 06/19/2026
 =====================================================================}
 
 unit configeditor;
@@ -29,15 +29,17 @@ type
     CheckBox5: TCheckBox;
     CheckBox6: TCheckBox;
     CheckBox7: TCheckBox;
-    CheckBox8: TCheckBox;
-    Label1: TLabel;
-    OkBtn: TButton;
+    Label1:    TLabel;
+    OkBtn:     TButton;
     CancelBtn: TButton;
-    HelpBtn: TButton;
-    Panel1: TPanel;
+    HelpBtn:   TButton;
+    Panel1:    TPanel;
+    Shape1:    TShape;
     SpinEdit1: TSpinEdit;
+
     procedure FormCreate(Sender: TObject);
     procedure HelpBtnClick(Sender: TObject);
+
   private
 
   public
@@ -58,7 +60,7 @@ uses
 
 procedure TConfigForm.FormCreate(Sender: TObject);
 begin
-  Color := config.FormColor;
+  Color := config.ThemeColor;
   Font.Size := config.FontSize;
 end;
 
@@ -70,8 +72,7 @@ begin
   CheckBox4.Checked := config.ShowWelcomePage;
   CheckBox5.Checked := config.OpenLastFile;
   CheckBox6.Checked := config.BackupFile;
-  CheckBox7.Checked := config.ThemeColor = BlueTheme;
-  SpinEdit1.Value := config.DecimalPlaces;
+  SpinEdit1.Value   := config.DecimalPlaces;
 end;
 
 procedure TConfigForm.HelpBtnClick(Sender: TObject);
@@ -87,13 +88,8 @@ begin
   config.ShowWelcomePage  := CheckBox4.Checked;
   config.OpenLastFile     := CheckBox5.Checked;
   config.BackupFile       := CheckBox6.Checked;
-  if CheckBox7.Checked then
-    config.ThemeColor := BlueTheme
-  else
-    config.ThemeColor := GrayTheme;
-  FormColor := ThemeColor;
-  config.DecimalPlaces := SpinEdit1.Value;
-  ClearFileList := CheckBox8.Checked;
+  config.DecimalPlaces    := SpinEdit1.Value;
+  ClearFileList := CheckBox7.Checked;
 end;
 
 end.

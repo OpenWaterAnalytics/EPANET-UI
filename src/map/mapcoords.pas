@@ -1,10 +1,10 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.0
+ Version:      1.0.3
  Module:       mapcoords
  Description:  utility functions for map coordinates
  License:      see LICENSE
- Last Updated: 03/07/2026
+ Last Updated: 06/19/2026
 =====================================================================}
 
 unit mapcoords;
@@ -52,7 +52,11 @@ procedure DoAffineTransform(FromRect, ToRect: TDoubleRect);
 
 procedure DoAffineTransform(Axx, Bxx, Cxx, Ayy, Byy, Cyy: Double);
 
-procedure DoScalingTransform(FromScaling, ToScaling: TScalingInfo);
+procedure DoScalingTransform(FromScaling, ToScaling: TScalingInfo;
+            IncludeBasemap: Boolean = true);
+
+procedure DoExtentTransform(FromScaling, ToScaling: TScalingInfo;
+            FromExtent: TDoubleRect; var ToExtent: TDoubleRect);
 
 function  DoProjectionTransform(FromProj, ToProj: string;
             var Bounds: TDoubleRect): Boolean;
@@ -67,7 +71,7 @@ function  ManhattanDistance(P1, P2: TDoublePoint): Double;
 implementation
 
 uses
-  project, projtransform;
+  main, project, projtransform;
 
 const
   ScalingTransform = 0;
@@ -86,18 +90,23 @@ var
   ProjTrans: TProjTransform;      // Used for projection transform
 
 function  DoublePoint(X, Y: Double): TDoublePoint;
+// Return a point with coords. X & Y.
 begin
   Result.X := X;
   Result.Y := Y;
 end;
 
 function  DoubleRect(LowerLeft, UpperRight: TDoublePoint): TDoubleRect;
+// Return a rectangle with LowerLeft and UpperRight coords.
 begin
   Result.LowerLeft := LowerLeft;
   Result.UpperRight := UpperRight;
 end;
 
 function GetBounds(Bounds: TDoubleRect): TDoubleRect;
+//
+//  Find the min & max X,Y coordinates for network objects
+//
 var
   Xmin : Double = 1.e50;
   Ymin : Double = 1.e50;
@@ -116,9 +125,7 @@ begin
 
   // If no nodes and labels return the current bounding rectangle
   Result := Bounds;
-  if (NumNodes = 0)
-  and (NumLabels = 0) then
-    exit;
+  if (NumNodes = 0) and (NumLabels = 0) then exit;
 
   // Find min/max X,Y coords.
   for I := 1 to NumNodes do
@@ -161,6 +168,9 @@ begin
 end;
 
 function InBounds(W: TDoublePoint; Bounds: TDoubleRect): Boolean;
+//
+//  Check if point W is within the rectangle Bounds.
+//
 begin
   Result := true;
   if (W.X < Bounds.LowerLeft.X)
@@ -171,6 +181,9 @@ begin
 end;
 
 function  HasLatLonCoords(MapExtent: TDoubleRect): Boolean;
+//
+//  Check if network coords falls within allowable lat/lon values.
+//
 var
   Delta: Double;
 begin
@@ -188,6 +201,9 @@ begin
 end;
 
 function ApplyScalingTransform(X, Y: Double): TDoublePoint;
+//
+//  Convert coord. X,Y from TScalingInfo S1 to S2.
+//
 var
   P: TPoint;
   Z: Double;
@@ -203,12 +219,18 @@ begin
 end;
 
 function ApplyAffineTransform(X, Y: Double): TDoublePoint;
+//
+//  Convert coord. X,Y using affine transform with coeffs. A, B, C.
+//
 begin
   Result.X := Ax*X + Bx*Y + Cx;
   Result.Y := Ay*X + By*Y + Cy;
 end;
 
 function ApplyProjectionTransform(var X, Y: Double): TDoublePoint;
+//
+//  Convert coord. X,Y from one coord. reference system to another.
+//
 begin
   ProjTrans.Transform(X,Y);
   Result.X := X;
@@ -216,6 +238,9 @@ begin
 end;
 
 function ApplyTransform(TransformType: Integer; X, Y: Double): TDoublePoint;
+//
+//  Apply the TransformType coord. transform to coord. X,Y.
+//
 begin
   Result := DoublePoint(0,0);
   case TransformType of
@@ -229,6 +254,9 @@ begin
 end;
 
 procedure TransformNodeCoords(TransformType: Integer);
+//
+//  Transform all network node coords.
+//
 var
   I: Integer;
   X: Double = 0;
@@ -246,6 +274,9 @@ begin
 end;
 
 procedure TransformVertexCoords(TransformType: Integer);
+//
+//  Transform all network link vertex coords.
+//
 var
   I:         Integer;
   J:         Integer;
@@ -286,6 +317,9 @@ begin
 end;
 
 procedure TransformLabelCoords(TransformType: Integer);
+//
+//  Transform all network map label coords.
+//
 var
   I:  Integer;
   X:  Double = 0;
@@ -297,12 +331,30 @@ begin
     if project.GetLabelCoord(I, X, Y) then
     begin
       DP := ApplyTransform(TransformType, X, Y);
-      Project.SetLabelCoord(I, DP.X, DP.Y);
+      project.SetLabelCoord(I, DP.X, DP.Y);
+    end;
+  end;
+end;
+
+procedure  TransformBasemapCoords(TransformType: Integer);
+//
+//  Transform the bounding coords. of the network's basemap image.
+//
+begin
+  with MainForm.MapFrame.Map.Basemap do
+  begin
+    if (Picture.Bitmap.Width > 0) and (WebMap = nil) then
+    begin
+      LowerLeft := ApplyTransform(TransformType, LowerLeft.X, LowerLeft.Y);
+      UpperRight := ApplyTransform(TransformType, UpperRight.X, UpperRight.Y);
     end;
   end;
 end;
 
 procedure DoAffineTransform(FromRect, ToRect: TDoubleRect);
+//
+//  Do an affine transform of rectangle FromRect to ToRect.
+//
 var
   LL1: TDoublePoint;
   LL2: TDoublePoint;
@@ -331,6 +383,9 @@ begin
 end;
 
 procedure DoAffineTransform(Axx, Bxx, Cxx, Ayy, Byy, Cyy: Double);
+//
+//  Do an affine transform of coords for all network objects.
+//
 begin
   Ax := Axx;
   Bx := Bxx;
@@ -343,7 +398,11 @@ begin
   TransformLabelCoords(AffineTransform);
 end;
 
-procedure DoScalingTransform(FromScaling, ToScaling: TScalingInfo);
+procedure DoScalingTransform(FromScaling, ToScaling: TScalingInfo;
+            IncludeBasemap: Boolean = true);
+//
+//  Transform coords of all network objects from scaling FromScaling to ToScaling.
+//
 begin
   // Assign scaling info to global variables S1 & S2 for convenience
   S1 := FromScaling;
@@ -353,9 +412,29 @@ begin
   TransformNodeCoords(ScalingTransform);
   TransformVertexCoords(ScalingTransform);
   TransformLabelCoords(ScalingTransform);
+  if IncludeBasemap then
+    TransformBasemapCoords(ScalingTransform);
+end;
+
+procedure DoExtentTransform(FromScaling, ToScaling: TScalingInfo;
+            FromExtent: TDoubleRect; var ToExtent: TDoubleRect);
+//
+//  Rescale the bounds of rectangle FromExtent with scaling FromScaling to
+//  new bounds ToExtent under scaling ToScaling.
+//
+begin
+  S1 := FromScaling;
+  S2 := ToScaling;
+  ToExtent.LowerLeft := ApplyTransform(ScalingTransform, FromExtent.LowerLeft.X,
+    FromExtent.LowerLeft.Y);
+  ToExtent.UpperRight := ApplyTransform(ScalingTransform, FromExtent.UpperRight.X,
+    FromExtent.UpperRight.Y);
 end;
 
 function PointsEqual(P1, P2: TDoublePoint): Boolean;
+//
+//  Check if two points P1 & P2 are close enough to be considered equal.
+//
 const
   AbsTol = 0.1;
   RelTol = 0.001;
@@ -368,6 +447,9 @@ end;
 
 function  CanProjectionTransform(FromProj, ToProj: string;
   Bounds: TDoubleRect): Boolean;
+//
+//  Check if map coords. can be transformed from CRS FromProj to ToProj.
+//
 var
   ToBounds: TDoubleRect;
 begin
@@ -404,19 +486,25 @@ end;
 
 function DoProjectionTransform(FromProj, ToProj: string;
   var Bounds: TDoubleRect): Boolean;
+//
+//  Convert all network coord. data from CRS projection FromProj to
+//  CRS projection ToProj. It creates a module-level TProjTransform object
+//  that makes conversions in the projtransform unit using its Transform method.
+//
 begin
   // Create a Projection Transform object
   Result := false;
   ProjTrans := TProjTransform.Create;
   try
 
+    // Check that FromProj can be converted to ToProj
     if ProjTrans.SetProjections(FromProj, ToProj) then
     begin
-      // Transform coords. of bounding rectangle
+      // Transform coords. of the network's bounding rectangle
       ApplyProjectionTransform(Bounds.LowerLeft.X, Bounds.LowerLeft.Y);
       ApplyProjectionTransform(Bounds.UpperRight.X, Bounds.UpperRight.Y);
 
-      // Transform coords. for all map objects
+      // Transform coords. for all network objects
       TransformNodeCoords(ProjectionTransform);
       TransformVertexCoords(ProjectionTransform);
       TransformLabelCoords(ProjectionTransform);
@@ -432,11 +520,11 @@ function GetZoomLevel(NorthEast: TDoublePoint; SouthWest: TDoublePoint;
   MapRect: TRect): Integer;
 //
 //  Find zoom level for a tiled web map bounded by Northeast and
-//  SouthWest lat/lon coordinates displayed in a MapRect screen window
+//  SouthWest lat/lon coordinates displayed in a MapRect screen window.
 //
 const
   WORLD_DIM = 256;
-  ZOOM_MAX = 21;
+  ZOOM_MAX = 18;  //21;
 
   function LatRad(Lat: Double): Double;
   var
@@ -472,7 +560,7 @@ end;
 
 function FromWGS84ToWebMercator(LatLng: TDoublePoint): TDoublePoint;
 //
-//  Convert point LatLng from WGS84 projection to Web Mercator projection
+//  Convert point LatLng from WGS84 projection to Web Mercator projection.
 //
 var
   A: Double;
@@ -491,7 +579,7 @@ end;
 
 function  ManhattanDistance(P1, P2: TDoublePoint): Double;
 //
-//  Find the Manhattan distance between two points
+//  Find the Manhattan distance between two points.
 //
 begin
   Result := Abs(P2.X - P1.X) + Abs(P2.Y - P1.Y);

@@ -1,9 +1,9 @@
 object MapAlignFrame: TMapAlignFrame
   Left = 0
-  Height = 391
+  Height = 236
   Top = 0
   Width = 239
-  ClientHeight = 391
+  ClientHeight = 236
   ClientWidth = 239
   LCLVersion = '4.4.0.0'
   TabOrder = 0
@@ -15,6 +15,7 @@ object MapAlignFrame: TMapAlignFrame
     Top = 0
     Width = 239
     Align = alTop
+    BevelOuter = bvNone
     Caption = 'Map Alignment Tool'
     ClientHeight = 28
     ClientWidth = 239
@@ -22,10 +23,10 @@ object MapAlignFrame: TMapAlignFrame
     ParentFont = False
     TabOrder = 0
     object CloseBtn: TSpeedButton
-      Left = 209
+      Left = 212
       Height = 26
       Hint = 'Close'
-      Top = 2
+      Top = 0
       Width = 26
       Anchors = [akTop, akRight]
       AutoSize = True
@@ -93,68 +94,72 @@ object MapAlignFrame: TMapAlignFrame
       OnClick = CloseBtnClick
     end
   end
-  object StringGrid1: TStringGrid
-    Left = 8
-    Height = 103
-    Top = 40
-    Width = 224
-    AutoFillColumns = True
-    ColCount = 2
-    FixedCols = 0
-    Flat = True
-    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goSmoothScroll, goSelectionActive, goRowHighlight]
-    RowCount = 4
-    TabOrder = 1
-    ColWidths = (
-      112
-      111
-    )
-  end
-  object GoAlignBtn: TButton
+  object AcceptBtn: TButton
     Left = 34
     Height = 25
-    Top = 348
+    Top = 194
     Width = 75
-    Caption = 'Align'
-    TabOrder = 2
-    OnClick = GoAlignBtnClick
+    Caption = 'Accept'
+    TabOrder = 3
+    OnClick = AcceptBtnClick
   end
   object CancelBtn: TButton
     Left = 130
     Height = 25
-    Top = 348
+    Top = 194
     Width = 75
     Caption = 'Cancel'
-    TabOrder = 3
+    TabOrder = 4
     OnClick = CancelBtnClick
   end
-  object Label1: TLabel
-    Left = 8
-    Height = 178
-    Top = 158
-    Width = 216
-    AutoSize = False
-    BorderSpacing.Around = 2
-    Caption = 'For each row in the table:'#10#10'1. Select the Node column and'#10'    then select a node on the map.'#10#10'2. Select the New Location column'#10'   and then click the basemap at'#10'   the node''s new location.'
+  object Label2: TLabel
+    Left = 70
+    Height = 15
+    Top = 112
+    Width = 98
+    Caption = 'Resize the network'
   end
-  object TaskDialog1: TTaskDialog
-    Buttons = <    
-      item
-        Caption = 'Keep the new alignment'
-        ModalResult = 100
-      end    
-      item
-        Caption = 'Restore the original alignment'
-        ModalResult = 101
-      end>
-    Caption = 'Align With Basemap'
-    CommonButtons = []
-    Flags = [tfAllowDialogCancellation, tfUseCommandLinks, tfPositionRelativeToWindow]
-    RadioButtons = <>
-    QueryItemIndex = 0
-    Text = 'After viewing the newly aligned network:'
-    Title = 'Confirm Alignment'
+  object TrackBar1: TTrackBar
+    Left = 8
+    Height = 25
+    Top = 150
+    Width = 216
+    Max = 100
+    Min = -100
+    Position = 0
+    OnChange = TrackBar1Change
+    TabOrder = 2
+    OnMouseUp = TrackBar1MouseUp
+    OnKeyUp = TrackBar1KeyUp
+  end
+  object CheckBox1: TCheckBox
+    Left = 39
+    Height = 19
+    Top = 43
+    Width = 160
+    Caption = 'Align basemap to network '
+    TabOrder = 1
+    OnChange = CheckBox1Change
+  end
+  object Label1: TLabel
+    Left = 19
+    Height = 15
+    Top = 72
+    Width = 200
+    Caption = 'Move mouse with left button pressed.'
+  end
+  object Label3: TLabel
+    Left = 19
+    Height = 15
+    Top = 132
+    Width = 39
+    Caption = 'Smaller'
+  end
+  object Label4: TLabel
     Left = 180
-    Top = 91
+    Height = 15
+    Top = 133
+    Width = 33
+    Caption = 'Larger'
   end
 end

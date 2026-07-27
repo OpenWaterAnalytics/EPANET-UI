@@ -1,0 +1,115 @@
+object MapLegendFrame: TMapLegendFrame
+  Left = 0
+  Height = 141
+  Top = 0
+  Width = 151
+  ClientHeight = 141
+  ClientWidth = 151
+  Font.CharSet = ANSI_CHARSET
+  Font.Name = 'Segoe UI Variable Small'
+  Font.Pitch = fpVariable
+  Font.Quality = fqDraft
+  LCLVersion = '4.4.0.0'
+  ParentBackground = False
+  ParentFont = False
+  TabOrder = 0
+  DesignLeft = 1537
+  DesignTop = 668
+  object LegendPanel: TPanel
+    Left = 0
+    Height = 141
+    Hint = 'Drag to new position'
+    Top = 0
+    Width = 151
+    Align = alClient
+    BevelOuter = bvNone
+    BorderStyle = bsSingle
+    ClientHeight = 137
+    ClientWidth = 147
+    ParentBackground = False
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 0
+    OnDblClick = LegendPanelDblClick
+    OnMouseDown = LegendPanelMouseDown
+    OnMouseMove = LegendPanelMouseMove
+    OnMouseUp = LegendPanelMouseUp
+    object Shape1: TShape
+      Left = 8
+      Height = 20
+      Top = 27
+      Width = 8
+      Brush.Color = clBlue
+    end
+    object Shape2: TShape
+      Left = 8
+      Height = 20
+      Top = 46
+      Width = 8
+      Brush.Color = clAqua
+    end
+    object Shape3: TShape
+      Left = 8
+      Height = 20
+      Top = 65
+      Width = 8
+      Brush.Color = clLime
+    end
+    object Shape4: TShape
+      Left = 8
+      Height = 20
+      Top = 84
+      Width = 8
+      Brush.Color = clYellow
+    end
+    object Shape5: TShape
+      Left = 8
+      Height = 20
+      Top = 103
+      Width = 8
+      Brush.Color = clRed
+    end
+    object Label1: TLabel
+      Left = 28
+      Height = 16
+      Top = 29
+      Width = 14
+      Caption = '20'
+    end
+    object Label2: TLabel
+      Left = 28
+      Height = 16
+      Top = 48
+      Width = 14
+      Caption = '40'
+    end
+    object Label3: TLabel
+      Left = 28
+      Height = 16
+      Top = 67
+      Width = 14
+      Caption = '60'
+    end
+    object Label4: TLabel
+      Left = 28
+      Height = 16
+      Top = 86
+      Width = 14
+      Caption = '80'
+    end
+    object ThemeNameLabel: TLabel
+      Left = 8
+      Height = 16
+      Top = 5
+      Width = 55
+      Caption = 'Head Loss'
+    end
+    object Label5: TLabel
+      Left = 28
+      Height = 16
+      Top = 105
+      Width = 14
+      Caption = '80'
+    end
+  end
+end

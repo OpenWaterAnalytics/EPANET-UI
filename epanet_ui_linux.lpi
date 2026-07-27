@@ -12,10 +12,15 @@
       <XPManifest>
         <DpiAware Value="True/PM_V2"/>
       </XPManifest>
-      <Icon Value="0"/>
     </General>
+    <MacroValues Count="1">
+      <Macro1 Name="LCLWidgetType" Value="qt5"/>
+    </MacroValues>
     <BuildModes>
       <Item Name="Default" Default="True"/>
+      <SharedMatrixOptions Count="1">
+        <Item1 ID="222068993929" Modes="Default" Type="IDEMacro" MacroName="LCLWidgetType" Value="qt5"/>
+      </SharedMatrixOptions>
     </BuildModes>
     <PublishOptions>
       <Version Value="2"/>
@@ -390,20 +395,6 @@
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
-        <Filename Value="src\core\basemapmenu.pas"/>
-        <IsPartOfProject Value="True"/>
-        <ComponentName Value="BasemapMenuForm"/>
-        <HasResources Value="True"/>
-        <ResourceBaseClass Value="Form"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src\map\mapexporter.pas"/>
-        <IsPartOfProject Value="True"/>
-        <ComponentName Value="MapExporterFrame"/>
-        <HasResources Value="True"/>
-        <ResourceBaseClass Value="Frame"/>
-      </Unit>
-      <Unit>
         <Filename Value="src\thirdparty\epanetmsx.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit>
@@ -465,13 +456,6 @@
       <Unit>
         <Filename Value="src\editors\msxfileprocs.pas"/>
         <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src\editors\groupeditor.pas"/>
-        <IsPartOfProject Value="True"/>
-        <ComponentName Value="GroupEditorForm"/>
-        <HasResources Value="True"/>
-        <ResourceBaseClass Value="Form"/>
       </Unit>
       <Unit>
         <Filename Value="src\reports\profilerpt.pas"/>
@@ -546,13 +530,6 @@
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
-        <Filename Value="src\core\reportviewer.pas"/>
-        <IsPartOfProject Value="True"/>
-        <ComponentName Value="ReportViewerForm"/>
-        <HasResources Value="True"/>
-        <ResourceBaseClass Value="Form"/>
-      </Unit>
-      <Unit>
         <Filename Value="src\simulator\sysresults.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit>
@@ -585,13 +562,62 @@
         <Filename Value="src\thirdparty\mrumanager.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit>
+      <Unit>
+        <Filename Value="src\core\basemapmenu.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="BasemapMenuForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\core\filemenu.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="FileMenuFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\editors\groupeditor.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="GroupEditorFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\project\groupselector.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="GroupSelectorFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\themes\maplegend.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="MapLegendFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\core\mapviewerframe.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="MapViewerFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\core\reportframe.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="ReportFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="11"/>
     <PathDelim Value="\"/>
     <Target>
-      <Filename Value="bin\linux\epanet-ui"/>
+      <Filename Value="bin\linux\epanet_ui"/>
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
@@ -624,15 +650,6 @@
         </Win32>
       </Options>
     </Linking>
-    <Other>
-      <Verbosity>
-        <ShowNotes Value="False"/>
-        <ShowHints Value="False"/>
-      </Verbosity>
-      <CompilerMessages>
-        <IgnoredMessages idx6058="True" idx5024="True"/>
-      </CompilerMessages>
-    </Other>
   </CompilerOptions>
   <Debugging>
     <Exceptions>

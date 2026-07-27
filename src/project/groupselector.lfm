@@ -1,0 +1,114 @@
+object GroupSelectorFrame: TGroupSelectorFrame
+  Left = 0
+  Height = 350
+  Top = 0
+  Width = 237
+  ClientHeight = 350
+  ClientWidth = 237
+  Color = clDefault
+  LCLVersion = '4.4.0.0'
+  ParentBackground = False
+  ParentColor = False
+  TabOrder = 0
+  DesignLeft = 349
+  DesignTop = 145
+  object TopPanel: TPanel
+    Left = 0
+    Height = 30
+    Top = 0
+    Width = 237
+    Align = alTop
+    BevelOuter = bvNone
+    Caption = 'Group Selector'
+    Font.Style = [fsBold]
+    ParentBackground = False
+    ParentFont = False
+    TabOrder = 0
+  end
+  object ButtonPanel: TPanel
+    Left = 0
+    Height = 55
+    Top = 295
+    Width = 237
+    Align = alBottom
+    BevelOuter = bvNone
+    ClientHeight = 55
+    ClientWidth = 237
+    ParentBackground = False
+    TabOrder = 6
+    object CancelBtn: TButton
+      Left = 24
+      Height = 25
+      Top = 14
+      Width = 75
+      Caption = 'Cancel'
+      TabOrder = 0
+      OnClick = CancelBtnClick
+    end
+    object AcceptBtn: TButton
+      Left = 136
+      Height = 25
+      Top = 14
+      Width = 75
+      Caption = 'Accept'
+      TabOrder = 1
+      OnClick = AcceptBtnClick
+    end
+  end
+  object SelectLabel: TLabel
+    Left = 30
+    Height = 30
+    Top = 45
+    Width = 163
+    Caption = 'Click objects on the map to'#13#10'toggle their selection on or off.'
+    Font.CharSet = ANSI_CHARSET
+    Font.Color = clBlack
+    Font.Pitch = fpVariable
+    Font.Quality = fqDraft
+    ParentFont = False
+    WordWrap = True
+  end
+  object TagEdit: TEdit
+    Left = 30
+    Height = 23
+    Top = 121
+    Width = 176
+    TabOrder = 2
+  end
+  object DoRegionBtn: TButton
+    Left = 30
+    Height = 25
+    Top = 164
+    Width = 176
+    Caption = 'Select a polygon region'
+    TabOrder = 3
+    OnClick = DoRegionBtnClick
+  end
+  object DoAllBtn: TButton
+    Left = 30
+    Height = 25
+    Top = 212
+    Width = 176
+    Caption = 'Select all nodes'
+    TabOrder = 4
+    OnClick = DoAllBtnClick
+  end
+  object DoClearBtn: TButton
+    Left = 30
+    Height = 25
+    Top = 260
+    Width = 176
+    Caption = 'Deselect all nodes'
+    TabOrder = 5
+    OnClick = DoClearBtnClick
+  end
+  object DoTagBtn: TButton
+    Left = 30
+    Height = 25
+    Top = 96
+    Width = 176
+    Caption = 'Select nodes with Tag'
+    TabOrder = 1
+    OnClick = DoTagBtnClick
+  end
+end

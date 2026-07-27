@@ -1,13 +1,25 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.0
+ Version:      1.0.3
  Module:       mapframe
  Description:  a frame that displays the pipe network and
-               handles user interaction with it
+               handles user interaction with it.
  License:      see LICENSE
- Last Updated: 03/07/2026
+ Last Updated: 06/19/2026
 =====================================================================}
+
 unit mapframe;
+
+{
+ This frame is placed on the MapPanel of EPANET-UI's main form. It
+ contains a PaintBox named MapBox on which the pipe network is displayed.
+ A public TMap object (Map) is declared which is responsible for drawing
+ the network and any associated basemap on an offscreen bitmap. This
+ bitmap is drawn onto the PaintBox's Canvas in its OnPaint method. The
+ frame also handles all user interactions with the network map, such as
+ zooming, panning, selecting objects, adding objects, drawing fencelines,
+ and reshaping links.
+}
 
 {$mode objfpc}{$H+}
 
@@ -18,23 +30,32 @@ uses
   Graphics, Clipbrd, ExtDlgs, Types, Math, Dialogs, Menus,
 
   // EPANET-UI units
-  project, map, mapcoords, mapoptions, projtransform;
+  project, map, mapcoords, mapoptions, maplegend, projtransform;
 
 const
-  TICKDELAY    = 100;        //Delay before object can be moved
-  MINPIXPAN    = 2;          //Minimum pixel movement for panning
-  DELTA        = 2;          //Pixel distance for keyboard moving
+  TICKDELAY    = 200;        // Delay before object can be moved
+  MINPIXPAN    = 2;          // Minimum pixel movement for panning
+  DELTA        = 1;          // Pixel distance for keyboard moving
   MAX_HILITE_COUNT = 10;
 
 type
 
-  TMapAction = (maSelecting = 1, maVertexing, maFenceLining, maPanning,
-                maZooming, maDrawExtent, maAddingJunc, maAddingResv,
-                maAddingTank, maAddingPipe, maAddingPump, maAddingValve,
+  TMapAction = (maSelecting = 1,  // Selecting an object
+                maVertexing,      // Editing link vertices
+                maFenceLining,    // Drawing a fencelined polygon
+                maPanning,        // Panning the map
+                maZooming,        // Zooming the map
+                // Adding objects to the map
+                maAddingJunc, maAddingResv, maAddingTank,
+                maAddingPipe, maAddingPump, maAddingValve,
                 maAddingLabel);
 
-  TPaintAction = (paNone, paMovingLine, paPolyLine, paPolygon, paRectangle,
-                  paVertices, paHilite);
+  TPaintAction = (paNone,         // No action
+                  paMovingLine,   // Dotted line when moving an object
+                  paPolyLine,     // Dotted line when linking nodes or fencelining
+                  paPolygon,      // Fill selected polygon region
+                  paVertices,     // Show link vertices
+                  paHilite);      // Show object highlighter
 
   // Control point used for basemap georeferencing
   TCtrlPoint = Record
@@ -63,6 +84,7 @@ type
     OpenPictureDialog1: TOpenPictureDialog;
 
     procedure ConvertMenuItemClick(Sender: TObject);
+    procedure MapBoxDblClick(Sender: TObject);
     procedure MapMenuItemClick(Sender: TObject);
     procedure HiliteTimerTimer(Sender: TObject);
     procedure MapBoxChangeBounds(Sender: TObject);
@@ -89,8 +111,7 @@ type
     FenceLining:      Boolean;
     Moving:           Boolean;
 
-    Node1:            Integer;
-    Label1:           Integer;
+    StartNode:        Integer;
     Point1:           TPoint;
     Point2:           TPoint;
     Points:           array of TPoint;
@@ -105,8 +126,8 @@ type
     SelectedObjIndex: Integer;
     NumVertices:      Integer;
     SelectedVertex:   Integer;
-    OldTickCount:     QWORD;          //Used to measure a small time delay
-    ProjTrans:        TProjTransform; // Basemap projection transformation
+    OldTickCount:     QWORD;          // Measures a small time delay
+    ProjTrans:        TProjTransform; // CRS projection transformation
 
     function  StartLinking(const X: Integer; const Y: Integer): Boolean;
     procedure EndLinking(const X: Integer; const Y: Integer);
@@ -130,7 +151,7 @@ type
     procedure ShowWebBasemap;
     procedure ShowPopupMenu;
     procedure FindBasemapLocation(MapSource: Integer);
-    function  WGS84Transform(Epsg: Integer; var Extent: TDoubleRect): Boolean;
+    function  WGS84Transform(MapEpsg: Integer; var Extent: TDoubleRect): Boolean;
 
     procedure HideHiliter;
     procedure ShowHiliter;
@@ -138,9 +159,12 @@ type
 
   public
     Map:         TMap;
-    HasBaseMap:  Boolean;
-    BaseMapFile: string;
+    HasBasemap:  Boolean;
+    BasemapFile: string;
+    NodeLegend:  TMapLegendFrame;
+    LinkLegend:  TMapLegendFrame;
     Offset:      TPoint;
+    Aligning:    Boolean;
     CtrlPoint:   array[1..3] of TCtrlPoint;
 
     procedure AddNode(NodeType: Integer);
@@ -149,7 +173,6 @@ type
     procedure AddVertex;
 
     procedure ChangeExtent(NewExtent: TDoubleRect);
-    procedure ChangeMapLayer(MapLegend: TTreeView);
     procedure Clear;
     procedure Close;
 
@@ -160,9 +183,6 @@ type
     procedure EnterVertexingMode;
     procedure EnterFenceLiningMode(aMenuAction: string);
 
-    function  GetBasemapSize: TSize;
-    function  GetExtent: TDoubleRect;
-    function  GetMapRect: TRect;
     procedure GetVertices(var X: array of Double; var Y: array of Double;
               var N: Integer);
     function  GetWebBasemapSource: Integer;
@@ -170,6 +190,7 @@ type
 
     function  HasWebBasemap: Boolean;
     procedure HiliteObject(const Objtype: Integer; const ObjIndex: Integer);
+
     procedure Init;
     procedure InitMapOptions;
 
@@ -185,9 +206,13 @@ type
     procedure SetBasemapBrightness(Brightness: Integer);
     procedure SetExtent(E: TDoubleRect);
     procedure SetMapCenter(X, Y: Double);
+    procedure ShowLayer(LayerType: Integer; ShowIt: Boolean);
+    procedure TransformExtent(var ExtentRect: TDoubleRect);
+
 
     procedure UnloadBasemap;
     procedure UnloadWebBasemap;
+
     procedure ZoomIn(Dx: Integer; Dy: Integer);
     procedure ZoomOut(Dx: Integer; Dy: Integer);
 
@@ -209,20 +234,28 @@ procedure TMapFrame.Init;
 var
   I: Integer;
 begin
+  // Create a TMap object on which the pipe network is drawn
   Map := TMap.Create;
   Offset := Point(0, 0);
   MapBox.OnShowHint := @ShowHint;
 
+  // Initialize how a selected map object is highlighted
   HiliteTimer.Interval := 500;
   HiliteTimer.Enabled := false;
   HiliteRect := Rect(0, 0, 0, 0);
   HiliteState := 0;
   HiliterIsOn := false;
 
+  // Initialize any map actions taken
   MapAction := maSelecting;
   PaintAction := paNone;
   Linking := false;
+  Aligning := false;
 
+  // Initialize map CRS projection transform
+  ProjTrans := nil;
+
+  // Create the markers used when georeferencing a basemap image
   for I := 1 to 3 do
   begin
     CtrlPoint[I].Bitmap := TBitmap.Create;
@@ -230,10 +263,33 @@ begin
     CtrlPoint[I].Visible := false;
   end;
   Setlength(Points, 0);
-  ProjTrans := nil;
+
+  // Create a Node legend for the map display
+  NodeLegend := TMapLegendFrame.Create(self);
+  NodeLegend.Parent := self;
+  NodeLegend.Name := '';
+  NodeLegend.Left := 2;
+  NodeLegend.Top := 2;
+  NodeLegend.SetShapes(stCircle);
+  NodeLegend.ObjType := ctNodes;
+  NodeLegend.Framed := true;
+  NodeLegend.Visible := true;
+
+  // Create a Link legend for the map display
+  LinkLegend := TMapLegendFrame.Create(self);
+  LinkLegend.Parent := self;
+  LinkLegend.Left := 2;
+  LinkLegend.Top := 2 + NodeLegend.Height + 2;
+  LinkLegend.SetShapes(stRectangle);
+  LinkLegend.ObjType := ctLinks;
+  LinkLegend.Framed := true;
+  LinkLegend.Visible := true;
 end;
 
 procedure TMapFrame.Clear;
+//
+// Clear the network map display when a new project is started.
+//
 var
   I: Integer;
 begin
@@ -242,12 +298,13 @@ begin
 
   Map.Reset;
   Offset := Point(0, 0);
+  Aligning := false;
 
   SelectedObjType := -1;
   SelectedObjIndex := -1;
 
-  HasBaseMap := false;
-  BaseMapFile := '';
+  HasBasemap := false;
+  BasemapFile := '';
   for I := 1 to 3 do
     CtrlPoint[I].Visible := false;
 
@@ -256,6 +313,9 @@ begin
 end;
 
 procedure TMapFrame.Close;
+//
+// Free allocated memory when EPANET-UI is closed.
+//
 var
   I: Integer;
 begin
@@ -267,8 +327,11 @@ begin
 end;
 
 procedure TMapFrame.DrawFullExtent;
+//
+//  Display the network map at its full extent.
+//
 begin
-  Map.Extent := mapcoords.GetBounds(Map.Extent);
+  Map.Extent := Map.GetBounds;
   Map.ZoomToExtent;
   RedrawMap;
   if MapAction = maVertexing then
@@ -278,12 +341,18 @@ begin
 end;
 
 procedure TMapFrame.ResizeTimerTimer(Sender: TObject);
+//
+// Delays redrawing a resized map to avoid flicker.
+//
 begin
   ResizeTimer.Enabled := false;
   ResizeMap;
 end;
 
 procedure TMapFrame.ResizeMap;
+//
+// Redraw the network map after the main form has been resized.
+//
 begin
   if Assigned(Map) then
   begin
@@ -294,6 +363,10 @@ begin
 end;
 
 procedure TMapFrame.ChangeExtent(NewExtent: TDoubleRect);
+//
+//  Re-scale the coordinates of the network map's objects and redraw
+//  the map when the coordinates of its bounding rectangle change.
+//
 var
   S1: TScalingInfo;
   S2: TScalingInfo;
@@ -303,7 +376,7 @@ begin
   Map.Rescale;
   Map.SetBasemapBounds;
   S2 := Map.GetScalingInfo;
-  MapCoords.DoScalingTransform(S1, S2);
+  mapcoords.DoScalingTransform(S1, S2);
   DrawFullExtent;
   MainForm.OverviewMapFrame.Redraw;
   if (not project.HasChanged)
@@ -317,86 +390,55 @@ begin
   RedrawMap;
 end;
 
-procedure TMapFrame.HiliteTimerTimer(Sender: TObject);
+procedure TMapFrame.ShowLayer(LayerType: Integer; ShowIt: Boolean);
+//
+// Toggles the display of map objects.
+//
 begin
-  if config.MapHiliter then ShowHiliter;
-end;
-
-procedure TMapFrame.HiliteObject(const ObjType: Integer; const ObjIndex: Integer);
-var
-  RectSize: Integer;
-  X:        Double = 0;
-  Y:        Double = 0;
-  P:        TPoint = (X:0; Y:0);
-begin
-  // Turn off highlighter if no object selected
-  if ObjIndex <= 0 then
-  begin
-    HideHiliter;
-    SelectedObjIndex := -1;
-    HiliteRect := Rect(0,0,0,0);
-    exit;
+  case LayerType of
+    ntJunction:
+      Map.Options.ShowJunctions := ShowIt;
+    ntReservoir:
+      Map.Options.ShowTanks := ShowIt;
+    ltPipe + 10:
+      Map.Options.ShowLinks := ShowIt;
+    ltPump + 10:
+      Map.Options.ShowPumps := ShowIt;
+    ltValve + 10:
+      Map.Options.ShowValves := ShowIt;
+    ctLabels:
+      Map.Options.ShowLabels := ShowIt;
   end;
-
-  // Get the world coordinates of the selected object
-  RectSize := 5;
-  if ObjType = ctNodes then
-  begin
-    if not project.GetNodeCoord(ObjIndex, X, Y) then exit;
-    RectSize := Max(Map.Options.LinkSize, Map.Options.NodeSize) + 2;
-  end
-  else if ObjType = ctLinks then
-  begin
-    if not project.GetLinkCoord(ObjIndex, X, Y) then exit;
-    RectSize := Map.Options.LinkSize + 4;
-  end
-  else if ObjType = ctLabels then
-    P := Map.FindLabelPoint(ObjIndex)
-  else
-  begin
-    SelectedObjType := -1;
-    SelectedObjIndex := -1;
-    exit;
-  end;
-
-  // Save the selected object's type and index (within the type)
-  SelectedObjType := ObjType;
-  SelectedObjIndex := ObjIndex;
-
-  // Get the selected object's highlighted rectangle
-  if ObjType = ctLabels then
-    HiliteRect := TMapLabel(project.MapLabels.Objects[ObjIndex-1]).GetRect(P)
-  else
-  begin
-    P := Map.WorldToScreen(X, Y);
-    HiliteRect := Rect(P.X - RectSize, P.Y - RectSize, P.X + RectSize, P.Y + RectSize);
-  end;
-  InflateRect(HiliteRect, 4, 4);
-
-  // Refresh the Hiliter
-  HiliteCount := 0;
-  HiliteState := 1;
-  HiliteTimer.Enabled := true;
-  ShowHiliter;
+  RedrawMap;
 end;
 
 procedure TMapFrame.MoveObject(W: TDoublePoint);
+//
+// Move a selected map object to new world coordinates W.
+//
 begin
+  // If moving a node, adjust connecting pipe lengths under AutoLength
   if SelectedObjType = ctNodes then
   begin
     project.SetNodeCoord(SelectedObjIndex, W.X, W.Y);
-    project.AdjustLinkLengths(Node1);
+    project.AdjustLinkLengths(StartNode);
   end
   else if SelectedObjType = ctLabels then
     project.SetLabelCoord(SelectedObjIndex, W.X, W.Y);
-  if (not project.HasChanged)
-  and (not project.IsEmpty) then
+
+  // Update project's HasChanged state
+  if (not project.HasChanged) and (not project.IsEmpty) then
     project.HasChanged := true;
+
+  // Redraw network & overview maps
   RedrawMap;
   MainForm.OverviewMapFrame.Redraw;
 end;
 
 procedure TMapFrame.MoveObjectByPixel(Key: Word);
+//
+// Move a selected object by DELTA pixels when an arrow key was pressed.
+//
 var
   Dx:    Integer;
   Dy:    Integer;
@@ -453,6 +495,9 @@ begin
 end;
 
 procedure TMapFrame.ShowHint(Sender: TObject; HintInfo:PHintInfo);
+//
+// Display object ID and theme value as flyover hint if mouse is over an object.
+//
 var
   I: Integer;
   X: Integer;
@@ -508,6 +553,9 @@ begin
 end;
 
 procedure TMapFrame.AddNode(NodeType: Integer);
+//
+// Prepare map for adding a node of type NodeType to the project.
+//
 begin
   case NodeType of
     ntJunction:
@@ -525,6 +573,9 @@ begin
 end;
 
 procedure TMapFrame.AddLink(LinkType: Integer);
+//
+// Prepare map for adding a link of type LinkType to the project.
+//
 begin
   case LinkType of
     ltPipe:
@@ -536,12 +587,15 @@ begin
   end;
   HideHiliter;
   ShowJunctions;
-  MapBox.Cursor := crHandPoint;
+  MapBox.Cursor := crCross;
   MainForm.EnableMainForm(false);
   SetFocus;
 end;
 
 procedure TMapFrame.AddLabel;
+//
+// Prepare map for adding a map label to the project.
+//
 begin
   MapAction := maAddingLabel;
   HideHiliter;
@@ -583,12 +637,14 @@ begin
 end;
 
 procedure TMapFrame.EnterSelectionMode;
+//
+// Prepare map for selecting objects via mouse click.
+//
 begin
   Linking := false;
   FenceLining := false;
   Moving := false;
-  Node1 := 0;
-  Label1 := 0;
+  StartNode := 0;
   MapAction := maSelecting;
   PaintAction := paNone;
   Offset := Point(0, 0);
@@ -597,24 +653,29 @@ begin
 end;
 
 function TMapFrame.StartLinking(const X: Integer; const Y: Integer): Boolean;
+//
+// Put map in linking mode that will connect two nodes with a new link.
+//
 var
   I: Integer;
 begin
   I := Map.FindNodeHit(X, Y);
   if I > 0 then
   begin
-    Node1 := I;
+    StartNode := I;
     SetLength(Points, 1);
     Points[0] := Point(X, Y);
-    MapBox.Cursor := crCross;
     Result := true;
   end
   else Result := false;
 end;
 
 procedure TMapFrame.EndLinking(const X: Integer; const Y: Integer);
+//
+// Process a mouse click on map when in linking mode.
+//
 var
-  Node2, I: Integer;
+  EndNode, I: Integer;
 begin
   // Add current mouse position to link's vertex points
   SetLength(Points, Length(Points) + 1);
@@ -622,20 +683,18 @@ begin
   CurrentPoint := Point(X, Y);
 
   // See if current point falls on a node
-  Node2 := Map.FindNodeHit(X, Y);
-  if Node2 > 0 then
+  EndNode := Map.FindNodeHit(X, Y);
+  if EndNode > 0 then
   begin
-    MapBox.Cursor := crHandPoint;
-
     // Link start and end nodes are different
-    if Node1 <> Node2 then
+    if StartNode <> EndNode then
     begin
 
       // Convert MapAction to project's Link type
       I :=  Ord(MapAction) - Ord(maAddingPipe) + 1;
 
       // Add link to project
-      ProjectBuilder.AddLink(I, Node1, Node2);
+      projectbuilder.AddLink(I, StartNode, EndNode);
       if I >= ltPipe then AddLink(I);
 
       // Quit Linking
@@ -646,6 +705,9 @@ begin
 end;
 
 procedure TMapFrame.EnterFenceLiningMode(aMenuAction: string);
+//
+// Begin drawing a fencelined polygon on the map.
+//
 begin
   HideHiliter;
   MenuAction := aMenuAction;
@@ -658,6 +720,9 @@ begin
 end;
 
 procedure TMapFrame.GoFenceLining(X: Integer; Y: Integer);
+//
+// Process a mouse click while in fencelining mode.
+//
 begin
   SetLength(Points, Length(Points) + 1);
   Points[High(Points)] := Point(X, Y);
@@ -667,6 +732,9 @@ begin
 end;
 
 procedure TMapFrame.LeaveFenceLiningMode;
+//
+// Called when drawing a fenceline polygon is completed.
+//
 var
   I:              Integer;
   N:              Integer;
@@ -696,15 +764,13 @@ begin
   // Pass the polygon to the menu action that requested it
   FenceLining := false;
   SetLength(Points, 0);
-  if MenuAction = 'GroupEditing' then
+  if MenuAction = 'GroupSelection' then
   begin
-    MainForm.HideHintPanel;
-    MainForm.ProjectFrame.GroupEdit(WorldPoly, N);
-    MainForm.EnableMainForm(true);
+    MainForm.GroupSelectorFrame.SelectRegion(WorldPoly, N);
   end
-  else if MenuAction = 'FireFlowSelection' then
+  else if MenuAction = 'GroupDeletion' then
   begin
-    MainForm.FireFlowSelectorFrame.GroupSelect(WorldPoly, N);
+    MainForm.GroupEditorFrame.DeleteGroup(WorldPoly, N);
   end
   else
     MainForm.EnableMainForm(true);
@@ -712,6 +778,9 @@ begin
 end;
 
 procedure TMapFrame.EnterVertexingMode;
+//
+// Prepare for editing a link's vertices.
+//
 begin
   HideHiliter;
   MapAction := maVertexing;
@@ -722,10 +791,13 @@ begin
     PaintAction := paVertices;
     MapBox.Refresh;
   end;
-  MapBox.Cursor := crHandPoint;
+//  MapBox.Cursor := crHandPoint;
 end;
 
 procedure TMapFrame.LeaveVertexingMode;
+//
+// Finish editing a link's vertices.
+//
 begin
   if MapAction = maVertexing then
   begin
@@ -739,33 +811,39 @@ begin
 end;
 
 procedure TMapFrame.SetExtent(E: TDoubleRect);
+//
+// Reset the map's bounding rectangle to world coordinates E.
+//
 begin
   Map.Extent := E;
 end;
 
-function TMapFrame.GetExtent: TDoubleRect;
-begin
-  Result := Map.Extent;
-end;
-
-function TMapFrame.GetMapRect: TRect;
-begin
-  Result := Map.MapRect;
-end;
-
 procedure TMapFrame.RedrawMap;
+//
+// Redraw the network map in response to some change.
+//
 begin
+  // Redraw basemap and all network objects on offscreen bitmap
   HideHiliter;
   Map.Redraw;
+
+  // Add control point images to map if georeferencing a basemap image
   if MainForm.GeoRefFrame.Visible then
     DrawCtrlPoints;
+
+  // Transfer offscreen bitmap to screen via MapBox's OnPaint method
   PaintAction := paNone;
   MapBox.Refresh;
-  if MapAction = maSelecting then
+
+  // Re-highlight any selected map object
+  if (MapAction = maSelecting) then
     HiliteObject(SelectedObjType, SelectedObjIndex);
 end;
 
 procedure TMapFrame.DrawCtrlPoints;
+//
+// Draw control point images, used when georeferencing a basemap,
+// on map's offscreen bitmap.
 var
   I: Integer;
 begin
@@ -777,11 +855,17 @@ begin
 end;
 
 procedure TMapFrame.RedrawMapLabels;
+//
+// Redraw map when a label has changed.
+//
 begin
   if Map.Options.ShowLabels then RedrawMap;
 end;
 
 procedure TMapFrame.GoKeyDown(var Key: Word; Shift: TShiftState);
+//
+// Process a keyboard key press depending on map action.
+//
 begin
   if MapAction =  maVertexing then
   begin
@@ -831,61 +915,10 @@ begin
   end;
 end;
 
-procedure TMapFrame.ChangeMapLayer(MapLegend: TTreeView);
-var
-  TreeNode:   TTreeNode;
-  IsSelected: Boolean;
-begin
-  // Find the selected MapLegend Tree node
-  TreeNode := MapLegend.Selected;
-  if TreeNode = nil then exit;
-  if TreeNode.StateIndex = -1 then exit;
-
-  // Change the Checked/Unchecked state of the node
-  TreeNode.StateIndex := 1 - TreeNode.StateIndex;
-  IsSelected := (TreeNode.StateIndex = 1);
-  MapLegend.Refresh;
-
-  // Apply the new state to the network map's display options
-  // (Note: Tree nodes representing display options were
-  // assigned SelectedIndex values at design time.)
-  case TreeNode.SelectedIndex of
-    0:
-      Map.Options.ShowNodes := IsSelected;
-    1:
-      Map.Options.ShowJunctions := IsSelected;
-    2:
-      Map.Options.ShowTanks := IsSelected;
-    3:
-      Map.Options.ShowLinks := IsSelected;
-    4:
-      Map.Options.ShowPumps := IsSelected;
-    5:
-      Map.Options.ShowValves := IsSelected;
-    6:
-      Map.Options.ShowLabels := IsSelected;
-    7:
-      begin
-       Map.Options.ShowBackdrop := IsSelected;
-       Map.Basemap.NeedsRedraw := IsSelected;
-     end;
-    8:
-      begin
-        MainForm.OverviewPanel.Visible := IsSelected;
-        if IsSelected then MainForm.OverviewMapFrame.Redraw;
-        MapLegend.Selected := nil;
-        exit;
-      end;
-  end;
-
-  // Redraw the network map
-  MapLegend.Selected := nil;
-  RedrawMap;
-end;
-
 procedure TMapFrame.ShowJunctions;
-var
-  TreeNode: TTreeNode;
+//
+// Redraw map with Junction nodes displayed.
+//
 begin
   // Redraw map with nodes displayed
   if (Map.Options.ShowNodes = false)
@@ -895,27 +928,21 @@ begin
     Map.Options.ShowJunctions := true;
     RedrawMap;
   end;
-
-  // Update the main form's map layers tree view
-  for TreeNode in MainForm.LegendTreeView.Items do
-  begin
-    if TreeNode.Text = rsNodes then
-    begin
-      if TreeNode.StateIndex = 0 then TreeNode.StateIndex := 1;
-    end
-    else if TreeNode.Text = rsJunctions then
-    begin
-      if TreeNode.StateIndex = 0 then TreeNode.StateIndex := 1;
-    end;
-  end;
+  MainForm.MapViewerFrame.JunctionsBox.Checked := true;
 end;
 
 procedure TMapFrame.InitMapOptions;
+//
+// Initialize map display options to their default values.
+//
 begin
   Map.Options := mapoptions.DefaultOptions;
 end;
 
 procedure TMapFrame.EditMapOptions;
+//
+// Edit map display options.
+//
 begin
   if MapOptions.Edit(Map.Options) then
   begin
@@ -929,6 +956,9 @@ end;
 //------------------------------------------------------------------------------
 
 procedure TMapFrame.ShowPopupmenu;
+//
+// Set the items displayed in a popup menu when a node or link is right-clicked.
+//
 var
   ShowLinkItems: Boolean;
   Item,
@@ -955,6 +985,10 @@ begin
 end;
 
 procedure TMapFrame.MapMenuItemClick(Sender: TObject);
+//
+// OnClick handler shared by the MapPopupMenu's menu items where
+// the menu item's Tag property indicates what action to take.
+//
 begin
   with Sender as TMenuItem do
   begin
@@ -974,6 +1008,10 @@ begin
 end;
 
 procedure TMapFrame.ConvertMenuItemClick(Sender: TObject);
+//
+// OnClick handler for menu items under the MapPopupMenu | ConvertMenuItem
+// that determine what type of link a selected link should be converted to.
+//
 begin
   with Sender as TMenuItem do
     MainForm.ProjectFrame.ConvertItem(Tag);
@@ -984,6 +1022,9 @@ end;
 //------------------------------------------------------------------------------
 
 procedure TMapFrame.MapBoxPaint(Sender: TObject);
+//
+// OnPaint handler for the MapBox TPaintBox that displays the network map.
+//
 var
   OldBrushStyle: TBrushStyle;
 begin
@@ -1005,17 +1046,20 @@ begin
   end;
 
   // Used when drawing a polygon region or when linking two nodes
-  if (PaintAction = paPolyLine)
-  and (Length(Points) > 0) then with MapBox.Canvas do
+  if (PaintAction = paPolyLine) and (Length(Points) > 0) then
   begin
-    Pen.Style := psDot;
-    Pen.Width := 2;
-    if Length(Points) > 1 then
-      PolyLine(Points);
-    MoveTo(Points[High(Points)].X, Points[High(Points)].Y);
-    LineTo(CurrentPoint.X, CurrentPoint.Y);
-    Pen.Style := psSolid;
-    Pen.Width := 1;
+    with MapBox.Canvas do
+    begin
+      Pen.Style := psDot;
+      Pen.Mode := pmNotXor;
+      Pen.Width := 2;
+      if Length(Points) > 1 then PolyLine(Points);
+      MoveTo(Points[High(Points)].X, Points[High(Points)].Y);
+      LineTo(CurrentPoint.X, CurrentPoint.Y);
+      Pen.Style := psSolid;
+      Pen.Mode := pmCopy;
+      Pen.Width := 1;
+    end;
   end;
 
   // Used when moving a node or map label
@@ -1024,10 +1068,12 @@ begin
     with MapBox.Canvas do
     begin
       Pen.Style := psDot;
+      Pen.Mode := pmNotXor;
       Pen.Width := 2;
       MoveTo(Point1.X, Point1.Y);
       LineTo(CurrentPoint.X, CurrentPoint.Y);
       Pen.Style := psSolid;
+      Pen.Mode := pmCopy;
       Pen.Width := 1;
     end;
   end;
@@ -1043,22 +1089,37 @@ begin
   end;
 
   // Used to display a link's vertices
-  if (PaintAction = paVertices)
-  {or (MapAction = maVertexing)} then ShowVertices(SelectedObjIndex);
+  if (PaintAction = paVertices) then ShowVertices(SelectedObjIndex);
+  MapBox.Canvas.Pen.Color := clBlack;
   PaintAction := paNone;
 end;
 
 procedure TMapFrame.MapBoxResize(Sender: TObject);
+//
+// Introduces a short delay to redrawing the map when it is resized.
+//
 begin
   ResizeTimer.Enabled := true;
 end;
 
 procedure TMapFrame.MapBoxChangeBounds(Sender: TObject);
+//
+// Removes the delay after the map has been resized.
+//
 begin
   ResizeTimer.Enabled := false;
+
+  if Assigned(NodeLegend) then
+    NodeLegend.SetLocation(NodeLegend.GetLocation);
+  if Assigned(LinkLegend) then
+    LinkLegend.SetLocation(LinkLegend.GetLocation);
 end;
 
 procedure TMapFrame.MapBoxClick(Sender: TObject);
+//
+// Used to place a control point image at the map location clicked on
+// when georeferencing a basemap image.
+//
 var
   I: Integer;
   W: TDoublePoint;
@@ -1078,11 +1139,13 @@ end;
 
 procedure TMapFrame.MapBoxMouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
+//
+// Implement MapAction when a mouse button is pressed.
+//
 var
   I: Integer;
 begin
   Moving := false;
-
   if MapAction = maVertexing then
   begin
     if SelectVertex(X, Y)
@@ -1109,8 +1172,12 @@ begin
     I := Map.FindNodeHit(X, Y);
     if I > 0 then
     begin
+
+      with MainForm.GroupSelectorFrame do
+        if Visible then SelectObject(ctNodes, I);
+
       MainForm.ProjectFrame.SelectItem(ctNodes, I-1);
-      Node1 := I;
+      StartNode := I;
       Point1 := Point(X, Y);
       Point2 := Point1;
       if Shift = [ssLeft, ssCtrl] then Moving := true;
@@ -1121,14 +1188,17 @@ begin
     begin
       I := Map.FindLinkHit(X, Y);
       if I > 0 then
+      begin
+        with MainForm.GroupSelectorFrame do
+          if Visible then SelectObject(ctLinks, I);
         MainForm.ProjectFrame.SelectItem(ctLinks, I-1)
+      end
       else
       begin
         I := Map.FindLabelHit(X, Y);
         if I > 0 then
         begin
           MainForm.ProjectFrame.SelectItem(ctLabels, I-1);
-          Label1 := I;
           Point1 := Point(X, Y);
           Point2 := Point1;
           if Shift = [ssLeft, ssCtrl] then Moving := true;
@@ -1143,9 +1213,6 @@ begin
       if I > 0 then ShowPopupMenu else EditMapOptions;
       exit;
     end;
-
-    if MainForm.MapAlignFrame.Visible then
-      MainForm.MapAlignFrame.SetLocation(Map.ScreenToWorld(X, Y));
 
     if not Moving then
     begin
@@ -1163,9 +1230,14 @@ end;
 
 procedure TMapFrame.MapBoxMouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Integer);
+//
+// Implement MapAction when the mouse is moved over the map.
+//
 var
   XY: TDoublePoint;
 begin
+  // Display the current mouse position in world coordinates on the
+  // main form's status bar
   if Assigned(Map) then
   begin
     XY := Map.ScreenToWorld(X, Y);
@@ -1173,21 +1245,20 @@ begin
     MainForm.UpdateXYStatus(XY.X, XY.Y);
   end;
 
+  // A node or label is being moved with left button and Ctrl key pressed
   if Moving then
   begin
     HideHiliter;
-    if Moving then
-    begin
-      if (Shift <> [ssLeft, ssCtrl])
-      or (GetTickCount64 - OldTickCount < TICKDELAY) then
-        exit;
-      OldTickCount := 0;
-    end;
+    if (Shift <> [ssLeft, ssCtrl])
+    or (GetTickCount64 - OldTickCount < TICKDELAY) then
+      exit;
+    OldTickCount := 0;
     PaintAction := paMovingLine;
     CurrentPoint := Point(X, Y);
     MapBox.Refresh;
   end
 
+  // A link or fenceline is being drawn
   else if Linking or FenceLining then
   begin
     CurrentPoint := Point(X, Y);
@@ -1195,19 +1266,40 @@ begin
     MapBox.Refresh;
   end
 
+  // The map is being panned
   else if MapAction = maPanning then
   begin
-    if Shift = [ssLeft] then
+    if (ssLeft in Shift) then
     begin
+      // Check for slight delay in mouse movement
       if (GetTickCount64 - OldTickCount < TICKDELAY) then exit;
+
+      // Find amount of movement from previous mouse point
       OldTickCount := 0;
       HideHiliter;
       MapBox.Cursor := crSize;
       Offset := Point(X - Point1.X, Y - Point1.Y);
+
+      // Take action if movement not negligible
       if (Abs(Offset.X) > MINPIXPAN) or (Abs(Offset.Y) > MINPIXPAN) then
       begin
-        PaintAction := paNone;
-        MapBox.Refresh;
+
+        // Action is aligning - move basemap relative to network
+        if Aligning then
+        begin
+          Map.ShiftBasemap(Offset.X, Offset.Y);
+          Point1.X := X;
+          Point1.Y := Y;
+          Offset := Point(0, 0);  //Allows Map to be copied correctly into MapBox
+          RedrawMap;
+        end
+
+        // Action is panning - move entire map
+        else
+        begin
+          PaintAction := paNone;
+          MapBox.Refresh;
+        end;
       end;
     end;
   end;
@@ -1215,6 +1307,9 @@ end;
 
 procedure TMapFrame.MapBoxMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
+//
+// Implement MapAction when a mouse button is released.
+//
 var
   P: TPoint;
   W: TDoublePoint;
@@ -1227,19 +1322,16 @@ begin
 
   else if MapAction = maPanning then
   begin
-    if MapAction = maVertexing then
-    begin
-      PaintAction := paVertices;
-      MapBox.Cursor := crHandPoint;
-    end
-    else
     begin
       MapAction := maSelecting;
       MapBox.Cursor := crDefault;
     end;
     if (Abs(Offset.X) > MINPIXPAN) or (Abs(Offset.Y) > MINPIXPAN) then
     begin
-      Map.AdjustOffset(Offset.X, Offset.Y);
+      if Aligning then
+        Map.ShiftBasemap(Offset.X, Offset.Y)
+      else
+        Map.AdjustOffset(Offset.X, Offset.Y);
       Offset := Point(0, 0);  //Allows Map to be copied correctly into MapBox
       RedrawMap;
       MainForm.OverviewMapFrame.ShowMapExtent;
@@ -1253,9 +1345,10 @@ begin
 
   else if MapAction in [maAddingJunc .. maAddingTank] then
   begin
+    MapBox.Cursor := crDefault;
     W := Map.ScreenToWorld(X, Y);
     I := ord(MapAction) - ord(maAddingJunc);
-    ProjectBuilder.AddNode(I, W.X, W.Y);
+    projectbuilder.AddNode(I, W.X, W.Y);
     if I >= ntJunction then AddNode(I);
   end
 
@@ -1271,7 +1364,7 @@ begin
   begin
     P := ClientToScreen(Point(X,Y));
     W := Map.ScreenToWorld(X, Y);
-    ProjectBuilder.AddLabel(P, W.X, W.Y);
+    projectbuilder.AddLabel(P, W.X, W.Y);
   end
 
   else if Moving
@@ -1283,6 +1376,41 @@ begin
     EnterSelectionMode;
   end;
 
+end;
+
+procedure TMapFrame.MapBoxDblClick(Sender: TObject);
+//
+//  Double clicking on a Map Label allows it to be edited.
+//
+var
+  I: Integer;
+  P: TPoint;
+begin
+  // Check that current map action allows for label editing
+  if MapAction in [maSelecting, maPanning] then
+  begin
+
+    // Get the pixel location of mouse pointer
+    P := MapBox.ScreenToClient(Mouse.CursorPos);
+
+    // A map label is at that location
+    I := Map.FindLabelHit(P.X, P.Y) - 1;
+    if I >= 0 then
+    begin
+
+      // Hide the highlighting rectangle over the label
+      HideHiliter;
+
+      // Edit the label's text
+      projectbuilder.EditLabelText(I, ClientToScreen(P));
+
+      // Re-select the label so that it gets updated in the Property Editor
+      MainForm.ProjectFrame.SelectItem(ctLabels, I);
+
+      // Redraw the map so the label gets updated on it
+      RedrawMap;
+    end;
+  end;
 end;
 
 procedure TMapFrame.MapBoxMouseWheelDown(Sender: TObject; Shift: TShiftState;
@@ -1307,6 +1435,10 @@ end;
 
 procedure TMapFrame.GetVertices(var X: array of Double; var Y: array of Double;
   var N: Integer);
+//
+// Retrieve world coordinates of a link's interior vertex points whose
+// screen coordinates have been placed in the private Points array.
+//
 var
   I: Integer;
   W: TDoublePoint;
@@ -1324,6 +1456,9 @@ begin
 end;
 
 procedure TMapFrame.ShowVertices(I: Integer);
+//
+// Display interior vertex points for Link I.
+//
 var
   J: Integer;
 begin
@@ -1340,6 +1475,9 @@ begin
 end;
 
 procedure TMapFrame.ShowVertex(I: Integer; J: Integer; C: TColor);
+//
+// Draws the J-th vertex point for Link I with color C on the map.
+//
 var
   X: Double = 0;
   Y: Double = 0;
@@ -1359,6 +1497,9 @@ begin
 end;
 
 function TMapFrame.SelectVertex(X: Integer; Y: Integer): Boolean;
+//
+// Find which vertex of a link has been clicked on.
+//
 var
   Vx: Double = 0;
   Vy: Double = 0;
@@ -1389,6 +1530,9 @@ begin
 end;
 
 procedure TMapFrame.MoveVertex(X: Integer; Y: Integer);
+//
+// Move the currently selected vertex of a link to screen position X, Y.
+//
 var
   W: TDoublePoint;
 begin
@@ -1401,6 +1545,9 @@ begin
 end;
 
 procedure TMapFrame.MoveVertexByPixel(Key: Word);
+//
+// Move a link vertex by DELTA pixels when an arrow key was pressed.
+//
 var
   Vx: Double = 0;
   Vy: Double = 0;
@@ -1530,17 +1677,80 @@ end;
 //  Object Highlighting Procedures
 //------------------------------------------------------------------------------
 
+procedure TMapFrame.HiliteTimerTimer(Sender: TObject);
+//
+//
+begin
+  if config.MapHiliter then ShowHiliter;
+end;
+
+procedure TMapFrame.HiliteObject(const ObjType: Integer; const ObjIndex: Integer);
+var
+  RectSize: Integer;
+  X:        Double = 0;
+  Y:        Double = 0;
+  P:        TPoint = (X:0; Y:0);
+begin
+  // Turn off highlighter if no object selected
+  if ObjIndex <= 0 then
+  begin
+    HideHiliter;
+    SelectedObjIndex := -1;
+    HiliteRect := Rect(0,0,0,0);
+    exit;
+  end;
+
+  // Get the world coordinates of the selected object
+  RectSize := 5;
+  if ObjType = ctNodes then
+  begin
+    if not project.GetNodeCoord(ObjIndex, X, Y) then exit;
+    RectSize := Max(Map.Options.LinkSize, Map.Options.NodeSize) + 2;
+  end
+  else if ObjType = ctLinks then
+  begin
+    if not project.GetLinkCoord(ObjIndex, X, Y) then exit;
+    RectSize := Map.Options.LinkSize + 4;
+  end
+  else if ObjType = ctLabels then
+    P := Map.FindLabelPoint(ObjIndex)
+  else
+  begin
+    SelectedObjType := -1;
+    SelectedObjIndex := -1;
+    exit;
+  end;
+
+  // Save the selected object's type and index (within the type)
+  SelectedObjType := ObjType;
+  SelectedObjIndex := ObjIndex;
+
+  // Get the selected object's highlighted rectangle
+  if ObjType = ctLabels then
+    HiliteRect := TMapLabel(project.MapLabels.Objects[ObjIndex-1]).GetRect(P)
+  else
+  begin
+    P := Map.WorldToScreen(X, Y);
+    HiliteRect := Rect(P.X - RectSize, P.Y - RectSize, P.X + RectSize, P.Y + RectSize);
+  end;
+  InflateRect(HiliteRect, 4, 4);
+
+  // Refresh the Hiliter
+  HiliteCount := 0;
+  HiliteState := 1;
+  HiliteTimer.Enabled := true;
+  ShowHiliter;
+end;
+
 procedure TMapFrame.HideHiliter;
 begin
   if not HiliterIsOn then exit;
-  begin
-    HiliteTimer.Enabled := false;
-    HiliteRect := Rect(0,0,0,0);
-    HiliterIsOn := false;
-    HiliteState := 0;
-    PaintAction := paNone;
-    MapBox.Refresh;
-  end;
+  HiliteTimer.Enabled := false;
+  HiliteRect := Rect(0,0,0,0);
+  HiliterIsOn := false;
+  HiliteState := 0;
+  PaintAction := paNone;
+  MapBox.Refresh;
 end;
 
 procedure TMapFrame.ShowHiliter;
@@ -1585,6 +1795,9 @@ end;
 //------------------------------------------------------------------------------
 
 procedure TMapFrame.LoadBasemapFromFile;
+//
+// Use an image file as a basemap behind the network map.
+//
 begin
   with OpenPictureDialog1 do
   begin
@@ -1594,11 +1807,11 @@ begin
         utils.MsgDlg(rsFileError, rsNoLoadImage, mtError, [mbOK], MainForm)
       else
       begin
-        mapthemes.SetBaseMapVisible(true);
+        MainForm.MapViewerFrame.SetBaseMapCheckBox(true);
         Map.Options.ShowBackdrop := true;
         RedrawMap;
-        HasBaseMap := true;
-        BaseMapFile := Filename;
+        HasBasemap := true;
+        BasemapFile := Filename;
       end;
     end;
   end;
@@ -1606,13 +1819,16 @@ begin
 end;
 
 procedure TMapFrame.LoadBasemapFromWeb(MapSource, Epsg, Units: Integer);
+//
+// Use a WebMap basemap (from an internet mapping service) for the project.
+//
 var
   NorthEast:           TDoublePoint = (X: -60; Y: 52.5);
   SouthWest:           TDoublePoint = (X: -130; Y: 17.5);
   ShowLocationFinder:  Boolean = false;
 begin
   // Change the source for an existing WebMap
-  if MapSource < 0 then exit;
+  if MapSource <= 0 then exit;
   if Map.Basemap.WebMap <> nil then
   begin
     Map.Basemap.WebMap.SetSource(MapSource);
@@ -1665,7 +1881,10 @@ begin
   end;
 end;
 
-function TMapFrame.WGS84Transform(Epsg: Integer; var Extent: TDoubleRect): Boolean;
+function TMapFrame.WGS84Transform(MapEpsg: Integer; var Extent: TDoubleRect): Boolean;
+//
+// Transform network map coordinates from EPSG MapEpsg to EPSG 4326 (WGS84).
+//
 var
   TmpExtent:   TDoubleRect;
   Transformed: Boolean = false;
@@ -1673,41 +1892,58 @@ begin
   // Check that current map extent can be transformed
   Result := false;
   TmpExtent := Extent;
-  if mapcoords.CanProjectionTransform(IntToStr(Epsg), '4326', Extent) then
+  if mapcoords.CanProjectionTransform(IntToStr(MapEpsg), '4326', Extent) then
   begin
     MainForm.Cursor := crHourGlass;
-    Transformed := mapcoords.DoProjectionTransform(IntToStr(Epsg),
+    Transformed := mapcoords.DoProjectionTransform(IntToStr(MapEpsg),
       '4326', Extent);
      MainForm.Cursor := crDefault;
   end;
   if not Transformed then
   begin
     Extent := TmpExtent;
-    utils.MsgDlg(rsTransFail, Format(rsNoTransform, [Epsg]), mtInformation, [mbOk]);
+    utils.MsgDlg(rsTransFail, Format(rsNoTransform, [MapEpsg]), mtInformation,
+      [mbOk]);
     exit;
   end;
 
   // Create a transform to re-project WGS84 to MapEPSG
   // (used when displaying coords. on main form's status bar.)
-  if Epsg <> 4326 then
+  if MapEpsg <> 4326 then
   begin
     ProjTrans := TProjTransform.Create;
-    ProjTrans.SetProjections('4326', IntToStr(Epsg));
+    ProjTrans.SetProjections('4326', IntToStr(MapEpsg));
   end;
   Result := true;
 end;
 
-procedure TMapFrame.ShowWebBasemap;
+procedure TMapFrame.TransformExtent(var ExtentRect: TDoubleRect);
 begin
-  mapthemes.SetBaseMapVisible(true);
+  if ProjTrans = nil then exit;
+  with ExtentRect do
+  begin
+    ProjTrans.Transform(LowerLeft.X, LowerLeft.Y);
+    ProjTrans.Transform(UpperRight.X, UpperRight.Y);
+  end;
+end;
+
+procedure TMapFrame.ShowWebBasemap;
+//
+// Display the current Web basemap.
+//
+begin
+  HasBasemap := true;
+  MainForm.MapViewerFrame.SetBasemapCheckBox(true);
   Map.Options.ShowBackdrop := true;
-  HasBaseMap := true;
   RedrawMap;
   if not HasWebBasemap then
     UnloadBasemap;
 end;
 
 procedure TMapFrame.FindBasemapLocation(MapSource: Integer);
+//
+// Create a Web basemap for a new project centered at user's choice of location.
+//
 var
   NorthEast: TDoublePoint;
   SouthWest: TDoublePoint;
@@ -1732,19 +1968,15 @@ begin
   end;
 end;
 
-function TMapFrame.GetBasemapSize: TSize;
-begin
-  Result := Size(Map.Basemap.Picture.Width, Map.Basemap.Picture.Height);
-end;
-
 procedure TMapFrame.UnloadBasemap;
 begin
-  mapthemes.SetBaseMapVisible(false);
   if HasWebBasemap then UnloadWebBasemap;
   Map.ClearBasemap;
+  BasemapFile := '';
   RedrawMap;
   MainForm.OverviewMapFrame.ShowMapExtent;
-  HasBaseMap := false;
+  HasBasemap := false;
+  MainForm.MapViewerFrame.SetBasemapCheckBox(false);
 end;
 
 procedure TMapFrame.UnloadWebBasemap;

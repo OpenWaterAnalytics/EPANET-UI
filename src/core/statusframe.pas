@@ -1,13 +1,28 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.0
+ Version:      1.0.3
  Module:       statusframe
- Description:  a frame containing a status panel
+ Description:  set of panels appearing in the main form's StatusPanel
  License:      see LICENSE
- Last Updated: 03/07/2026
+ Last Updated: 06/19/2026
 =====================================================================}
 
 unit statusframe;
+
+{
+ This frame consists of 8 panels whose contents are as follows:
+ Panel1: checkbox to toggle AutoLength on/off
+ Panel2: project's flow rate units
+ Panel3: project's pressure units
+ Panel4: project's head loss model
+ Panel5: project's demand model
+ Panel6: project's water quality model
+ Panel7: status of simulation results
+ Panel8: network map coordinates
+
+ Clicking on panels 2 thru 6 allows the user to change the
+ project options they display.
+}
 
 {$mode ObjFPC}{$H+}
 
@@ -37,10 +52,12 @@ type
     procedure Panel5Click(Sender: TObject);
     procedure Panel6Click(Sender: TObject);
   private
+    function GetPanel(PanelIndex: Integer): TPanel;
 
   public
     procedure SetPanelText(PanelIndex: Integer; Txt: string);
     procedure SetPanelColor(PanelIndex: Integer; aColor: TColor);
+    function  GetPanelText(PanelIndex: Integer): string;
 
   end;
 
@@ -98,17 +115,38 @@ begin
   end;
 end;
 
-  procedure TStatusBarFrame.SetPanelText(PanelIndex: Integer; Txt: string);
-  begin
-    with FindComponent('Panel' + IntToStr(PanelIndex)) as TPanel do
-      Caption := Txt;
-  end;
+function TStatusBarFrame.GetPanel(PanelIndex: Integer): TPanel;
+begin
+  Result := TPanel(FindComponent('Panel' + IntToStr(PanelIndex)));
+end;
 
-  procedure TStatusBarFrame.SetPanelColor(PanelIndex: Integer; aColor: TColor);
-  begin
-    with FindComponent('Panel' + IntToStr(PanelIndex)) as TPanel do
-      Color := aColor;
-  end;
+procedure TStatusBarFrame.SetPanelText(PanelIndex: Integer; Txt: string);
+var
+  StatusPanel: TPanel;
+begin
+  StatusPanel := GetPanel(PanelIndex);
+  if Assigned(StatusPanel) then
+    StatusPanel.Caption := Txt;
+end;
+
+procedure TStatusBarFrame.SetPanelColor(PanelIndex: Integer; aColor: TColor);
+var
+  StatusPanel: TPanel;
+begin
+  StatusPanel := GetPanel(PanelIndex);
+  if Assigned(StatusPanel) then
+    StatusPanel.Color := aColor;
+end;
+
+function TStatusBarFrame.GetPanelText(PanelIndex: Integer): string;
+var
+  StatusPanel: TPanel;
+begin
+  Result := '';
+  StatusPanel := GetPanel(PanelIndex);
+  if Assigned(StatusPanel) then
+    Result := StatusPanel.Caption;
+end;
 
 end.
 

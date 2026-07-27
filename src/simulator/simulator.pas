@@ -1,10 +1,10 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.0
+ Version:      1.0.3
  Module:       simulator
  Description:  a form that runs a simulation for the project
  License:      see LICENSE
- Last Updated: 03/07/2026
+ Last Updated: 06/19/2026
 =====================================================================}
 
 unit simulator;
@@ -15,9 +15,9 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls,
-  FileUtil;
+  LCLtype, FileUtil;
 
-{$I ..\timetype.txt} //Defines C's 'long' data type for different platforms
+{$I ..\timetype.txt} // Defines C's 'long' data type for different platforms
 
 type
 
@@ -67,7 +67,7 @@ uses
 procedure TSimulationForm.FormCreate(Sender: TObject);
 begin
   // Position the OK button on top of the Cancel button
-   Font.Size := config.FontSize;
+  Font.Size := config.FontSize;
   OkBtn.Visible := false;
   OkBtn.Top := CancelBtn.Top;
   OkBtn.Left := CancelBtn.Left;
@@ -210,7 +210,7 @@ begin
   // save these in its output file
   F := TFileStream.Create(project.OutFile2, fmCreate);
   try
-    // Initialize energy calculation
+    // Initialize energy calculation & system storage
     energycalc.Start;
     results.SetInitStorage;
 
@@ -363,7 +363,7 @@ procedure TSimulationForm.SaveDemandDeficit(var F: TFileStream;
 var
   I:          Integer;
   N:          Integer = 0;
-  ByteCount: Integer;
+  ByteCount:  Integer;
 begin
   if F = nil then exit;
   ENgetcount(EN_NODECOUNT, N);

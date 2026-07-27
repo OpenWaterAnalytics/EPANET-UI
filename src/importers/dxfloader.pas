@@ -1,10 +1,10 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.0
+ Version:      1.0.3
  Module:       dxfloader
  Description:  reads contents of a DXF file
  License:      see LICENSE
- Last Updated: 03/07/2026
+ Last Updated: 06/19/2026
 =====================================================================}
 
 unit dxfloader;
@@ -224,7 +224,7 @@ begin
   begin
     epanet2.ENsetcoord(NodeIndex, P.X, P.Y);
     epanet2.ENsetnodevalue(NodeIndex, EN_ELEVATION,
-      StrToFloatDef(project.DefProps[1], 0));
+      StrToFloatDef(project.DefProps[ptNodeElev], 0));
     Result := NodeIndex;
   end;
 end;
@@ -253,12 +253,12 @@ var
   Diameter: Single;
   Roughness: Single;
 begin
-  Len := StrToFloatDef(project.DefProps[4], 0.0);
+  Len := StrToFloatDef(project.DefProps[ptPipeLen], 0.0);
   if project.AutoLength
   or ComputeLengths then
     Len := project.FindLinkLength(LinkIndex) * LengthUcf;
-  Diameter := StrToFloatDef(project.DefProps[5], 0.0);
-  Roughness := StrToFloatDef(project.DefProps[6], 0.0);
+  Diameter := StrToFloatDef(project.DefProps[ptPipeDiam], 0.0);
+  Roughness := StrToFloatDef(project.DefProps[ptPipeRough], 0.0);
   epanet2.ENsetpipedata(LinkIndex, Len, Diameter, Roughness, 0.0);
 end;
 
@@ -337,7 +337,7 @@ begin
       GetLinkVertices(F, Layers, Vx, Vy, Vcount);
       AddLink(Vx, Vy, Vcount);
     end;
-    MainForm.MapFrame.SetExtent(mapcoords.GetBounds(MainForm.MapFrame.GetExtent));
+    MainForm.MapFrame.SetExtent(MainForm.MapFrame.Map.GetBounds);
     MainForm.MapFrame.DrawFullextent;
     Project.HasChanged := true;
     Project.UpdateResultsStatus;

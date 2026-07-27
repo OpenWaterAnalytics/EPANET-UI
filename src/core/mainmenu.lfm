@@ -41,7 +41,7 @@ object MainMenuFrame: TMainMenuFrame
         BevelOuter = bvNone
         ClientHeight = 35
         ClientWidth = 1140
-        Color = 6829839
+        Color = 11889718
         Font.CharSet = ANSI_CHARSET
         Font.Color = clWhite
         Font.Pitch = fpVariable
@@ -91,7 +91,7 @@ object MainMenuFrame: TMainMenuFrame
           Width = 72
           Align = alLeft
           BevelOuter = bvNone
-          Caption = 'View'
+          Caption = 'Map'
           ParentBackground = False
           TabOrder = 2
           TabStop = True
@@ -107,7 +107,7 @@ object MainMenuFrame: TMainMenuFrame
           Width = 72
           Align = alLeft
           BevelOuter = bvNone
-          Caption = 'Map'
+          Caption = 'Project'
           ParentBackground = False
           TabOrder = 3
           TabStop = True
@@ -123,25 +123,9 @@ object MainMenuFrame: TMainMenuFrame
           Width = 72
           Align = alLeft
           BevelOuter = bvNone
-          Caption = 'Project'
-          ParentBackground = False
-          TabOrder = 4
-          TabStop = True
-          OnClick = MenuPanelClick
-          OnMouseEnter = MenuPanel1MouseEnter
-          OnMouseLeave = MenuPanel1MouseLeave
-        end
-        object MenuPanel6: TPanel
-          Tag = 5
-          Left = 360
-          Height = 35
-          Top = 0
-          Width = 72
-          Align = alLeft
-          BevelOuter = bvNone
           Caption = 'Help'
           ParentBackground = False
-          TabOrder = 5
+          TabOrder = 4
           TabStop = True
           OnClick = MenuPanelClick
           OnMouseEnter = MenuPanel1MouseEnter
@@ -161,7 +145,7 @@ object MainMenuFrame: TMainMenuFrame
           Color = 15918295
           ParentBackground = False
           ParentColor = False
-          TabOrder = 6
+          TabOrder = 5
           object SpeedBar: TToolBar
             Left = 0
             Height = 23
@@ -303,124 +287,8 @@ object MainMenuFrame: TMainMenuFrame
             Width = 1140
             Align = alClient
             BevelOuter = bvNone
-            ClientHeight = 65
-            ClientWidth = 1140
             ParentBackground = False
             TabOrder = 0
-            object FileToolBar: TToolBar
-              Left = 0
-              Height = 65
-              Top = 0
-              Width = 1140
-              Align = alClient
-              ButtonHeight = 62
-              ButtonWidth = 100
-              EdgeBorders = []
-              Images = mainForm.MaterialImageList
-              ImagesWidth = 24
-              ShowCaptions = True
-              TabOrder = 0
-              Transparent = True
-              object FileNewBtn: TToolButton
-                Left = 1
-                Hint = ' '#13#10' Start a new project  '#13#10'  '
-                Top = 0
-                AllowAllUp = True
-                Caption = 'New'
-                Grouped = True
-                ImageIndex = 28
-                ParentShowHint = False
-                ShowHint = True
-                OnClick = FileNewBtnClick
-              end
-              object FileOpenBtn: TToolButton
-                Left = 101
-                Hint = '  '#13#10'  Open a previously saved project. Click'#13#10'  the arrow for a list of recently used files.    '#13#10'  '
-                Top = 0
-                AllowAllUp = True
-                Caption = 'Open'
-                DropdownMenu = MruMenu
-                ImageIndex = 29
-                ParentShowHint = False
-                ShowHint = True
-                Style = tbsDropDown
-                OnClick = FileOpenBtnClick
-              end
-              object FileSaveBtn: TToolButton
-                Left = 218
-                Hint = '  '#13#10'  Save the project under its current name  '#13#10'  '
-                Top = 0
-                AllowAllUp = True
-                Caption = 'Save'
-                ImageIndex = 30
-                ParentShowHint = False
-                ShowHint = True
-                OnClick = FileSaveBtnClick
-              end
-              object FileSep1: TToolButton
-                Left = 213
-                Height = 5
-                Top = 0
-                Caption = 'EditSep1'
-                Style = tbsDivider
-              end
-              object FileSep2: TToolButton
-                Left = 418
-                Height = 5
-                Top = 0
-                Caption = 'EditSep2'
-                Style = tbsDivider
-              end
-              object FileImportBtn: TToolButton
-                Left = 423
-                Hint = '  '#13#10'  Import project data in other formats  '#13#10'  '
-                Top = 0
-                AllowAllUp = True
-                Caption = 'Import'
-                DropdownMenu = ImportMenu
-                ImageIndex = 36
-                ParentShowHint = False
-                ShowHint = True
-                Style = tbsButtonDrop
-              end
-              object FilePreferencesBtn: TToolButton
-                Left = 533
-                Hint = '  '#13#10'  Set program preferences  '#13#10'  '
-                Top = 0
-                Caption = 'Preferences'
-                ImageIndex = 38
-                ParentShowHint = False
-                ShowHint = True
-                OnClick = FilePreferencesBtnClick
-              end
-              object FileSaveAsBtn: TToolButton
-                Left = 318
-                Hint = '  '#13#10'  Save the project under a new name  '#13#10'  '
-                Top = 0
-                Caption = 'Save As'
-                ImageIndex = 34
-                ParentShowHint = False
-                ShowHint = True
-                OnClick = FileSaveAsBtnClick
-              end
-              object FileQuitBtn: TToolButton
-                Left = 638
-                Hint = '  '#13#10'  Exit the program  '#13#10'  '
-                Top = 0
-                Caption = 'Quit'
-                ImageIndex = 37
-                ParentShowHint = False
-                ShowHint = True
-                OnClick = FileQuitBtnClick
-              end
-              object FileSep3: TToolButton
-                Left = 633
-                Height = 5
-                Top = 0
-                Caption = 'FileSep3'
-                Style = tbsDivider
-              end
-            end
           end
         end
         object Page2: TPage
@@ -483,14 +351,12 @@ object MainMenuFrame: TMainMenuFrame
               Left = 201
               Height = 5
               Top = 0
-              Caption = 'EditSep1'
               Style = tbsDivider
             end
             object EditSep2: TToolButton
               Left = 516
               Height = 5
               Top = 0
-              Caption = 'EditSep2'
               Style = tbsDivider
             end
             object GroupEditBtn: TToolButton
@@ -499,11 +365,13 @@ object MainMenuFrame: TMainMenuFrame
               Top = 0
               AllowAllUp = True
               Caption = 'Group Edit'
+              DropdownMenu = GroupEditMenu
               ImageIndex = 5
+              Style = tbsButtonDrop
               OnClick = GroupEditBtnClick
             end
             object GroupDeleteBtn: TToolButton
-              Left = 621
+              Left = 631
               Hint = '  '#13#10'  Delete a group of objects  '#13#10'  '
               Top = 0
               Caption = 'Group Delete'
@@ -525,374 +393,6 @@ object MainMenuFrame: TMainMenuFrame
           end
         end
         object Page3: TPage
-          object ViewPanel: TPanel
-            Left = 0
-            Height = 65
-            Top = 0
-            Width = 1140
-            Align = alClient
-            BevelOuter = bvNone
-            ClientHeight = 65
-            ClientWidth = 1140
-            TabOrder = 0
-            object ViewNodeLegendBtn: TSpeedButton
-              Left = 161
-              Height = 54
-              Hint = #13#10'  Edit the Node Theme''s legend  '#13#10'  '
-              Top = 2
-              Width = 59
-              AllowAllUp = True
-              Caption = '  Legend'
-              Flat = True
-              Glyph.Data = {
-                36090000424D3609000000000000360000002800000018000000180000000100
-                2000000000000009000064000000640000000000000000000000000000000000
-                0000000000000000000000000000000000000000000000000000000000000000
-                0000000000000000000000000000000000000000000000000000000000000000
-                0000000000000000000000000000000000000000000000000000000000000000
-                0000000000000000000000000000000000000000000000000000000000000000
-                0000000000000000000000000000000000000000000000000000000000000000
-                0000000000000000000000000000000000000000000000000000000000000000
-                0000000000000000000000000000000000000000000000000000000000000000
-                0000000000000000000000000000000000000000000000000000000000000000
-                0000000000000000000000000000000000000000000000000000000000000000
-                000000000000000000DF000000BF000000400000001000000000000000000000
-                000000000000000000000000003000000070000000DF000000CF000000800000
-                0030000000000000000000000000000000000000000000000000000000000000
-                000000000000000000FF000000FF000000FF000000EF00000080000000300000
-                001000000070000000CF000000FF000000FF000000FF000000FF000000FF0000
-                00FF000000CF0000008000000030000000000000000000000000000000000000
-                000000000000000000FF000000FF000000CF000000FF000000FF000000FF0000
-                00FF000000FF000000FF000000FF0000008F000000FF000000FF0000008F0000
-                00DF000000FF000000FF000000EF000000000000000000000000000000000000
-                000000000000000000FF000000FF00000010000000600000008F000000FF0000
-                00FF000000AF000000600000000000000000000000FF000000FF000000000000
-                001000000040000000FF000000FF000000000000000000000000000000000000
-                000000000000000000FF000000FF00000070000000EF00000070000000FF0000
-                00FF00000000000000000000000000000000000000FF000000FF000000000000
-                000000000000000000FF000000FF000000000000000000000000000000000000
-                000000000000000000FF000000FF00000070000000EF00000080000000FF0000
-                00FF00000000000000000000000000000000000000FF000000FF000000000000
-                000000000000000000FF000000FF000000000000000000000000000000000000
-                000000000000000000FF000000FF000000400000007000000040000000FF0000
-                00FF00000000000000000000000000000000000000FF000000FF000000000000
-                000000000000000000FF000000FF000000000000000000000000000000000000
-                000000000000000000FF000000FF00000070000000FF00000080000000FF0000
-                00FF00000000000000000000000000000000000000FF000000FF000000000000
-                000000000000000000FF000000FF000000000000000000000000000000000000
-                000000000000000000FF000000FF00000050000000CF00000080000000FF0000
-                00FF00000000000000000000000000000000000000FF000000FF000000000000
-                000000000000000000FF000000FF000000000000000000000000000000000000
-                000000000000000000FF000000FF000000600000008F00000030000000FF0000
-                00FF00000000000000000000000000000000000000FF000000FF000000000000
-                000000000000000000FF000000FF000000000000000000000000000000000000
-                000000000000000000FF000000FF00000070000000FF00000080000000FF0000
-                00FF00000000000000000000000000000000000000FF000000FF000000000000
-                000000000000000000FF000000FF000000000000000000000000000000000000
-                000000000000000000FF000000FF000000300000008F00000070000000FF0000
-                00FF00000000000000000000000000000000000000FF000000FF000000000000
-                000000000000000000FF000000FF000000000000000000000000000000000000
-                000000000000000000FF000000FF00000070000000BF00000050000000FF0000
-                00FF00000000000000000000000000000000000000FF000000FF000000000000
-                000000000000000000FF000000FF000000000000000000000000000000000000
-                000000000000000000FF000000FF00000070000000FF00000080000000FF0000
-                00FF00000000000000000000000000000000000000FF000000FF000000000000
-                000000000000000000FF000000FF000000000000000000000000000000000000
-                000000000000000000FF000000FF000000600000005000000050000000FF0000
-                00FF000000000000000000000060000000BF000000FF000000FF000000BF0000
-                005000000010000000FF000000FF000000000000000000000000000000000000
-                000000000000000000EF000000FF000000FF000000EF000000AF000000FF0000
-                00FF0000009F000000FF000000FF000000FF000000FF000000EF000000FF0000
-                00FF000000EF000000FF000000FF000000000000000000000000000000000000
-                0000000000000000001000000080000000CF000000FF000000FF000000FF0000
-                00FF000000FF000000FF000000AF000000700000000000000010000000800000
-                00CF000000FF000000FF000000FF000000000000000000000000000000000000
-                0000000000000000000000000000000000000000002000000080000000CF0000
-                00BF000000800000002000000000000000000000000000000000000000000000
-                0000000000400000008F000000CF000000000000000000000000000000000000
-                0000000000000000000000000000000000000000000000000000000000000000
-                0000000000000000000000000000000000000000000000000000000000000000
-                0000000000000000000000000000000000000000000000000000000000000000
-                0000000000000000000000000000000000000000000000000000000000000000
-                0000000000000000000000000000000000000000000000000000000000000000
-                0000000000000000000000000000000000000000000000000000000000000000
-                0000000000000000000000000000000000000000000000000000000000000000
-                0000000000000000000000000000000000000000000000000000000000000000
-                0000000000000000000000000000000000000000000000000000
-              }
-              Images = mainForm.MaterialImageList
-              ImageIndex = 6
-              ImageWidth = 24
-              Layout = blGlyphBottom
-              OnClick = ViewNodeLegendBtnClick
-            end
-            object ViewNodeCombo: TComboBox
-              Left = 14
-              Height = 26
-              Hint = '  '#13#10'  Select a Node property to view  '#13#10'  '
-              Top = 27
-              Width = 140
-              ItemHeight = 20
-              Style = csOwnerDrawFixed
-              TabOrder = 0
-              OnChange = ViewNodeComboChange
-            end
-            object ViewLinkLbl: TLabel
-              Left = 245
-              Height = 15
-              Top = 8
-              Width = 62
-              Caption = 'Link Theme'
-              ParentColor = False
-            end
-            object ViewLinkCombo: TComboBox
-              Left = 245
-              Height = 26
-              Hint = '  '#13#10'  Select a Link property to view  '#13#10'  '
-              Top = 27
-              Width = 140
-              ItemHeight = 20
-              Style = csOwnerDrawFixed
-              TabOrder = 1
-              OnChange = ViewLinkComboChange
-            end
-            object ViewBevel2: TBevel
-              Left = 457
-              Height = 64
-              Top = 0
-              Width = 8
-              Shape = bsLeftLine
-            end
-            object ViewBevel1: TBevel
-              Left = 232
-              Height = 64
-              Top = 0
-              Width = 8
-              Shape = bsLeftLine
-            end
-            object ViewLinkLegendBtn: TSpeedButton
-              Left = 394
-              Height = 54
-              Hint = '  '#13#10'  Edit the Link Theme''s legend  '#13#10'  '
-              Top = 2
-              Width = 55
-              AllowAllUp = True
-              Caption = 'Legend'
-              Flat = True
-              Glyph.Data = {
-                36090000424D3609000000000000360000002800000018000000180000000100
-                2000000000000009000064000000640000000000000000000000000000000000
-                0000000000000000000000000000000000000000000000000000000000000000
-                0000000000000000000000000000000000000000000000000000000000000000
-                0000000000000000000000000000000000000000000000000000000000000000
-                0000000000000000000000000000000000000000000000000000000000000000
-                0000000000000000000000000000000000000000000000000000000000000000
-                0000000000000000000000000000000000000000000000000000000000000000
-                0000000000000000000000000000000000000000000000000000000000000000
-                0000000000000000000000000000000000000000000000000000000000000000
-                0000000000000000000000000000000000000000000000000000000000000000
-                000000000000000000DF000000BF000000400000001000000000000000000000
-                000000000000000000000000003000000070000000DF000000CF000000800000
-                0030000000000000000000000000000000000000000000000000000000000000
-                000000000000000000FF000000FF000000FF000000EF00000080000000300000
-                001000000070000000CF000000FF000000FF000000FF000000FF000000FF0000
-                00FF000000CF0000008000000030000000000000000000000000000000000000
-                000000000000000000FF000000FF000000CF000000FF000000FF000000FF0000
-                00FF000000FF000000FF000000FF0000008F000000FF000000FF0000008F0000
-                00DF000000FF000000FF000000EF000000000000000000000000000000000000
-                000000000000000000FF000000FF00000010000000600000008F000000FF0000
-                00FF000000AF000000600000000000000000000000FF000000FF000000000000
-                001000000040000000FF000000FF000000000000000000000000000000000000
-                000000000000000000FF000000FF00000070000000EF00000070000000FF0000
-                00FF00000000000000000000000000000000000000FF000000FF000000000000
-                000000000000000000FF000000FF000000000000000000000000000000000000
-                000000000000000000FF000000FF00000070000000EF00000080000000FF0000
-                00FF00000000000000000000000000000000000000FF000000FF000000000000
-                000000000000000000FF000000FF000000000000000000000000000000000000
-                000000000000000000FF000000FF000000400000007000000040000000FF0000
-                00FF00000000000000000000000000000000000000FF000000FF000000000000
-                000000000000000000FF000000FF000000000000000000000000000000000000
-                000000000000000000FF000000FF00000070000000FF00000080000000FF0000
-                00FF00000000000000000000000000000000000000FF000000FF000000000000
-                000000000000000000FF000000FF000000000000000000000000000000000000
-                000000000000000000FF000000FF00000050000000CF00000080000000FF0000
-                00FF00000000000000000000000000000000000000FF000000FF000000000000
-                000000000000000000FF000000FF000000000000000000000000000000000000
-                000000000000000000FF000000FF000000600000008F00000030000000FF0000
-                00FF00000000000000000000000000000000000000FF000000FF000000000000
-                000000000000000000FF000000FF000000000000000000000000000000000000
-                000000000000000000FF000000FF00000070000000FF00000080000000FF0000
-                00FF00000000000000000000000000000000000000FF000000FF000000000000
-                000000000000000000FF000000FF000000000000000000000000000000000000
-                000000000000000000FF000000FF000000300000008F00000070000000FF0000
-                00FF00000000000000000000000000000000000000FF000000FF000000000000
-                000000000000000000FF000000FF000000000000000000000000000000000000
-                000000000000000000FF000000FF00000070000000BF00000050000000FF0000
-                00FF00000000000000000000000000000000000000FF000000FF000000000000
-                000000000000000000FF000000FF000000000000000000000000000000000000
-                000000000000000000FF000000FF00000070000000FF00000080000000FF0000
-                00FF00000000000000000000000000000000000000FF000000FF000000000000
-                000000000000000000FF000000FF000000000000000000000000000000000000
-                000000000000000000FF000000FF000000600000005000000050000000FF0000
-                00FF000000000000000000000060000000BF000000FF000000FF000000BF0000
-                005000000010000000FF000000FF000000000000000000000000000000000000
-                000000000000000000EF000000FF000000FF000000EF000000AF000000FF0000
-                00FF0000009F000000FF000000FF000000FF000000FF000000EF000000FF0000
-                00FF000000EF000000FF000000FF000000000000000000000000000000000000
-                0000000000000000001000000080000000CF000000FF000000FF000000FF0000
-                00FF000000FF000000FF000000AF000000700000000000000010000000800000
-                00CF000000FF000000FF000000FF000000000000000000000000000000000000
-                0000000000000000000000000000000000000000002000000080000000CF0000
-                00BF000000800000002000000000000000000000000000000000000000000000
-                0000000000400000008F000000CF000000000000000000000000000000000000
-                0000000000000000000000000000000000000000000000000000000000000000
-                0000000000000000000000000000000000000000000000000000000000000000
-                0000000000000000000000000000000000000000000000000000000000000000
-                0000000000000000000000000000000000000000000000000000000000000000
-                0000000000000000000000000000000000000000000000000000000000000000
-                0000000000000000000000000000000000000000000000000000000000000000
-                0000000000000000000000000000000000000000000000000000000000000000
-                0000000000000000000000000000000000000000000000000000000000000000
-                0000000000000000000000000000000000000000000000000000
-              }
-              Images = mainForm.MaterialImageList
-              ImageIndex = 6
-              ImageWidth = 24
-              Layout = blGlyphBottom
-              OnClick = ViewLinkLegendBtnClick
-            end
-            object ViewNodeLbl: TLabel
-              Left = 14
-              Height = 15
-              Top = 8
-              Width = 69
-              Caption = 'Node Theme'
-              ParentColor = False
-              ParentShowHint = False
-            end
-            object ViewTimePanel: TPanel
-              Left = 477
-              Height = 22
-              Top = 4
-              Width = 171
-              Alignment = taLeftJustify
-              BevelOuter = bvNone
-              Caption = 'Time: 100:00:00 hrs (12:00 am)'
-              ParentBackground = False
-              ParentShowHint = False
-              TabOrder = 2
-            end
-            object ViewAnimateBtn: TSpeedButton
-              Left = 672
-              Height = 54
-              Hint = '    '#13#10'  Animate the map display  '#13#10'  '
-              Top = 2
-              Width = 60
-              AllowAllUp = True
-              Caption = 'Animate'
-              Enabled = False
-              Flat = True
-              Glyph.Data = {
-                36090000424D3609000000000000360000002800000018000000180000000100
-                2000000000000009000064000000640000000000000000000000000000000000
-                0000000000000000000000000000000000000000000000000000000000000000
-                0000000000000000000000000000000000000000000000000000000000000000
-                0000000000000000000000000000000000000000000000000000000000000000
-                0000000000000000000000000000000000000000000000000000000000000000
-                0000000000000000000000000000000000000000000000000000000000000000
-                0000000000000000000000000000000000000000000000000000000000000000
-                000000000040000000DF000000FF000000FF000000FF000000FF000000FF0000
-                00FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000
-                00FF000000FF000000FF000000BF000000600000000000000000000000000000
-                0000000000DF000000FF000000FF000000FF000000FF000000FF000000FF0000
-                00FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000
-                00FF000000FF000000FF000000FF000000CF0000000000000000000000000000
-                0000000000FF000000FF00000000000000000000000000000000000000000000
-                0000000000000000000000000000000000000000000000000000000000000000
-                00000000000000000000000000FF000000FF0000000000000000000000000000
-                0000000000FF000000FF00000000000000000000000000000000000000000000
-                0000000000000000000000000000000000000000000000000000000000000000
-                00000000000000000000000000FF000000FF0000000000000000000000000000
-                0000000000FF000000FF00000000000000000000000000000000000000000000
-                0000000000000000000000000000000000000000000000000000000000000000
-                00000000000000000000000000FF000000FF0000000000000000000000000000
-                0000000000FF000000FF00000000000000000000000000000000000000000000
-                0000000000000000000000000000000000000000000000000000000000000000
-                00000000000000000000000000FF000000FF0000000000000000000000000000
-                0000000000FF000000FF00000000000000000000000000000000000000000000
-                0000000000000000000000000000000000000000000000000000000000000000
-                00000000000000000000000000FF000000FF0000000000000000000000000000
-                0000000000FF000000FF00000000000000000000000000000000000000000000
-                0000000000000000000000000000000000000000000000000000000000000000
-                00000000000000000000000000FF000000FF0000000000000000000000000000
-                0000000000FF000000FF00000000000000000000000000000000000000000000
-                0000000000000000000000000000000000000000000000000000000000000000
-                00000000000000000000000000FF000000FF0000000000000000000000000000
-                0000000000FF000000FF00000000000000000000000000000000000000000000
-                0000000000000000000000000000000000000000000000000000000000000000
-                00000000000000000000000000FF000000FF0000000000000000000000000000
-                0000000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000
-                00FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000
-                00FF000000FF000000FF000000FF000000FF0000000000000000000000000000
-                0000000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000
-                00FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000
-                00FF000000FF000000FF000000FF000000FF0000000000000000000000000000
-                0010000000EF000000BF0000008F000000500000003000000000000000000000
-                0000000000000000000000000000000000000000000000000000000000000000
-                0000000000000000000000000000000000000000000000000000000000000000
-                0050000000FF000000FF000000FF000000FF0000007000000000000000000000
-                0020000000500000003000000000000000000000000000000000000000000000
-                0000000000000000000000000000000000000000000000000000000000000000
-                0040000000FF000000FF000000FF000000BF0000000000000000000000100000
-                00CF000000FF0000006000000000000000000000004000000050000000300000
-                0000000000000000000000000000000000000000000000000000000000000000
-                0010000000CF000000FF000000EF000000100000000000000000000000AF0000
-                00FF000000AF000000000000000000000010000000DF000000FF000000400000
-                0000000000000000004000000060000000300000000000000000000000000000
-                0000000000100000005000000020000000000000000000000060000000FF0000
-                00CF000000000000000000000000000000BF000000FF00000070000000000000
-                000000000020000000FF000000FF000000800000000000000000000000000000
-                0000000000000000000000000000000000000000000000000030000000500000
-                001000000000000000000000009F000000FF000000BF00000000000000000000
-                0010000000CF000000FF000000FF000000600000000000000000000000000000
-                0000000000000000000000000000000000000000000000000000000000000000
-                0000000000000000000000000020000000500000001000000000000000000000
-                00AF000000FF000000FF000000FF000000200000000000000000000000000000
-                0000000000000000000000000000000000000000000000000000000000000000
-                0000000000000000000000000000000000000000000000000000000000000000
-                00200000005000000080000000AF000000000000000000000000000000000000
-                0000000000000000000000000000000000000000000000000000000000000000
-                0000000000000000000000000000000000000000000000000000000000000000
-                0000000000000000000000000000000000000000000000000000000000000000
-                0000000000000000000000000000000000000000000000000000000000000000
-                0000000000000000000000000000000000000000000000000000000000000000
-                0000000000000000000000000000000000000000000000000000
-              }
-              GroupIndex = 1
-              Images = mainForm.MaterialImageList
-              ImageIndex = 7
-              ImageWidth = 24
-              Layout = blGlyphBottom
-              OnClick = ViewAnimateBtnClick
-            end
-            object ViewTrackBar: TTrackBar
-              Left = 471
-              Height = 30
-              Top = 27
-              Width = 177
-              Position = 0
-              ShowSelRange = False
-              TickStyle = tsNone
-              OnChange = ViewTrackBarChange
-              TabOrder = 3
-              OnMouseDown = ViewTrackBarMouseDown
-              OnMouseUp = ViewTrackBarMouseUp
-              OnKeyDown = ViewTrackBarKeyDown
-              OnKeyUp = ViewTrackBarKeyUp
-            end
-          end
-        end
-        object Page4: TPage
           object MapToolBar: TToolBar
             Left = 0
             Height = 65
@@ -917,7 +417,7 @@ object MainMenuFrame: TMainMenuFrame
               Style = tbsButtonDrop
             end
             object MapOptionsBtn: TToolButton
-              Left = 621
+              Left = 631
               Hint = '  '#13#10'  Change the map display settings  '#13#10'  '
               Top = 0
               Caption = 'Settings'
@@ -929,11 +429,12 @@ object MainMenuFrame: TMainMenuFrame
               Hint = '  '#13#10'  Export the map image  '#13#10'  '
               Top = 0
               Caption = 'Export'
+              DropdownMenu = ExportMenu
               ImageIndex = 9
-              OnClick = MapCopyMapBtnClick
+              Style = tbsButtonDrop
             end
             object MapQueryBtn: TToolButton
-              Left = 211
+              Left = 221
               Hint = '  '#13#10'  Find items meeting some criterion  '#13#10'  '
               Top = 0
               Caption = 'Query'
@@ -941,20 +442,19 @@ object MainMenuFrame: TMainMenuFrame
               OnClick = MapQueryBtnClick
             end
             object MapSep1: TToolButton
-              Left = 311
+              Left = 321
               Height = 5
               Top = 0
               Style = tbsDivider
             end
-            object MapSep3: TToolButton
-              Left = 616
+            object MapSep2: TToolButton
+              Left = 626
               Height = 5
               Top = 0
-              Caption = 'MapSep3'
               Style = tbsDivider
             end
             object MapZoomInBtn: TToolButton
-              Left = 316
+              Left = 326
               Hint = '  '#13#10'  Zoom in on the map  '#13#10'  '
               Top = 0
               Caption = 'Zoom In'
@@ -962,7 +462,7 @@ object MainMenuFrame: TMainMenuFrame
               OnClick = MapZoomInBtnClick
             end
             object MapZoomOutBtn: TToolButton
-              Left = 416
+              Left = 426
               Hint = '  '#13#10'  Zoom out on the map  '#13#10'  '
               Top = 0
               Caption = 'Zoom Out'
@@ -970,7 +470,7 @@ object MainMenuFrame: TMainMenuFrame
               OnClick = MapZoomOutBtnClick
             end
             object MapExtentsBtn: TToolButton
-              Left = 516
+              Left = 526
               Hint = '  '#13#10'  View the map at full extent  '#13#10'  '
               Top = 0
               Caption = 'Full Extent'
@@ -979,7 +479,7 @@ object MainMenuFrame: TMainMenuFrame
             end
           end
         end
-        object Page5: TPage
+        object Page4: TPage
           object ProjectToolBar: TToolBar
             Left = 0
             Height = 65
@@ -1007,7 +507,6 @@ object MainMenuFrame: TMainMenuFrame
               Left = 616
               Height = 5
               Top = 0
-              Caption = 'ProjectSep2'
               Style = tbsDivider
             end
             object ProjectAnalyzeBtn: TToolButton
@@ -1055,7 +554,6 @@ object MainMenuFrame: TMainMenuFrame
               Left = 411
               Height = 5
               Top = 0
-              Caption = 'ProjectSep1'
               Style = tbsDivider
             end
             object ProjectFindBtn: TToolButton
@@ -1077,7 +575,7 @@ object MainMenuFrame: TMainMenuFrame
             end
           end
         end
-        object Page6: TPage
+        object Page5: TPage
           object HelpToolBar: TToolBar
             Left = 0
             Height = 65
@@ -1112,7 +610,6 @@ object MainMenuFrame: TMainMenuFrame
               Left = 501
               Height = 5
               Top = 0
-              Caption = 'HelpSep1'
               Style = tbsDivider
             end
             object HelpAboutBtn: TToolButton
@@ -1146,7 +643,6 @@ object MainMenuFrame: TMainMenuFrame
   end
   object AnimationTimer: TTimer
     Enabled = False
-    OnTimer = AnimationTimerTimer
     Left = 792
     Top = 8
   end
@@ -1182,7 +678,7 @@ object MainMenuFrame: TMainMenuFrame
       ImageIndex = 22
       OnClick = BasemapAlignItemClick
     end
-    object Separator11: TMenuItem
+    object Separator2: TMenuItem
       Tag = -1
       Caption = '-'
     end
@@ -1296,12 +792,12 @@ object MainMenuFrame: TMainMenuFrame
       OnClick = RptTseriesItemClick
     end
     object RptPercentileItem: TMenuItem
-      Caption = 'Variability Report'
+      Caption = 'Percentiles Plot'
       ImageIndex = 36
       OnClick = RptPercentileItemClick
     end
     object RptProfileItem: TMenuItem
-      Caption = 'Hydraulic Profile Plot'
+      Caption = 'Profile Plot'
       ImageIndex = 12
       OnClick = RptProfileItemClick
     end
@@ -1368,22 +864,51 @@ object MainMenuFrame: TMainMenuFrame
     object ShapefileMenuItem: TMenuItem
       Caption = 'GIS Shapefile'
       ImageIndex = 0
-      OnClick = ShapefileMenuItemClick
     end
     object DxfFileMenuItem: TMenuItem
       Caption = 'CAD DXF File'
       ImageIndex = 1
-      OnClick = DxfFileMenuItemClick
     end
     object TextFileMenuItem: TMenuItem
       Caption = 'CSV Text File'
       ImageIndex = 2
-      OnClick = TextFileMenuItemClick
     end
   end
   object MruMenu: TPopupMenu
     OnMeasureItem = MenuMeasureItem
     Left = 976
     Top = 40
+  end
+  object GroupEditMenu: TPopupMenu
+    Images = mainForm.PopupImageList
+    ImagesWidth = 16
+    Left = 1056
+    Top = 40
+    object NodesMenuItem: TMenuItem
+      Caption = 'Nodes'
+      ImageIndex = 0
+      OnClick = NodesMenuItemClick
+    end
+    object LinksMenuItem: TMenuItem
+      Caption = 'Links'
+      ImageIndex = 3
+      OnClick = LinksMenuItemClick
+    end
+  end
+  object ExportMenu: TPopupMenu
+    Images = mainForm.PopupImageList
+    ImagesWidth = 16
+    Left = 405
+    Top = 8
+    object MapToClipbrdMenuItem: TMenuItem
+      Caption = 'To Clipboard'
+      ImageIndex = 17
+      OnClick = MapToClipbrdMenuItemClick
+    end
+    object MapToFileMenuItem: TMenuItem
+      Caption = 'To File'
+      ImageIndex = 18
+      OnClick = MapToFileMenuItemClick
+    end
   end
 end

@@ -16,36 +16,33 @@ object EnergyRptFrame: TEnergyRptFrame
     Height = 335
     Top = 12
     Width = 691
-    ActivePage = TabSheet2
+    ActivePage = TabSheet1
     Align = alClient
     BorderSpacing.Around = 12
     Style = tsFlatButtons
-    TabIndex = 1
+    TabIndex = 0
     TabOrder = 0
     object TabSheet1: TTabSheet
       Caption = 'Energy Balance'
-      ClientHeight = 302
-      ClientWidth = 687
+      ClientHeight = 304
+      ClientWidth = 683
       object Panel1: TPanel
-        Left = 8
-        Height = 294
+        Left = 0
+        Height = 304
         Top = 0
-        Width = 671
+        Width = 683
         Align = alClient
-        BorderSpacing.Left = 8
-        BorderSpacing.Right = 8
-        BorderSpacing.Bottom = 8
         BevelOuter = bvNone
         BorderStyle = bsSingle
         Caption = 'Panel1'
-        ClientHeight = 294
-        ClientWidth = 671
+        ClientHeight = 300
+        ClientWidth = 679
         TabOrder = 0
         object Chart1: TChart
           Left = 0
-          Height = 292
+          Height = 300
           Top = 0
-          Width = 669
+          Width = 679
           AntialiasingMode = amOn
           AxisList = <          
             item
@@ -118,18 +115,30 @@ object EnergyRptFrame: TEnergyRptFrame
     end
     object TabSheet2: TTabSheet
       Caption = 'Performance Metrics'
-      ClientHeight = 302
-      ClientWidth = 687
-      object Memo1: TMemo
+      ClientHeight = 304
+      ClientWidth = 683
+      object Panel2: TPanel
         Left = 0
-        Height = 302
+        Height = 304
         Top = 0
-        Width = 687
+        Width = 683
         Align = alClient
-        BorderStyle = bsNone
-        ReadOnly = True
+        BevelOuter = bvNone
+        BorderStyle = bsSingle
+        ClientHeight = 300
+        ClientWidth = 679
         TabOrder = 0
-        TabStop = False
+        object Memo1: TMemo
+          Left = 0
+          Height = 300
+          Top = 0
+          Width = 679
+          Align = alClient
+          BorderStyle = bsNone
+          ReadOnly = True
+          TabOrder = 0
+          TabStop = False
+        end
       end
     end
   end

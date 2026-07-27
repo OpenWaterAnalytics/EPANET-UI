@@ -1,9 +1,9 @@
 object PcntileSelectorFrame: TPcntileSelectorFrame
   Left = 0
-  Height = 368
+  Height = 324
   Top = 0
   Width = 237
-  ClientHeight = 368
+  ClientHeight = 324
   ClientWidth = 237
   LCLVersion = '4.4.0.0'
   TabOrder = 0
@@ -15,14 +15,15 @@ object PcntileSelectorFrame: TPcntileSelectorFrame
     Top = 0
     Width = 237
     Align = alTop
-    Caption = 'Variability Plot Selector'
+    BevelOuter = bvNone
+    Caption = 'Percentiles Plot Selector'
     ClientHeight = 30
     ClientWidth = 237
     Font.Style = [fsBold]
     ParentFont = False
     TabOrder = 0
     object CloseBtn: TSpeedButton
-      Left = 207
+      Left = 212
       Height = 26
       Hint = 'Close'
       Top = 0
@@ -94,22 +95,13 @@ object PcntileSelectorFrame: TPcntileSelectorFrame
     end
   end
   object ViewBtn: TButton
-    Left = 36
+    Left = 160
     Height = 25
-    Top = 324
-    Width = 75
+    Top = 283
+    Width = 64
     Caption = 'View'
     TabOrder = 1
     OnClick = ViewBtnClick
-  end
-  object CancelBtn: TButton
-    Left = 126
-    Height = 25
-    Top = 324
-    Width = 75
-    Caption = 'Cancel'
-    TabOrder = 2
-    OnClick = CancelBtnClick
   end
   object Label1: TLabel
     Left = 8
@@ -125,7 +117,7 @@ object PcntileSelectorFrame: TPcntileSelectorFrame
     Width = 134
     ItemHeight = 18
     Style = csOwnerDrawFixed
-    TabOrder = 3
+    TabOrder = 2
   end
   object Label2: TLabel
     Left = 8
@@ -162,7 +154,7 @@ object PcntileSelectorFrame: TPcntileSelectorFrame
     Width = 64
     Increment = 5
     MaxValue = 50
-    TabOrder = 4
+    TabOrder = 3
     Value = 5
   end
   object SpinEdit2: TSpinEdit
@@ -173,7 +165,7 @@ object PcntileSelectorFrame: TPcntileSelectorFrame
     Increment = 5
     MaxValue = 90
     MinValue = 10
-    TabOrder = 5
+    TabOrder = 4
     Value = 50
   end
   object SpinEdit3: TSpinEdit
@@ -184,7 +176,7 @@ object PcntileSelectorFrame: TPcntileSelectorFrame
     Increment = 5
     MaxValue = 100
     MinValue = 50
-    TabOrder = 6
+    TabOrder = 5
     Value = 95
   end
   object TimeOfDayBox: TCheckBox
@@ -193,7 +185,7 @@ object PcntileSelectorFrame: TPcntileSelectorFrame
     Top = 284
     Width = 108
     Caption = 'Plot Time Of Day'
-    TabOrder = 7
+    TabOrder = 6
   end
   object NodeBtn: TRadioButton
     Left = 18
@@ -201,7 +193,7 @@ object PcntileSelectorFrame: TPcntileSelectorFrame
     Top = 66
     Width = 47
     Caption = 'Node'
-    TabOrder = 9
+    TabOrder = 8
     OnChange = NodeBtnChange
   end
   object LinkBtn: TRadioButton
@@ -210,7 +202,7 @@ object PcntileSelectorFrame: TPcntileSelectorFrame
     Top = 66
     Width = 40
     Caption = 'Link'
-    TabOrder = 8
+    TabOrder = 7
     OnChange = NodeBtnChange
   end
 end

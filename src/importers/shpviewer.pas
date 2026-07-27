@@ -1,6 +1,6 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.0
+ Version:      1.0.3
  Module:       shpviewer
  Description:  displays a shapefile's attribute table and its prj
                file and draws its image to a bitmap

@@ -1,11 +1,11 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.0
+ Version:      1.0.3
  Module:       profileselector
  Description:  A frame used to select a path of links to include in
                a hydraulic profile plot
  License:      see LICENSE
- Last Updated: 03/07/2026
+ Last Updated: 06/19/2026
 =====================================================================}
 
 unit profileselector;
@@ -56,14 +56,14 @@ implementation
 {$R *.lfm}
 
 uses
-  main, project, config, profilerpt, reportviewer, utils, resourcestrings;
+  main, project, config, profilerpt, reportframe, utils, resourcestrings;
 
 { TProfileSelectorFrame }
 
 procedure TProfileSelectorFrame.Init;
 begin
   Color := config.CreamTheme;
-  TopPanel.Color := config.ThemeColor;
+  config.SetHeaderColor(TopPanel);
   StartNodeEdit.Clear;
   EndNodeEdit.Clear;
 end;
@@ -97,11 +97,12 @@ end;
 procedure TProfileSelectorFrame.CancelBtnClick(Sender: TObject);
 begin
   Visible := false;
-  ReportViewerForm.WindowState := wsNormal;
   if not HasProfilePlot then
-    ReportViewerForm.CloseReport
+    MainForm.ReportFrame.CloseReport
   else
-    ReportViewerForm.Show;
+  begin
+    MainForm.ShowPage(MainForm.Reportpage);
+  end;
 end;
 
 procedure TProfileSelectorFrame.ViewBtnClick(Sender: TObject);
@@ -131,11 +132,10 @@ begin
       exit;
     end;
     Visible := false;
-    with ReportViewerForm.Report as TProfileRptFrame do
+    with MainForm.ReportFrame.Report as TProfileRptFrame do
       SetProfileLinks(PathList);
-    if ReportViewerForm.WindowState = wsMinimized then
-      ReportViewerForm.WindowState := wsNormal;
-    ReportViewerForm.Show;
+    MainForm.ReportFrame.Show;
+    MainForm.ShowPage(MainForm.ReportPage);
 
   finally
     PathList.Free;

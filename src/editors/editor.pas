@@ -1,17 +1,18 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.0
+ Version:      1.0.3
  Module:       editor
  Description:  edits the properties of a project's objects
  License:      see LICENSE
- Last Updated: 03/07/2026
+ Last Updated: 06/19/2026
 =====================================================================}
+
+unit editor;
+
 {
  This unit works directly with the PropEditor control that appears on
  the main form's ProjectFrame.
 }
-
-unit editor;
 
 {$mode objfpc}{$H+}
 
@@ -110,7 +111,7 @@ end;
 procedure ButtonClick(const Category: Integer; const Item: Integer;
           const Prop: Integer);
 //
-// Selects a specialized editor to launch when an ellipsis button
+// Select a specialized editor to launch when an ellipsis button
 // in the PropEditor is clicked.
 //
 begin
@@ -1141,6 +1142,10 @@ begin
 end;
 
 function GetDescription(S: string): string;
+//
+// Display a LabelEditorForm over the Description field of the
+// PropEditor to provide more space to enter an object's description.
+//
 var
   LabelEditorForm: TLabelEditorForm;
   L:               Integer;        // Left of LabelEditorForm

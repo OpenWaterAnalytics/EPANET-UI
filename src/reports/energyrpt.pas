@@ -1,10 +1,10 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.0
+ Version:      1.0.3
  Module:       energyrpt
- Description:  a frame that displays an energy balance report
+ Description:  a frame to report a simulation's energy balance
  License:      see LICENSE
- Last Updated: 03/07/2026
+ Last Updated: 06/19/2026
 =====================================================================}
 
 unit energyrpt;
@@ -23,7 +23,9 @@ type
   { TEnergyRptFrame }
 
   TEnergyRptFrame = class(TFrame)
+    Memo1: TMemo;
     PageControl1:           TPageControl;
+    Panel2: TPanel;
     TabSheet1:              TTabSheet;
     TabSheet2:              TTabSheet;
     Chart1:                 TChart;
@@ -33,7 +35,6 @@ type
     ExportMenu:             TPopupMenu;
     MnuCopy:                TMenuItem;
     MnuSave:                TMenuItem;
-    Memo1:                  TMemo;
     Panel1:                 TPanel;
 
     procedure MnuCopyClick(Sender: TObject);
@@ -109,18 +110,19 @@ end;
 
 procedure TEnergyRptFrame.RefreshReport;
 var
-  I: Integer;
-  Einput: Double;
+  I:       Integer;
+  Einput:  Double;
   Eoutput: Double;
   Efactor: Double;
-  E: Double;
+  E:       Double;
   Metric: array[0..5] of string;
   Eunits: string;
 begin
   // Total energy input and output
-  Einput := (Energy[eInflows] + Energy[ePumping] + Energy[eTankOut]);
-  Eoutput := (Energy[eDemands] + Energy[eLeakage] + Energy[eFriction] +
-    Energy[eTankIn]);
+  Einput := energycalc.Energy[eInflows] + energycalc.Energy[ePumping] +
+            energycalc.Energy[eTankOut];
+  Eoutput := energycalc.Energy[eDemands] + energycalc.Energy[eLeakage] +
+             energycalc.Energy[eFriction] + energycalc.Energy[eTankIn];
 
   // Choose between Kwh and MwH units
   if (Einput > 1000) or (Eoutput > 1000) then
@@ -137,7 +139,7 @@ begin
   // Assign energy values to chart
   for I := eInflows to eTankIn do
   begin
-    E := Energy[I] / Efactor;
+    E := energycalc.Energy[I] / Efactor;
     if E = 0 then E := NAN;
     ListChartSource1[I-1]^.Y := E;
   end;
@@ -157,15 +159,16 @@ begin
   for I := 0 to 5 do Metric[I] := rsNA;
   if Einput > 0 then
   begin
-    Metric[0] := Format('%.2f', [Energy[eDemands] / Einput]);
-    Metric[1] := Format('%.2f', [Energy[eFriction] / Einput]);
-    Metric[2] := Format('%.2f', [Energy[eLeakage] / Einput]);
+    Metric[0] := Format('%.2f', [energycalc.Energy[eDemands] / Einput]);
+    Metric[1] := Format('%.2f', [energycalc.Energy[eFriction] / Einput]);
+    Metric[2] := Format('%.2f', [energycalc.Energy[eLeakage] / Einput]);
   end;
-  if Energy[eMinUse] > 0 then
+  if energycalc.Energy[eMinUse] > 0 then
   begin
-    Metric[3] := Format('%.2f', [Einput / Energy[eMinUse]]);
-    Metric[4] := Format('%.2f', [Energy[eDemands] / Energy[eMinUse]]);
-    Metric[5] := Format('%.2f', [Energy[eMinUse] / Efactor]);
+    Metric[3] := Format('%.2f', [Einput / energycalc.Energy[eMinUse]]);
+    Metric[4] := Format('%.2f', [energycalc.Energy[eDemands] /
+                                 energycalc.Energy[eMinUse]]);
+    Metric[5] := Format('%.2f', [energycalc.Energy[eMinUse] / Efactor]);
   end;
 
   with Memo1.Lines do

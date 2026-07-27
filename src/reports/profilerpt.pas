@@ -1,13 +1,20 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.0
+ Version:      1.0.3
  Module:       hydprofilerpt
  Description:  A frame that displays a hydraulic profile plot
  License:      see LICENSE
- Last Updated: 03/07/2026
+ Last Updated: 06/19/2026
 =====================================================================}
 
 unit profilerpt;
+
+{
+ The path of links between a start and end node of the profile are
+ selected using the main form's ProfileSelectorFrame (profileselector.pas).
+ The head values plotted are for the current time period selected from
+ the main form's MapViewerFrame.
+}
 
 {$mode ObjFPC}{$H+}
 
@@ -23,7 +30,7 @@ type
   { TProfileRptFrame }
 
   TProfileRptFrame = class(TFrame)
-    Chart1:                 TChart;
+    Chart1: TChart;
     Chart1AreaSeries1:      TAreaSeries;
     ChartStyles1:           TChartStyles;
     ListChartSource1:       TListChartSource;
@@ -35,7 +42,6 @@ type
     MnuCopy:                TMenuItem;
     MnuSave:                TMenuItem;
     Separator1:             TMenuItem;
-    Panel1:                 TPanel;
 
     procedure Chart1AreaSeries1GetMark(out AFormattedMark: string;
       AIndex: Integer);
@@ -68,7 +74,7 @@ implementation
 {$R *.lfm}
 
 uses
-  main, project, profileselector, mapthemes, results, epanet2, reportviewer,
+  main, project, profileselector, mapthemes, results, epanet2, reportframe,
   resourcestrings;
 
 { TProfileRptFrame }
@@ -212,11 +218,11 @@ end;
 
 procedure TProfileRptFrame.ShowProfileSelector;
 begin
-  ReportViewerForm.Hide;
   MainForm.HideHintPanelFrames;
   MainForm.ProfileSelectorFrame.Visible := true;
   MainForm.ProfileSelectorFrame.HasProfilePlot:= not PlotEmpty;
   if PlotEmpty then MainForm.ProfileSelectorFrame.Init;
+  MainForm.ShowPage(MainForm.MapPage);
 end;
 
 procedure TProfileRptFrame.ShowPopupMenu;

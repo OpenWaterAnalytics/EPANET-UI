@@ -1,11 +1,11 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.1
+ Version:      1.0.3
  Module:       results
  Description:  retrieves the hydraulic and water quality results
                of a simulation that were saved to file
  License:      see LICENSE
- Last Updated: 03/13/2026
+ Last Updated: 06/19/2026
 =====================================================================}
 
 unit results;
@@ -72,37 +72,37 @@ const
 // These constants allow one to correctly read the results of a
 // simulation saved to a binary output file by the network solver
 // EPANET2.DLL.
-  MagicNumber = 516114521; //File signature
-  Version     = 20012;     //Solver version number
-  RECORDSIZE  = 4;         //Byte size of each record
-  IDSIZE      = 32;        //Size of ID strings
-  NUM_NODE_VARS = 4;       //Num. of node variables reported on
-  NUM_LINK_VARS = 8;       //Num. of link variables reported on
+  MagicNumber = 516114521; // File signature
+  Version     = 20012;     // File version number
+  RECORDSIZE  = 4;         // Byte size of each record
+  IDSIZE      = 32;        // Size of ID strings
+  NUM_NODE_VARS = 4;       // Number of node variables reported on
+  NUM_LINK_VARS = 8;       // Number of link variables reported on
 
 // These are the numbers of additional node/link variables
 // saved to the simulator's binary Demands file.
-  NUM_NODE_AUX_VARS = 3;   //Num. of auxilary node variables reported
-  NUM_LINK_AUX_VARS = 2;   //Num. of auxilary link variables reported
+  NUM_NODE_AUX_VARS = 3;   // Auxilary node variables reported
+  NUM_LINK_AUX_VARS = 2;   // Auxilary link variables reported
 //*******************************************************************
 
 var
-  Fout       : TFileStream;
-  Fout2      : TFileStream;
-  Fmsx       : TFileStream;
-  Offset1    : Int64;       //File position where ID names begin
-  Offset2    : Int64;       //File position where pump energy results begin
-  Offset3    : Int64;       //File position where time series results begin
-  MsxOffset  : Int64;
-  BlockSize1 : Int64;
-  BlockSize2 : Int64;
-  BlockSize3 : Int64;
-  BlockSize4 : Int64;
-  Nlinks     : Integer;
-  Npumps     : Integer;
-  Nnodes     : Integer;
-  MsxCount   : Integer;
-  MsxSpecies : TStringList;
-  MsxUnits   : TStringList;
+  Fout       : TFileStream; // Primary output file
+  Fout2      : TFileStream; // Auxilary output file (for demands & leakage)
+  Fmsx       : TFileStream; // MSX output file
+  Offset1    : Int64;       // File position where ID names begin
+  Offset2    : Int64;       // File position where pump energy results begin
+  Offset3    : Int64;       // File position where time series results begin
+  MsxOffset  : Int64;       // MSX file position where quality results begin
+  BlockSize1 : Int64;       // Bytes per time period in primary output file
+  BlockSize2 : Int64;       // Bytes for node results per time period
+  BlockSize3 : Int64;       // Bytes per time period in auxilary file
+  BlockSize4 : Int64;       // Bytes for node results in auxilary file
+  Nlinks     : Integer;     // Number of links
+  Npumps     : Integer;     // Number of pump links
+  Nnodes     : Integer;     // Number of nodes
+  MsxCount   : Integer;     // Number of MSX species
+  MsxSpecies : TStringList; // Names of MSX species
+  MsxUnits   : TStringList; // Units of MSX species
 
 function OpenOutFile(const Fname: string): TSimStatus;
 var
@@ -159,7 +159,7 @@ begin
   // Close file if run was unsuccessful
   if Result in [ssFailed, ssWrongVersion, ssError] then CloseOutFile
 
-  // Otherwise process file and open the secondary output file
+  // Otherwise process file and open the auxilary output file
   else
   begin
     SetQualName;
@@ -195,23 +195,24 @@ begin
   Fout.Read(Duration, RECORDSIZE);
 
   // File offset to where object ID names begin
-  Offset1 := 15*RECORDSIZE           //Integer parameters
-             + 3*80                  //Title lines
-             + 2*260                 //File names
-             + 2*IDSIZE;             //WQ parameter & units
+  Offset1 := 15*RECORDSIZE           // Integer parameters
+             + 3*80                  // Title lines
+             + 2*260                 // File names
+             + 2*IDSIZE;             // WQ parameter & units
 
   // File offset to where energy usage results begin
   Offset2 := Offset1 +
-             + Nnodes*IDSIZE         //Node ID labels
-             + Nlinks*IDSIZE         //Link ID labels
-             + 3*Nlinks*RECORDSIZE   //Link end nodes & types
-             + 2*Ntanks*RECORDSIZE   //Tank node indexes & x-areas
-             + Nnodes*RECORDSIZE     //Node elevations
-             + 2*Nlinks*RECORDSIZE;  //Link lengths & diameters
+             + Nnodes*IDSIZE         // Node ID labels
+             + Nlinks*IDSIZE         // Link ID labels
+             + 3*Nlinks*RECORDSIZE   // Link end nodes & types
+             + 2*Ntanks*RECORDSIZE   // Tank node indexes & x-areas
+             + Nnodes*RECORDSIZE     // Node elevations
+             + 2*Nlinks*RECORDSIZE;  // Link lengths & diameters
 
   // File offset to where network results for each time period begin
   Offset3 := Offset2
-             + (7*Npumps+1)*RECORDSIZE; //Pump energy usage
+             + (7*Npumps+1)*RECORDSIZE; // Pump energy usage
+
   BlockSize1 := RECORDSIZE * (Nnodes * NUM_NODE_VARS + Nlinks * NUM_LINK_VARS);
   BlockSize2 := RECORDSIZE * Nnodes * NUM_NODE_VARS;
   BlockSize3 := RECORDSIZE * (Nnodes * NUM_NODE_AUX_VARS + Nlinks * NUM_LINK_AUX_VARS);
@@ -312,7 +313,7 @@ var
   n:   Integer = 0;
   len: Integer = 0;
   S:   string;
-  Buf: array[0..1024] of Char = '';
+  buf: array[0..1024] of Char = '';
 begin
   // Continue reading from MSX output file
   Fmsx.Read(n, Sizeof(n));  // # nodes
@@ -325,14 +326,14 @@ begin
   // Read name of each specie
   for n := 1 to MsxCount do
   begin
-    Fmsx.Read(len, SizeOf(len));  //read #chars in name
-    Fmsx.Read(buf, len);          //read name into buffer
-    SetString(s, buf, len);       //convert buffer to string
-    MsxSpecies.Add(s);            //add name to list
-    Fmsx.Read(buf, 16);           //read units into buffer (fixed at 16 chars)
-    SetString(s, buf, 16);        //convert buffer to string
-    s := Trim(s);                 //strip off null chars
-    MsxUnits.Add(s);              //add units to list
+    Fmsx.Read(len, SizeOf(len));  // read #chars in name
+    Fmsx.Read(buf, len);          // read name into buffer
+    SetString(s, buf, len);       // convert buffer to string
+    MsxSpecies.Add(s);            // add name to list
+    Fmsx.Read(buf, 16);           // read units into buffer (fixed at 16 chars)
+    SetString(s, buf, 16);        // convert buffer to string
+    s := Trim(s);                 // strip off null chars
+    MsxUnits.Add(s);              // add units to list
   end;
 end;
 
@@ -442,10 +443,10 @@ var
   P: Int64;
 begin
   Result := 0;
-  P := MsxOffset +                               //Start of MSX results
-       T*RECORDSIZE*(Nnodes + Nlinks)*MsxCount + //Results from prior periods
-       V*Nnodes*RECORDSIZE +                     //Results for prior species
-       (I-1)*RECORDSIZE;                         //Results for prior nodes
+  P := MsxOffset +                               // Start of MSX results
+       T*RECORDSIZE*(Nnodes + Nlinks)*MsxCount + // Results from prior periods
+       V*Nnodes*RECORDSIZE +                     // Results for prior species
+       (I-1)*RECORDSIZE;                         // Results for prior nodes
   Fmsx.Seek(P, soBeginning);
   Fmsx.Read(Result, SizeOf(Single));
 end;
@@ -475,19 +476,19 @@ var
   P: Int64;
 begin
   Result := 0;
-  P := MsxOffset +                               //Start of MSX results
-       T*RECORDSIZE*(Nnodes + Nlinks)*MsxCount + //Results from prior periods
-       Nnodes*MsxCount*RECORDSIZE +              //Results for nodes
-       V*Nlinks*RECORDSIZE +                     //Results for prior species
-       (I-1)*RECORDSIZE;                         //Results for prior links
+  P := MsxOffset +                               // Start of MSX results
+       T*RECORDSIZE*(Nnodes + Nlinks)*MsxCount + // Results from prior periods
+       Nnodes*MsxCount*RECORDSIZE +              // Results for nodes
+       V*Nlinks*RECORDSIZE +                     // Results for prior species
+       (I-1)*RECORDSIZE;                         // Results for prior links
   Fmsx.Seek(P, soBeginning);
   Fmsx.Read(Result, SizeOf(Single));
 end;
 
 function GetPumpEnergy(const I: Integer; var PumpEnergy: array of Single): Boolean;
 //
-// I = link index (1 to Nlinks)
-// PumpEnergy = array of 6 energy usage statistics
+// Called by fireflowrpt.RefreshTable with I == link index and PumpEnergy =
+// array of 6 energy usage statistics
 //
 var
   J: Integer;

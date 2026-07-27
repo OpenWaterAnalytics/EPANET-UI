@@ -31,9 +31,9 @@ WARNING:
 Using a pair of pressure controls to open and close a link can cause the system to become unstable if the pressure settings are too close to one another. In this case using a pair of Rule-Based controls might provide more stability.
 
 ## Rule-Based Controls
-Rule-based controls can modify the status or setting of multiple links based on some combination of water levels and pressures at different locations and between different ranges of time. These controls are specified by selecting the ***Rule-Based Controls*** sub-category under the ***Control Actions*** category in the ***Project Explorer***. A <u>[Rule-Based Controls Editor]</u> dialog will appear that contains a text box where the rule statements can be entered.
+Rule-based controls can modify the status or setting of multiple links based on some combination of water levels and pressures at different locations and between different ranges of time. These controls are specified by selecting the ***Rule-Based Controls*** sub-category under the ***Control Actions*** category in the ***Project Explorer***. A <u>[Rule-Based Controls Editor]</u> dialog will appear where the rule statements can be entered.
 
-### Examples
+### Example
 The following set of rules shuts down a pump and opens a by-pass pipe when the level in a tank exceeds a certain value and does the opposite when the level is below another value.
 ```
 RULE 1

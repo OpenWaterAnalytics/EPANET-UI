@@ -1,11 +1,11 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.0
+ Version:      1.0.3
  Module:       pcntileselector
- Description:  A frame used to select a variable and its percentile
+ Description:  A frame used to select a parameter and its percentile
                range to display in a Percentile Plot
  License:      see LICENSE
- Last Updated: 03/07/2026
+ Last Updated: 06/19/2026
 =====================================================================}
 
 unit pcntileselector;
@@ -23,7 +23,6 @@ type
 
   TPcntileSelectorFrame = class(TFrame)
     TopPanel:     TPanel;
-    CancelBtn:    TButton;
     ViewBtn:      TButton;
     CloseBtn:     TSpeedButton;
     Label1:       TLabel;
@@ -39,7 +38,6 @@ type
     ParamCombo:   TComboBox;
     TimeOfDayBox: TCheckBox;
 
-    procedure CancelBtnClick(Sender: TObject);
     procedure CloseBtnClick(Sender: TObject);
     procedure NodeBtnChange(Sender: TObject);
     procedure ViewBtnClick(Sender: TObject);
@@ -57,11 +55,11 @@ implementation
 {$R *.lfm}
 
 uses
-  project, config, mapthemes, reportviewer, pcntilerpt;
+  main, project, config, mapthemes, reportframe, pcntilerpt;
 
 procedure TPcntileSelectorFrame.CloseBtnClick(Sender: TObject);
 begin
-  CancelBtnClick(Sender);
+  MainForm.ReportFrame.CloseReport;
 end;
 
 procedure TPcntileSelectorFrame.NodeBtnChange(Sender: TObject);
@@ -114,34 +112,20 @@ begin
   Pmid := SpinEdit2.Value;
   Pmax := SpinEdit3.Value;
   PlotTimeOfDay := TimeOfDayBox.Checked;
-  with ReportViewerForm.Report as TPcntileRptFrame do
+  with MainForm.ReportFrame.Report as TPcntileRptFrame do
   begin
     SetPlotParams(ParamType, PlotParam, Pmin, Pmid, Pmax, PlotTimeOfDay);
     RefreshReport;
   end;
-  Hide;
-  if ReportViewerForm.WindowState = wsMinimized then
-    ReportViewerForm.WindowState := wsNormal;
-  ReportViewerForm.Show;
-end;
-
-procedure TPcntileSelectorFrame.CancelBtnClick(Sender: TObject);
-begin
-  Visible := false;
-  with ReportViewerForm.Report as TPcntileRptFrame do
-  begin
-    if ChartIsShowing then
-      ReportViewerForm.Show
-    else
-      ReportViewerForm.Close;
-  end;
+  MainForm.ReportFrame.Show;
+  MainForm.ShowPage(MainForm.ReportPage);
 end;
 
 procedure TPcntileSelectorFrame.Init(ParamType, PlotParam, Pmin, Pmid, Pmax: Integer;
       PlotTimeOfDay: Boolean);
 begin
   Color := config.CreamTheme;
-  TopPanel.Color := config.ThemeColor;
+  config.SetHeaderColor(TopPanel);
   if ParamType = ctNodes then
     NodeBtn.Checked := true
   else

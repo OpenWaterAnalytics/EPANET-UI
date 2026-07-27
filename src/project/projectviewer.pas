@@ -1,15 +1,17 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.0
+ Version:      1.0.3
  Module:       projectviewer
  Description:  a form that displays all project data
  License:      see LICENSE
- Last Updated: 03/07/2026
+ Last Updated: 06/19/2026
 =====================================================================}
 
 unit projectviewer;
 
-{ Displays all project data in a read-only table, one section at a time. }
+{
+ Displays all project data in a read-only table, one section at a time.
+}
 
 {$mode objfpc}{$H+}
 
@@ -104,7 +106,7 @@ var
 
 procedure TProjectViewerForm.FormCreate(Sender: TObject);
 var
-  I: Integer;
+  I, W: Integer;
 begin
   Color := config.FormColor;
   Font.Size := config.FontSize;
@@ -116,8 +118,9 @@ begin
 
   Left := MainForm.Left + 4;
   Top := MainForm.MainPanel.ClientToScreen(Point(0,0)).Y;
-  Width := MainForm.Width - MainForm.ProjectPanel.Width - 8;
-  Height := MainForm.MainPanel.Height - MainForm.StatusPanel.Height;
+  W := MainForm.LeftPanel.Width + MainForm.MapPanel.Width;
+  Width := (W * 96) div Screen.PixelsPerInch;
+  Height := (MainForm.LeftPanel.Height * 96) div Screen.PixelsPerInch;
 
   // S stores the project's data in input file format
   S := TStringList.Create;

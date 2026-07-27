@@ -1,10 +1,11 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.0
+ Version:      1.0.3
  Module:       fireflowprogress
- Description:  form that displays progress of a fire flow analysis
+ Description:  form that initiates fire flow calculations and reports
+               its progress
  License:      see LICENSE
- Last Updated: 03/07/2026
+ Last Updated: 06/19/2026
 =====================================================================}
 
 unit fireflowprogress;

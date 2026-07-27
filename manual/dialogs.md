@@ -64,10 +64,10 @@ The network map cannot be re-dimensioned when a web map service (WMS) is used as
 ## Demand Categories
 
 <imgl images/DemandEditor.png>
-The ***Demand Categories Editor*** is used to assign base consumer demands and their time patterns when you want to model more than one category of water user at a junction. The editor is invoked from the Project Explorer's Property Editor by clicking the <imgt images/Ellipsis.png> button when the ***Demand Categories*** field has the focus. The editor is a table containing three columns. Each category of demand is entered as a new row in the table. The columns contain the following information:<br>
-- Base Demand: baseline or average demand for the category (required).
-- Time Pattern: ID label of time pattern used to allow demand to vary with time (optional). Click the <imgt images/Ellipsis.png> button to select a time pattern.
-- Category: a text label used to identify the demand category (optional).
+The ***Demand Categories Editor*** is used to assign base consumer demands and their time patterns when you want to model more than one category of water user at a junction. The editor is invoked from the Project Explorer's Property Editor for a junction by clicking the <imgt images/Ellipsis.png> button when the ***Demand Categories*** field has the focus. The editor is a table containing three columns. Each category of demand is entered as a new row in the table. The columns contain the following information:<br>
+- **Base Demand**: baseline or average demand for the category (required).
+- **Time Pattern**: ID label of time pattern used to allow demand to vary with time (optional). Click the <imgt images/Ellipsis.png> button to select a time pattern.
+- **Category**: a text label used to identify the demand category (optional).
 
 NOTE:
 By convention, the demand placed in the frst row of the editor will be considered the main category for the junction and will appear in the ***Base Demand*** field of the Property Editor.
@@ -83,7 +83,7 @@ This form is used to add, edit, or delete a project's Time Patterns. When the <u
 
 <imgl images/PatternEditor.png><br>
 This editor form is used to assign an ID name to the pattern, attach an optional description to it, and enter multiplier values for each pattern time period. The time period interval is the ***Pattern Step*** value assigned as part of the project's <u>[Analysis Options]</u>. The editing grid is initially sized for 24 periods. When in the last cell you can press the <imgt images/left_arrow_key.png> key to add an additional one. 
-Clicking the mouse on the <i>Use typical diurnal pattern</i> label will populate the editor with multipliers for a typical diurnal pattern of water usage (as shown in the figure).
+Clicking the mouse on the <i>Use typical diurnal pattern</i> label will populate the editor with multipliers for a typical diurnal pattern of water usage (as shown in the figure above).
 
 The editor's command buttons implement the following actions:
 
@@ -137,7 +137,7 @@ When three points are provided for a Pump curve, where the first point is the sh
 - edit the currently selected control,
 - delete the currently selected control,
 - move a control up or down in the list.
-The bottom panel of the Editor is where you would edit the contents of a newly added control or one selected for editing. The <ui2>+</ui2> buttons next to the Node and Link edit boxes will insert the name of a node or link selected from the network map. The format of a simple control is described in the <u>[Simple Controls]</u> topic.</p>
+The bottom panel of the Editor is where you would edit the contents of a newly added control or one selected for editing. The <ui2>+</ui2> buttons next to the Node and Link edit boxes will insert the name of a node or link selected from the Network Map. The format of a simple control is described in the <u>[Simple Controls]</u> topic.</p>
 
 <hr>
 
@@ -216,13 +216,14 @@ The ***Multi-Species Quality Editor*** is used to describe a multi-species water
 
 ## Map Legend
 <imgl images/LegendEditor.png>
-The Legend Editor is used to set numerical ranges to which different colors are assigned for viewing the currently selected node or link theme on the network map. It is invoked by clicking on either the ***Node Legend*** or ***Link Legend *** buttons that appear on the ***View*** tab of the Menu Bar.
+The Legend Editor is used to set numerical ranges to which different colors are assigned for viewing the currently selected node or link theme on the Network Map. It is invoked by clicking the <imgt images/pencil.png> buttons in the Themes group box on the Map Viewer panel.
 <p>
 Numerical values, in increasing order, are entered in the edit boxes to define the color ranges. Not all four boxes need to have values.<br><br>
 To change a color, click on its color band and then select a new color from the ***Color Dialog*** box that will appear.<br><br>
 Click the ***Interval Scale*** button to assign ranges based on dividing the range of the current theme at the current time period into equal intervals.<br><br>
 Click the ***Color Palette*** button to select from a list of built-in color schemes.<br><br>
-Click the ***Reverse Colors*** button to reverse the ordering of the current set of colors (the color in the lowest range becomes that of the highest range and so on).
+Click the ***Reverse Colors*** button to reverse the ordering of the current set of colors (the color in the lowest range becomes that of the highest range and so on).<br><br>
+Select the ***Framed*** check box to draw a frame around the legend.
 </p>
 
 

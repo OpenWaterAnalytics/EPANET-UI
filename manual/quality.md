@@ -19,7 +19,10 @@ Follow these steps to build a single-species water quality model with EPANET-UI:
 4. If modeling a reactive species, specify bulk and pipe wall reaction coeffciients for each pipe. The ***Group Edit*** button on the ***Edit*** Menu Bar makes it easy to set global values all at once.
 5. Assign initial water quality concentrations to each node. The ***Group Edit*** feature will also prove useful for this.
 
-Any water entering the network from a Reservoir node will have the node's assigned initial concentration for all time periods unless the node was also assigned a water quality source (see <u>[Water Quality Sources]</u>).  
+Any water entering the network from a Reservoir node will have the node's assigned initial concentration for all time periods unless the node was also assigned a water quality source (see <u>[Water Quality Sources]</u>).
+
+NOTE:
+It is recommended that when modeling water age, storage tanks be assigned a reasonable initial age, such as the reciprocal of the fraction of its daily volume exchange (e.g., 5 days or 120 hours for a tank that exchanges 20% of its volume per day).
 
 ## Multi-Species Analysis
 An extension to the original EPANET solver allows it to analyze multiple interacting chemcial and biological species within the distribution system. Examples include:

@@ -1,10 +1,10 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.0
+ Version:      1.0.3
  Module:       shploader
  Description:  loads the contents of a shapefile into a project
  License:      see LICENSE
- Last Updated: 03/07/2026
+ Last Updated: 06/19/2026
 =====================================================================}
 
 unit shploader;
@@ -250,13 +250,13 @@ begin
     if epanet2.ENaddnode(PAnsiChar(ID), NodeType, NodeIndex) = 0 then
     begin
       epanet2.ENsetnodevalue(NodeIndex, EN_ELEVATION,
-        StrToFloatDef(project.DefProps[1], 0));
+        StrToFloatDef(project.DefProps[ptNodeElev], 0));
       if NodeType = ntTank then
       begin
         epanet2.ENsetnodevalue(NodeIndex, EN_MAXLEVEL,
-          StrToFloatDef(project.DefProps[2], 0.0));
+          StrToFloatDef(project.DefProps[ptTankHt], 0.0));
         epanet2.ENsetnodevalue(NodeIndex, EN_TANKDIAM,
-          StrToFloatDef(project.DefProps[3], 0.0));
+          StrToFloatDef(project.DefProps[ptTankDiam], 0.0));
       end;
     end;
   end;
@@ -686,9 +686,9 @@ begin
     if epanet2.ENaddlink(Pchar(LinkID), LinkType, PChar(StartNode),
       PChar(EndNode), LinkIndex) > 0 then exit;
     ENsetpipedata(LinkIndex,
-      StrToFloatDef(project.DefProps[4], 0.0),
-      StrToFloatDef(project.DefProps[5], 0.0),
-      StrToFloatDef(project.DefProps[6], 0.0), 0.0);
+      StrToFloatDef(project.DefProps[ptPipeLen], 0.0),
+      StrToFloatDef(project.DefProps[ptPipeDiam], 0.0),
+      StrToFloatDef(project.DefProps[ptPipeRough], 0.0), 0.0);
   end;
 
   // Assign properties and vertices to the link
@@ -841,7 +841,7 @@ begin
     LoadLinks;
 
     // Display the network map
-    MainForm.MapFrame.SetExtent(MapCoords.GetBounds(MainForm.MapFrame.GetExtent));
+    MainForm.MapFrame.SetExtent(MainForm.MapFrame.Map.GetBounds);
     MainForm.MapFrame.DrawFullextent;
 
     // Update project's status

@@ -18,9 +18,9 @@ object AboutForm: TAboutForm
     Height = 270
     Top = 26
     Width = 424
-    ActivePage = TabSheet1
+    ActivePage = TabSheet3
     Style = tsFlatButtons
-    TabIndex = 0
+    TabIndex = 2
     TabOrder = 0
     OnChange = PageControl1Change
     object TabSheet1: TTabSheet
@@ -35,8 +35,8 @@ object AboutForm: TAboutForm
         Align = alClient
         BevelOuter = bvNone
         BorderStyle = bsSingle
-        ClientHeight = 235
-        ClientWidth = 412
+        ClientHeight = 239
+        ClientWidth = 416
         Color = clWindow
         ParentBackground = False
         ParentColor = False
@@ -240,7 +240,7 @@ object AboutForm: TAboutForm
       Caption = 'Terms of Use'
       ClientHeight = 239
       ClientWidth = 416
-      object HtmlViewer2: THtmlViewer
+      object HtmlViewer1: THtmlViewer
         Left = 0
         Height = 239
         Top = 0
@@ -263,7 +263,7 @@ object AboutForm: TAboutForm
       Caption = 'Acknowledgements'
       ClientHeight = 239
       ClientWidth = 416
-      object HtmlViewer3: THtmlViewer
+      object HtmlViewer2: THtmlViewer
         Left = 0
         Height = 239
         Top = 0
@@ -278,7 +278,7 @@ object AboutForm: TAboutForm
         PrintMarginRight = 2
         PrintMarginTop = 2
         PrintScale = 1
-        OnHotSpotClick = HtmlViewer3HotSpotClick
+        OnHotSpotClick = HtmlViewer2HotSpotClick
         Align = alClient
         TabOrder = 0
       end

@@ -1,11 +1,11 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.0
+ Version:      1.0.3
  Module:       dxfimporter
  Description:  a wizard dialog form used to import network data
                from a DXF file
  License:      see LICENSE
- Last Updated: 03/07/2026
+ Last Updated: 06/19/2026
 =====================================================================}
 
 unit dxfimporter;
@@ -16,7 +16,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls,
-  Buttons, SpinEx, FileCtrl, CheckLst, EditBtn;
+  Buttons, SpinEx, FileCtrl, CheckLst;
 
 type
 

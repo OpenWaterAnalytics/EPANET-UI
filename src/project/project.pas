@@ -1,18 +1,19 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.0
+ Version:      1.0.3
  Module:       project
  Description:  sets, saves and retrieves project data
  License:      see LICENSE
- Last Updated: 03/07/2026
+ Last Updated: 06/19/2026
 =====================================================================}
+
+unit project;
 
 {
   Pipe network data is stored and accessed using the EPANET Toolkit
   API.
 }
 
-unit project;
 
 {$mode objfpc}{$H+}
 
@@ -24,14 +25,23 @@ uses
 {$I ..\timetype.txt}
 
 type
-  TSimStatus = (ssSuccess, ssWarning, ssError, ssWrongVersion,
-                ssFailed, ssShutdown, ssCancelled, ssNone);
+  // Status of a network simulation run
+  TSimStatus = (ssSuccess,     // run was successful
+                ssWarning,     // run was successful with warnings
+                ssError,       // run failed due to input error
+                ssWrongVersion,// run failed due to wrong engine version
+                ssFailed,      // run failed due to no results saved
+                ssShutdown,    // run failed due to engine shutdown
+                ssCancelled,   // run was cancelled by user
+                ssNone         // run not yet started
+                );
 
 const
   FlowUnitsStr: array[0..10] of string =
     (rsCFS, rsGPM, rsMGD, rsIMGD, rsAFD,
      rsLPS, rsLPM, rsMLD, rsCMH, rsCMD, rsCMS);
 
+  // Flow units conversion factors
   FlowUcf: array[0..10] of Double =
     (1.0,         // CFS
      448.831,     // GPMperCFS
@@ -45,14 +55,15 @@ const
      2446.6,      // CMDperCFS
      0.028317);   // CMSperCFS
 
-  PressUnitsStr: array[0..4] of string =
+  PressureUnitsStr: array[0..4] of string =
     (rsPsi, rsKpa, rsMeters, rsBar, rsFeet);
 
   HlossModelStr: array[0..2] of string =
-    (rsHW, rsDW, rsCM);
+    (rsHW, rsDW, rsCM); // See 'Head loss model types' below
 
   DemandModelStr: array[0..1] of string =
-    (rsDDA, rsPDA);
+    (rsDDA,       // Demand driven analysis
+     rsPDA);      // Presure driven analysis
 
   QualModelStr: array[0..3] of string =
     (rsNoQuality, rsChemical, rsWaterAge, rsSourceTrace);
@@ -62,7 +73,7 @@ const
 
   MassUnitsStr: array[0..1] of string = ('mg/L', 'ug/L');
 
-  MapUnitsStr: array[0..3] of string = (rsFeet, rsMeters, rsDegrees, rsNone);
+  MapUnitsStr: array[0..3] of string = (rsNone, rsFeet, rsMeters, rsDegrees);
 
   OptionsStr: array[0..4] of string =
     (rsHydraulics, rsDemands, rsQuality, rsTimes, rsEnergy);
@@ -85,6 +96,7 @@ const
   StatusRptStr: array[0..2] of string =
     (rsNone, rsNormal, rsFull);
 
+  // How extended period simulation results are summarized
   StatisticStr: array[0..4] of string =
     (rsNone, rsAverages, rsMinima, rsMaxima, rsRanges);
     
@@ -163,10 +175,10 @@ const
   qmMulti    = 2;
 
   //Map coordinates units
-  muFeet     = 0;
-  muMeters   = 1;
-  muDegrees  = 2;
-  muNone     = 3;
+  muNone     = 0;
+  muFeet     = 1;
+  muMeters   = 2;
+  muDegrees  = 3;
 
   //Unit system
   usUS       = 0;
@@ -199,22 +211,22 @@ var
   OutFile:    string;        // Name of binary output file
   OutFile2:   string;        // Name of second binary output file
   AuxFile:    string;        // Name of a temporary auxilary file
-  MsxInpFile: string;        // Name of MSX input file
+  MsxInpFile: string;        // Name of MSX (multi-species extension) input file
   MsxOutFile: string;        // Name of temporary MSX output file
   MsxHydFile: string;        // Name of temporary MSX hydraulics file
 
-  FlowUnits:     Integer;    // Units code of all flow rates
-  PressUnits:    Integer;    // Units code of node pressure
-  MapUnits:      Integer;    // Units code of map coordinates
+  FlowUnits:     Integer;    // Flow rate units code
+  PressureUnits: Integer;    // Node pressure units code
+  MapUnits:      Integer;    // Map coordinates units code
   MapEPSG:       Integer;    // Current map EPSG code
   StatusRptType: Integer;    // Type of status report to produce
-  ResultsStatus: Integer;    // Status of most current results
+  ResultsStatus: Integer;    // Availability of simulation results
   StartTime:     Integer;    // Simulation start time of day (sec)
 
   SimStatus:        TSimStatus;  // Status of a simulation run
   MapLabels:        TStringList; // List of map label objects
   Properties:       TStringList; // List of an object's properties
-  CopiedProperties: TStringList; // List of copied object's properties
+  CopiedProperties: TStringList; // List of an object's copied properties
 
   HasChanged:     Boolean;   // True if project data have changed
   AutoLength:     Boolean;   // True if pipe lengths found from map
@@ -259,7 +271,7 @@ procedure AdjustLinkLengths(NodeIndex: Integer);
 procedure SetPipeLength(PipeIndex: Integer);
 procedure ReverseLinkNodes(Link: Integer);
 procedure SetFlowUnits(Units: string);
-procedure SetPressUnits(Units: string);
+procedure SetPressureUnits(Units: string);
 procedure SetDemandModel(NewModel: Integer);
 
 function  GetPatternNames: string;
@@ -354,7 +366,7 @@ var
   I: Integer;
 begin
   Results.CloseOutFile;
-  DeleteFile(project.AuxFile);
+  SysUtils.DeleteFile(AuxFile);
   epanet2.ENclose;
   for I := 0 to MapLabels.Count - 1 do
     MapLabels.Objects[I].Free;
@@ -370,7 +382,6 @@ begin
   SysUtils.DeleteFile(OutFile);
   SysUtils.DeleteFile(OutFile2);
   SysUtils.DeleteFile(RptFile);
-  SysUtils.DeleteFile(AuxFile);
   SysUtils.DeleteFile(MsxOutFile);
   SysUtils.DeleteFile(MsxHydFile);
   Properties.Free;
@@ -598,9 +609,9 @@ begin
       if AutoLength then
         Length := FindLinkLength(NewIndex)
       else
-        Length := StrToFloatDef(DefProps[4], 0.0);
-      epanet2.ENsetpipedata(NewIndex, Length, StrToFloatDef(DefProps[5],
-        0.0), StrToFloatDef(DefProps[6], 0.0), 0.0);
+        Length := StrToFloatDef(DefProps[ptPipeLen], 0.0);
+      epanet2.ENsetpipedata(NewIndex, Length, StrToFloatDef(DefProps[ptPipeDiam],
+        0.0), StrToFloatDef(DefProps[ptPipeRough], 0.0), 0.0);
     end;
   end;
   Result := true;
@@ -872,18 +883,18 @@ begin
   end;
 end;
 
-procedure SetPressUnits(Units: string);
+procedure SetPressureUnits(Units: string);
 var
   I:      Integer;
 begin
-  I := AnsiIndexText(Units, PressUnitsStr);
-  if (I >= 0) and (I <> PressUnits) then
+  I := AnsiIndexText(Units, PressureUnitsStr);
+  if (I >= 0) and (I <> PressureUnits) then
   begin
     ENsetoption(EN_PRESS_UNITS, I);
-    PressUnits := I;
-    MainForm.UpdateStatusBar(sbPressUnits, PressUnitsStr[PressUnits]);
-    mapthemes.ChangeTheme(MainForm.LegendTreeView, ctNodes,
-          MainForm.MainMenuFrame.ViewNodeCombo.ItemIndex);
+    PressureUnits := I;
+    MainForm.UpdateStatusBar(sbPressureUnits, PressureUnitsStr[PressureUnits]);
+    mapthemes.ChangeTheme(ctNodes,
+          MainForm.MapViewerFrame.ViewNodeCombo.ItemIndex);
   end;
 end;
 
@@ -1001,13 +1012,13 @@ begin
     InpFile := FileName;
     epanet2.ENgetflowunits(FlowUnits);
     epanet2.ENgetoption(EN_PRESS_UNITS, X);
-    PressUnits := Round(X);
+    PressureUnits := Round(X);
 
     // Read map-related data in input file not read by ENopenX
     projectmapdata.ReadMapData(InpFile);
 
     // Find the coordinates of the rectangle that bounds all network objects
-    Extent := MapCoords.GetBounds(MainForm.MapFrame.GetExtent);
+    Extent := MainForm.MapFrame.Map.GetBounds;
     MainForm.MapFrame.SetExtent(Extent);
   end
 
@@ -1023,15 +1034,26 @@ function Save(FileName: string): Boolean;
 var
   ErrCode: Integer;
 begin
-  with MainForm.MapFrame do
-    if HasWebBasemap then UnloadWebBasemap;
+  // If web basemap in use, transform project's coords. to original EPSG
+  if MainForm.MapFrame.HasWebBasemap then
+    DoProjectionTransform('4326', IntToStr(project.MapEpsg),
+      MainForm.MapFrame.Map.Extent);
+
+  // Call EPANET Toolkit function to save project data to file
   ErrCode := epanet2.ENsaveinpfile(PAnsiChar(FileName));
   Result := (ErrCode = 0);
+
+  // Save additional map data not handled by the EPANET Toolkit
   if Result then
   begin
     projectmapdata.SaveMapData(FileName);
     HasChanged := false;
   end;
+
+  // Transform project's coords. back to EPSG 4326 if web basemap used
+  if MainForm.MapFrame.HasWebBasemap then
+    DoProjectionTransform(IntToStr(project.MapEpsg), '4326',
+      MainForm.MapFrame.Map.Extent);
 end;
 
 procedure SetTitle(Line1: string; Line2: string; Line3: string);
@@ -1080,7 +1102,7 @@ begin
   Options[htFlowUnits] := FlowUnitsStr[I];
 
   epanet2.ENgetoption(EN_PRESS_UNITS, X);
-  Options[htPressUnits] := PressUnitsStr[Round(X)];
+  Options[htPressUnits] := PressureUnitsStr[Round(X)];
 
   epanet2.ENgetoption(EN_HEADLOSSFORM, X);
   Options[htHlossModel] := HLossModelStr[Round(X)];
@@ -1108,7 +1130,7 @@ procedure SetDefHydOptions(const Options: TDefOptions);
 var
   I: Integer;
 begin
-  I := AnsiIndexText(Options[htPressUnits], PressUnitsStr);
+  I := AnsiIndexText(Options[htPressUnits], PressureUnitsStr);
   if I >= 0 then
     epanet2.ENsetoption(EN_PRESS_UNITS, I);
 
@@ -1187,7 +1209,7 @@ var
   Dx: Double;
   Dy: Double;
 begin
-  if MapUnits = muDegrees then
+  if (MapUnits = muDegrees) or (MainForm.MapFrame.HasWebBasemap) then
     Distance := utils.Haversine(X1, Y1, X2, Y2)
   else
   begin
@@ -1244,6 +1266,10 @@ begin
 end;
 
 procedure AdjustLinkLengths(NodeIndex: Integer);
+//
+//  Adjust the lengths of all pipes connected to the node with index
+//  NodeIndex after it has been moved to a new position.
+//
 var
   I:      Integer;
   Node1:  Integer = 0;

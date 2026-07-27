@@ -1,10 +1,10 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.0
+ Version:      1.0.3
  Module:       basemapmenu
  Description:  a form with a visual menu of basemap sources
  License:      see LICENSE
- Last Updated: 03/07/2026
+ Last Updated: 06/19/2026
 =====================================================================}
 
 unit basemapmenu;
@@ -22,7 +22,7 @@ type
   { TBasemapMenuForm }
 
   TBasemapMenuForm = class(TForm)
-    BitBtn1:            TBitBtn;
+    ImageFileBtn:       TBitBtn;
     BitBtn2:            TBitBtn;
     BitBtn3:            TBitBtn;
     BitBtn4:            TBitBtn;
@@ -33,15 +33,15 @@ type
     Page2:              TPage;
     Page3:              TPage;
     Page4:              TPage;
-    Timer1: TTimer;
+    Timer1:             TTimer;
     UnitsComboBox:      TComboBox;
     EpsgEdit:           TEdit;
     ImageFileBox:       TGroupBox;
     WebMapBox:          TGroupBox;
     Label1:             TLabel;
-    Label2:             TLabel;
+    InternetLabel:      TLabel;
     Label3:             TLabel;
-    SpeedButton1:       TSpeedButton;
+    HelpBtn:            TSpeedButton;
     ImageList1:         TImageList;
     ImageList2:         TImageList;
     EpsgHelpViewer:     THtmlViewer;
@@ -49,7 +49,8 @@ type
     EpsgHelpClosePanel: TPanel;
     WebMapPanel:        TPanel;
 
-    procedure BitBtn1Click(Sender: TObject);
+    procedure ImageFileBtnClick(Sender: TObject);
+    procedure EpsgEditExit(Sender: TObject);
     procedure EpsgHelpCloseLabelClick(Sender: TObject);
     procedure EpsgEditChange(Sender: TObject);
     procedure EpsgHelpViewerHotSpotClick(Sender: TObject; const SRC: ThtString;
@@ -57,16 +58,18 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormShow(Sender: TObject);
-    procedure SpeedButton1Click(Sender: TObject);
+    procedure HelpBtnClick(Sender: TObject);
     procedure Timer1Timer(Sender: TObject);
 
   private
-    procedure Setup;
+    procedure EnableUnitsComboBox;
 
   public
     MapSelection:      Integer;
-    function GetEpsg:  Integer;
-    function GetUnits: Integer;
+    HasInternet:       Boolean;
+    procedure Setup;
+    function  GetEpsg:  Integer;
+    function  GetUnits: Integer;
   end;
 
 var
@@ -96,10 +99,12 @@ begin
   MapSelection := -1;
   WebMapPanel.Enabled := False;
   Notebook1.PageIndex := 0;
+
+  // Display checking internet connection label
   if not MainForm.MapFrame.HasWebBasemap then
   begin
     Notebook1.PageIndex := 1;
-    Label2.Caption := rsCheckInternet;
+    InternetLabel.Caption := rsCheckInternet;
   end;
 
   // Set up the contents of the help viewer
@@ -107,20 +112,19 @@ begin
   EpsgHelpViewer.DefBackground := $00E0FFFF;
   EpsgHelpViewer.LoadFromString(EpsgHelp);
   EpsgHelpClosePanel.Color := $00E0FFFF;
+  HasInternet := False;
 end;
 
 procedure TBasemapMenuForm.Setup;
-var
-  HasInternet: Boolean;
 begin
   // Check for internet connection
   if not MainForm.MapFrame.HasWebBasemap then
   begin
-    HasInternet := utils.HasInternetConnection();
+    HasInternet := utils.HasInternetConnection;
     if not HasInternet then
     begin
       Notebook1.PageIndex := 1;
-      Label2.Caption := rsNoInternet;
+      InternetLabel.Caption := rsNoInternet;
       exit;
     end;
   end;
@@ -142,15 +146,18 @@ begin
     if project.MapEPSG > 0 then
        EpsgEdit.Text := IntToStr(project.MapEPSG);
     if project.MapUnits <> muNone then
-      UnitsComboBox.ItemIndex := project.MapUnits;
+      UnitsComboBox.ItemIndex := project.MapUnits
+    else
+      UnitsComboBox.ItemIndex := 0;
     if MainForm.MapFrame.HasWebBasemap = false then
     begin
       if (project.MapUnits = muDegrees) and (project.MapEPSG = 0) then
         EpsgEdit.Text := '4326';
-      EpsgEdit.Enabled := True;
-      UnitsComboBox.Enabled := True;
     end;
+    EpsgEdit.Enabled := True;
+    UnitsComboBox.Enabled := True;
   end;
+  EnableUnitsComboBox;
 end;
 
 procedure TBasemapMenuForm.FormKeyDown(Sender: TObject; var Key: Word;
@@ -166,11 +173,14 @@ begin
 end;
 
 procedure TBasemapMenuForm.FormShow(Sender: TObject);
+//
+// Create a short pause before the Setup procedure is called.
+//
 begin
   Timer1.Enabled := true;
 end;
 
-procedure TBasemapMenuForm.SpeedButton1Click(Sender: TObject);
+procedure TBasemapMenuForm.HelpBtnClick(Sender: TObject);
 begin
   with Notebook2 do
     if PageIndex = 0 then
@@ -185,7 +195,7 @@ begin
   Setup;
 end;
 
-procedure TBasemapMenuForm.BitBtn1Click(Sender: TObject);
+procedure TBasemapMenuForm.ImageFileBtnClick(Sender: TObject);
 begin
   with Sender as TBitBtn do MapSelection := Tag;
   ModalResult := mrOK;
@@ -209,11 +219,27 @@ begin
     Result := UnitsComboBox.ItemIndex;
 end;
 
+procedure TBasemapMenuForm.EpsgEditExit(Sender: TObject);
+begin
+  WebMapPanel.Enabled := Length(EpsgEdit.Text) > 0;
+  EnableUnitsComboBox;
+end;
+
 procedure TBasemapMenuForm.EpsgEditChange(Sender: TObject);
 begin
   WebMapPanel.Enabled := Length(EpsgEdit.Text) > 0;
+  EnableUnitsComboBox;
+end;
+
+procedure TbasemapMenuForm.EnableUnitsComboBox;
+begin
   if SameText(EpsgEdit.Text, '4326') then
+  begin
     UnitsComboBox.ItemIndex := muDegrees;
+    UnitsComboBox.Enabled := false;
+  end
+  else
+    UnitsComboBox.Enabled := true;
 end;
 
 procedure TBasemapMenuForm.EpsgHelpViewerHotSpotClick(Sender: TObject;

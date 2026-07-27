@@ -1,10 +1,10 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.0
+ Version:      1.0.3
  Module:       sourceeditor
  Description:  a dialog form that edits a Water Quality source
  License:      see LICENSE
- Last Updated: 03/21/2026
+ Last Updated: 06/19/2026
 =====================================================================}
 
 unit sourceeditor;
@@ -60,7 +60,7 @@ uses
 
 procedure TSourceEditorForm.FormCreate(Sender: TObject);
 begin
-  Color := config.FormColor;
+  Color := config.ThemeColor;
   Font.Size := config.FontSize;
   StrengthEdit.DecimalSeparator := DefaultFormatSettings.DecimalSeparator;
 end;

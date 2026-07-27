@@ -11,35 +11,29 @@ object FireFlowFrame: TFireFlowFrame
   DesignLeft = 846
   DesignTop = 349
   object PageControl1: TPageControl
-    Left = 0
-    Height = 371
+    Left = 16
+    Height = 355
     Top = 0
-    Width = 510
-    ActivePage = TabSheet2
+    Width = 478
+    ActivePage = TabSheet3
     Align = alClient
+    BorderSpacing.Left = 16
+    BorderSpacing.Right = 16
+    BorderSpacing.Bottom = 16
     Style = tsFlatButtons
-    TabIndex = 1
+    TabIndex = 2
     TabOrder = 0
     object TabSheet1: TTabSheet
+      AnchorSideTop.Control = TabSheet2
       Caption = 'Summary'
-      ClientHeight = 340
-      ClientWidth = 502
-      object Panel1: TPanel
-        Left = 0
-        Height = 37
-        Top = 0
-        Width = 502
-        Align = alTop
-        BevelOuter = bvNone
-        Caption = 'Fire Flow Summary'
-        TabOrder = 0
-      end
+      ClientHeight = 324
+      ClientWidth = 470
       object SummaryGrid: TStringGrid
-        Left = 103
-        Height = 200
-        Top = 48
-        Width = 300
-        Anchors = [akTop]
+        Left = 0
+        Height = 324
+        Top = 0
+        Width = 470
+        Align = alClient
         AutoAdvance = aaNone
         AutoEdit = False
         ColCount = 2
@@ -50,7 +44,8 @@ object FireFlowFrame: TFireFlowFrame
         Flat = True
         Options = [goFixedVertLine, goFixedHorzLine, goSmoothScroll]
         RowCount = 7
-        TabOrder = 1
+        ScrollBars = ssNone
+        TabOrder = 0
         TabStop = False
         UseXORFeatures = True
         OnSelectCell = SummaryGridSelectCell
@@ -62,27 +57,27 @@ object FireFlowFrame: TFireFlowFrame
     end
     object TabSheet2: TTabSheet
       Caption = 'Details'
-      ClientHeight = 340
-      ClientWidth = 502
+      ClientHeight = 324
+      ClientWidth = 470
       object Panel2: TPanel
         Left = 0
         Height = 34
-        Top = 306
-        Width = 502
+        Top = 290
+        Width = 470
         Align = alBottom
         Alignment = taLeftJustify
+        BevelOuter = bvNone
+        BorderStyle = bsSingle
         Caption = '    Click a column header to sort it'
         TabOrder = 0
       end
       object DetailsGrid: TDrawGrid
-        Left = 16
-        Height = 306
+        Left = 0
+        Height = 290
         Top = 0
         Width = 470
         Align = alClient
         AutoFillColumns = True
-        BorderSpacing.Left = 16
-        BorderSpacing.Right = 16
         ColCount = 7
         ColumnClickSorts = True
         DefaultColWidth = 112
@@ -112,27 +107,27 @@ object FireFlowFrame: TFireFlowFrame
     end
     object TabSheet3: TTabSheet
       Caption = 'Map'
-      ClientHeight = 340
-      ClientWidth = 502
+      ClientHeight = 324
+      ClientWidth = 470
       OnResize = MapSheetResize
       object Panel3: TPanel
         Left = 0
-        Height = 340
+        Height = 324
         Top = 0
-        Width = 502
+        Width = 470
         Align = alClient
         BorderStyle = bsSingle
-        ClientHeight = 336
-        ClientWidth = 498
+        ClientHeight = 320
+        ClientWidth = 466
         TabOrder = 0
         object LegendPanel: TPanel
           Left = 1
-          Height = 334
+          Height = 318
           Top = 1
           Width = 90
           Align = alLeft
           BevelOuter = bvNone
-          ClientHeight = 334
+          ClientHeight = 318
           ClientWidth = 90
           ParentBackground = False
           TabOrder = 0
@@ -235,20 +230,20 @@ object FireFlowFrame: TFireFlowFrame
         end
         object MapPanel: TPanel
           Left = 91
-          Height = 334
+          Height = 318
           Top = 1
-          Width = 406
+          Width = 374
           Align = alClient
           BevelOuter = bvNone
           BorderStyle = bsSingle
-          ClientHeight = 334
-          ClientWidth = 406
+          ClientHeight = 314
+          ClientWidth = 370
           TabOrder = 1
           object PaintBox1: TPaintBox
             Left = 0
-            Height = 330
+            Height = 314
             Top = 0
-            Width = 402
+            Width = 370
             Align = alClient
             OnMouseDown = PaintBox1MouseDown
             OnMouseMove = PaintBox1MouseMove
@@ -258,9 +253,9 @@ object FireFlowFrame: TFireFlowFrame
             OnPaint = PaintBox1Paint
           end
           object ToolBar1: TToolBar
-            Left = 362
+            Left = 343
             Height = 70
-            Top = -1
+            Top = 0
             Width = 28
             Align = alNone
             Anchors = [akTop, akRight]
@@ -307,40 +302,44 @@ object FireFlowFrame: TFireFlowFrame
     end
     object TabSheet4: TTabSheet
       Caption = 'Error Log'
-      ClientHeight = 340
-      ClientWidth = 502
-      object LogMemo: TMemo
+      ClientHeight = 324
+      ClientWidth = 470
+      object Panel1: TPanel
         Left = 0
-        Height = 340
+        Height = 324
         Top = 0
-        Width = 502
+        Width = 470
         Align = alClient
-        Font.CharSet = ANSI_CHARSET
-        Font.Name = 'Monospace'
-        Font.Pitch = fpFixed
-        Font.Quality = fqDraft
-        Lines.Strings = (
-          'LogMemo'
-        )
-        ParentFont = False
-        ScrollBars = ssAutoVertical
+        BevelOuter = bvNone
+        BorderStyle = bsSingle
+        ClientHeight = 320
+        ClientWidth = 466
         TabOrder = 0
+        object LogMemo: TMemo
+          Left = 0
+          Height = 320
+          Top = 0
+          Width = 466
+          Align = alClient
+          Font.CharSet = ANSI_CHARSET
+          Font.Name = 'Monospace'
+          Font.Pitch = fpFixed
+          Font.Quality = fqDraft
+          Lines.Strings = (
+            'LogMemo'
+          )
+          ParentFont = False
+          ScrollBars = ssAutoVertical
+          TabOrder = 0
+        end
       end
     end
   end
   object ExportMenu: TPopupMenu
     Images = mainForm.PopupImageList
     ImagesWidth = 16
-    Left = 296
-    Top = 8
-    object MnuSettings: TMenuItem
-      Caption = 'Change Settings'
-      ImageIndex = 8
-      OnClick = MnuSettingsClick
-    end
-    object Separator1: TMenuItem
-      Caption = '-'
-    end
+    Left = 40
+    Top = 296
     object MnuCopy: TMenuItem
       Caption = 'Copy to Clipboard'
       ImageIndex = 17

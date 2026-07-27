@@ -1,10 +1,10 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.2
+ Version:      1.0.3
  Module:       msxeditor
  Description:  a form used to edit EPANET-MSX input data
  License:      see LICENSE
- Last Updated: 03/20/2026
+ Last Updated: 06/19/2026
 =====================================================================}
 {
  The MsxEditorForm consists of a MenuPanel used to select a

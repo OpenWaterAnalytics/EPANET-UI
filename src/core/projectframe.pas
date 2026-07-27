@@ -1,15 +1,15 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.0
+ Version:      1.0.3
  Module:       projectframe
  Description:  displays and edits the properties of project objects
  License:      see LICENSE
- Last Updated: 03/07/2026
+ Last Updated: 06/19/2026
 =====================================================================}
 
 unit projectframe;
 
-{ The ProjectFrame, appearing in the left side panel of the MainForm,
+{ The ProjectFrame, appearing in the left side panel of the main form,
   serves as a project explorer / property editor. Its main
   components are the ProjectTreeView which lists EPANET object
   categories, and the PropEditor (a TValueListEditor) used to edit
@@ -29,7 +29,7 @@ uses
   Dialogs, Graphics, ValEdit, LCLtype, LCLIntf, Buttons,
 
   // EPANET-UI units
-  project, mapcoords;
+  project;
 
 type
 
@@ -60,6 +60,7 @@ type
     procedure EditTitleBtnClick(Sender: TObject);
     procedure ItemBtnsClick(Sender: TObject);
     procedure PropEditorEditingDone(Sender: TObject);
+    procedure PropEditorExit(Sender: TObject);
     procedure PropEditorPrepareCanvas(Sender: TObject; aCol, aRow: Integer;
               aState: TGridDrawState);
     procedure PropEditorSelectCell(Sender: TObject; aCol,
@@ -87,7 +88,6 @@ type
     procedure CopyItem;
     procedure ConvertItem(ToType: Integer);
     procedure DeleteItem;
-    procedure GroupEdit(GroupPoly: TPolygon; NumPolyPts: Integer);
     procedure Init;
     procedure InitSplit;
     procedure PasteItem;
@@ -104,8 +104,8 @@ implementation
 {$R *.lfm}
 
 uses
-  main, editor, properties, groupeditor, mapthemes, config, utils,
-  reportviewer, resourcestrings;
+  main, editor, properties, mapthemes, config, utils, reportframe,
+  resourcestrings;
 
 const
   // Maps project object categories to their index in ProjectTreeView
@@ -120,6 +120,8 @@ var
 begin
   // Set component colors
   Color := config.ThemeColor;
+  config.SetHeaderColor(TopPanel);
+  config.SetHeaderColor(ItemPanel);
   Panel2.Color := Color;
   PropEditor.FixedColor:= Color;
   PropEditor.Color := clWindow;
@@ -189,6 +191,7 @@ begin
   and (aCategory < 20) then
   begin
     // Display name of sub-category
+    ItemPanel.Visible := true;
     ItemPanel.Caption := rsAnalysisOpts + ProjectTreeView.Selected.Text;
     // Convert sub-category to an options index
     aItem := aCategory - 10;
@@ -204,14 +207,16 @@ begin
   // Time patterns or curves selected
   else if aCategory = ctPatterns then
   begin
-    ItemPanel.Caption := '';
+//    ItemPanel.Caption := '';
+    ItemPanel.Visible := false;
     SelectItem(ctPatterns, -1);
     editor.Edit(ctPatterns, -1);
     exit;
   end
   else if aCategory = ctCurves then
   begin
-    ItemPanel.Caption := '';
+//    ItemPanel.Caption := '';
+    ItemPanel.Visible := false;
     SelectItem(ctCurves, -1);
     editor.Edit(ctCurves, -1);
     exit;
@@ -227,7 +232,8 @@ begin
   // Sub-category of Control Actions selected
   else if aCategory > 20 then
   begin
-    ItemPanel.Caption := '';
+//    ItemPanel.Caption := '';
+    ItemPanel.Visible := false;
     SelectItem(ctControls, -1);
     editor.Edit(ctControls, aCategory - 21);
     exit;
@@ -277,9 +283,6 @@ begin
   else
   begin
     ProjectTreeView.Items[TreeIndex[CurrentCategory]].Enabled := true;
-    // Need to reset goAlwaysShowEditor so that GridEditor properties
-    // get displayed properly
-    //PropEditor.Options := PropEditor.Options - [goAlwaysShowEditor];
     UpdatePropEditor(aItem);
     UpdateDeleteBtn;
     MainForm.MapFrame.HiliteObject(CurrentCategory, aItem + 1);
@@ -289,14 +292,6 @@ begin
   // If a time series selector frame is visible, inform it of selected object
   with MainForm.TseriesSelectorFrame do
     if Visible then SetSelectedObjectProps;
-
-  // If a basemap alignment frame is visible, tell it which node was selected
-  with MainForm.MapAlignFrame do
-    if Visible and (CurrentCategory = ctNodes) then SetNode(aItem);
-
-  // If a fire flow selector frame is visible, tell it which node was selected
-  with MainForm.FireFlowSelectorFrame do
-    if Visible and (CurrentCategory = ctNodes) then SelectNode(aItem);
 end;
 
 procedure TProjectFrame.UpdateDeleteBtn;
@@ -376,7 +371,7 @@ begin
   UpdateDeleteBtn;
 
   // Update any report affected by this item deletion
-  ReportViewerForm.UpdateReport;
+  MainForm.ReportFrame.UpdateReport;
 end;
 
 procedure TProjectFrame.ConvertItem(ToType: Integer);
@@ -451,44 +446,6 @@ begin
     Utils.MsgDlg(rsInvalidSelect, rsNotSameType, mtInformation, [mbOK]);
 end;
 
-procedure TProjectFrame.GroupEdit(GroupPoly: TPolygon; NumPolyPts: Integer);
-//
-//  Edits or deletes a group of objects lying within a polygon region.
-//
-var
-  ProjectUpdated: Boolean = false;
-begin
-  MainForm.HintPanel.Hide;
-
-  // NumPolyPts of -1 means entire network was selected
-  if (NumPolyPts = -1) or (NumPolyPts >= 3) then
-  with TGroupEditorForm.Create(MainForm) do
-  try
-    Init(GroupPoly, NumPolyPts);
-    if MainForm.MainMenuFrame.GroupDeleteBtn.Down then
-      ProjectUpdated := DeleteObjects
-    else
-    begin
-      ShowModal;
-      if (ModalResult = mrOk) then
-        ProjectUpdated := HasChanged;
-    end;
-    if ProjectUpdated then
-    begin
-      project.HasChanged := true;
-      RefreshPropEditor;
-      project.UpdateResultsStatus;
-      MainForm.MapFrame.RedrawMap;
-    end;
-  finally
-    Free;
-  end
-  else
-    utils.MsgDlg('', rsNoSelect, mtInformation, [mbOK], MainForm);
-  MainForm.MainMenuFrame.GroupEditBtn.Down := false;
-  MainForm.MainMenuFrame.GroupDeleteBtn.Down := false;
-end;
-
 procedure TProjectFrame.ItemBtnsClick(Sender: TObject);
 //
 // OnClick handler for the < and > buttons on the Property Editor.
@@ -527,11 +484,6 @@ procedure TProjectFrame.EditTitleBtnClick(Sender: TObject);
 begin
   editor.EditTitleText;
   ShowTitle;
-end;
-
-procedure TProjectFrame.PropEditorEditingDone(Sender: TObject);
-begin
-  //showmessage('Editing done');  // for debugging
 end;
 
 procedure TProjectFrame.ShowTitle;
@@ -577,6 +529,7 @@ procedure TProjectFrame.ShowItemID(aItem: Integer);
 //  Display selected object's ID in header above the property editor.
 //
 begin
+  ItemPanel.Visible := true;
   if CurrentCategory in [ctNodes, ctLinks] then
     ItemPanel.Caption := ' ' + project.GetItemTypeStr(CurrentCategory, aItem) +
       ' ' + project.GetItemID(CurrentCategory, aItem)
@@ -602,8 +555,9 @@ procedure TProjectFrame.PropEditorPrepareCanvas(sender: TObject; aCol,
 begin
   if not (sender is TValueListEditor) then exit;
 
-  // Header row color
-  if (aRow = 0) then PropEditor.Canvas.Brush.Color := config.ThemeColor;
+  // Header row & left column color
+  if (aRow = 0) or (aCol = 0) then
+    PropEditor.Canvas.Brush.Color := config.ThemeColor;
 
   // Color used for cells that display simulation results
   if (aCol = 1) then
@@ -644,16 +598,10 @@ end;
 procedure TProjectFrame.PropEditorSelectCell(Sender: TObject; aCol,
   aRow: Integer; var CanSelect: Boolean);
 //
-//  Restrict which cells in the property editor can be edited.
+//  Restrict which cells in the property editor can be selected.
 //
 begin
-  // Can't select cells that display simulation results
-  if (editor.FirstResultRow > 0)
-  and (aRow >= editor.FirstResultRow) then
-    CanSelect := false
-
-  // Can't select cells in column 0 that display property names
-  else if aCol = 0 then
+  if aCol = 0 then
   begin
     CanSelect := false;
     PropEditor.Row := aRow;
@@ -675,6 +623,16 @@ begin
       aRow, OldValue, NewValue) then
       PropEditor.SetFocus;
   end;
+end;
+
+procedure TProjectFrame.PropEditorEditingDone(Sender: TObject);
+begin
+//  showmessage('Editing done');  // for debugging
+end;
+
+procedure TProjectFrame.PropEditorExit(Sender: TObject);
+begin
+//  showmessage('Editor exited');  // for debugging
 end;
 
 procedure TProjectFrame.ShowHelpTopic;

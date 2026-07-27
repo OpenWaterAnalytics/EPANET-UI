@@ -1,11 +1,11 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.0
+ Version:      1.0.3
  Module:       legendeditor
  Description:  a dialog form that edits the legend used to
                display a theme on the pipe network map
  License:      see LICENSE
- Last Updated: 03/21/2026
+ Last Updated: 06/19/2026
 =====================================================================}
 
 unit legendeditor;
@@ -26,6 +26,7 @@ type
     ApplyBtn: TButton;
     Cancel2Btn: TButton;
     CancelBtn: TButton;
+    FramedCheckBox: TCheckBox;
     ColorDialog1: TColorDialog;
     ColorPaletteBtn: TButton;
     Edit1: TEdit;
@@ -71,8 +72,9 @@ type
   public
     Modified: Boolean;
     procedure LoadData(aType: Integer; aCaption: string; Colors: array of TColor;
-      Intervals: TLegendIntervals);
-    procedure UnloadData(var Colors: array of TColor; var Intervals: TLegendIntervals);
+      Intervals: TLegendIntervals; IsFramed: Boolean);
+    procedure UnloadData(var Colors: array of TColor;
+      var Intervals: TLegendIntervals; var IsFramed: Boolean);
 
   end;
 
@@ -234,7 +236,7 @@ begin
 end;
 
 procedure TLegendEditorForm.LoadData(aType: Integer; aCaption: string;
-  Colors: array of TColor; Intervals: TLegendIntervals);
+  Colors: array of TColor; Intervals: TLegendIntervals; IsFramed: Boolean);
 var
   I: Integer;
 begin
@@ -249,24 +251,30 @@ begin
   for I := 1 to 4 do
     with FindComponent('Edit' + IntToStr(I)) as TEdit do
       Text := Intervals.Labels[I];
+  FramedCheckBox.Checked := IsFramed;
 end;
 
 procedure TLegendEditorForm.UnloadData(var Colors: array of TColor;
-  var Intervals: TLegendIntervals);
+  var Intervals: TLegendIntervals; var IsFramed: Boolean);
 var
   I: Integer;
   S: string;
 begin
   for I := 1 to 5 do
+  begin
     with FindComponent('Shape' + IntToStr(I)) as TShape do
       Colors[I - 1] := Brush.Color;
+  end;
   for I := 1 to 4 do
+  begin
     with FindComponent('Edit' + IntToStr(I)) as TEdit do
     begin
       S := Trim(Text);
       Intervals.Labels[I] := S;
       utils.Str2Float(S, Intervals.Values[I]);
     end;
+  end;
+  IsFramed := FramedCheckBox.Checked;
 end;
 
 procedure TLegendEditorForm.HelpBtnClick(Sender: TObject);

@@ -1,11 +1,11 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.0
+ Version:      1.0.3
  Module:       mapquery
- Description:  a frame that locates network objects that meet a
+ Description:  a frame that highlights network objects that meet a
                specific criterion.
  License:      see LICENSE
- Last Updated: 03/07/2026
+ Last Updated: 06/19/2026
 =====================================================================}
 unit mapquery;
 
@@ -22,18 +22,18 @@ type
   { TMapQueryFrame }
 
   TMapQueryFrame = class(TFrame)
-    CloseBtn:     TSpeedButton;
-    FindCbx:      TComboBox;
-    ParamCbx:     TComboBox;
-    ConditionCbx: TComboBox;
-    ValueEdit:    TEdit;
-    Label1:       TLabel;
-    Label2:       TLabel;
-    ResultPanel:  TPanel;
-    TopPanel:     TPanel;
+    CloseBtn:       TSpeedButton;
+    FindCombo:      TComboBox;
+    ParamCombo:     TComboBox;
+    ConditionCombo: TComboBox;
+    ValueEdit:      TEdit;
+    Label1:         TLabel;
+    Label2:         TLabel;
+    ResultPanel:    TPanel;
+    TopPanel:       TPanel;
 
     procedure CloseBtnClick(Sender: TObject);
-    procedure FindCbxChange(Sender: TObject);
+    procedure FindComboChange(Sender: TObject);
     procedure ValueEditChange(Sender: TObject);
     procedure ValueEditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 
@@ -49,8 +49,8 @@ type
     procedure Show;
     procedure Hide;
     procedure UpdateResults;
-    function GetFilteredNodeColor(const NodeIndex: Integer): TColor;
-    function GetFilteredLinkColor(const LinkIndex: Integer): TColor;
+    function  GetFilteredNodeColor(const NodeIndex: Integer): TColor;
+    function  GetFilteredLinkColor(const LinkIndex: Integer): TColor;
   end;
 
 implementation
@@ -64,8 +64,8 @@ uses
 
 procedure TMapQueryFrame.Init;
 begin
-  FindCbx.ItemIndex := 0;
-  ParamCbx.ItemIndex := 0;
+  FindCombo.ItemIndex := 0;
+  ParamCombo.ItemIndex := 0;
   NodeQuery := true;
   LinkQuery := false;
 end;
@@ -73,12 +73,12 @@ end;
 procedure TMapQueryFrame.Show;
 begin
   Color := config.CreamTheme;
-  TopPanel.Color := config.ThemeColor;
+  config.SetHeaderColor(TopPanel);
   ValueEdit.Text := '';
   ResultPanel.Caption := '';
   NodeQuery := false;
   LinkQuery := false;
-  FindCbxChange(self);
+  FindComboChange(self);
   Visible := true;
 end;
 
@@ -95,30 +95,30 @@ begin
   MainForm.MapFrame.RedrawMap;
 end;
 
-procedure TMapQueryFrame.FindCbxChange(Sender: TObject);
+procedure TMapQueryFrame.FindComboChange(Sender: TObject);
 var
   I, N: Integer;
   MainViewCombo: TComboBox;
 begin
-  ParamCbx.Clear;
-  if FindCbx.ItemIndex = 0 then
+  ParamCombo.Clear;
+  if FindCombo.ItemIndex = 0 then
   begin
     NodeQuery := true;
     LinkQuery := false;
-    MainViewCombo := MainForm.MainMenuFrame.ViewNodeCombo;
+    MainViewCombo := MainForm.MapViewerFrame.ViewNodeCombo;
   end
   else
   begin
     NodeQuery := false;
     LinkQuery := true;
-    MainViewCombo := MainForm.MainMenuFrame.ViewLinkCombo;
+    MainViewCombo := MainForm.MapViewerFrame.ViewLinkCombo;
   end;
   N := MainViewCombo.Items.Count;
   for I := 1 to N-1 do
-    ParamCbx.Items.Add(MainViewCombo.Items[I]);
+    ParamCombo.Items.Add(MainViewCombo.Items[I]);
   I := MainViewCombo.ItemIndex - 1;
   if I < 0 then I := 0;
-  ParamCbx.ItemIndex := I;
+  ParamCombo.ItemIndex := I;
 end;
 
 procedure TMapQueryFrame.ValueEditChange(Sender: TObject);
@@ -148,21 +148,20 @@ begin
   FilteredCount := 0;
   if NodeQuery then
   begin
-    MainForm.MainMenuFrame.ViewNodeCombo.ItemIndex := ParamCbx.ItemIndex + 1;
-    mapthemes.ChangeTheme(MainForm.LegendTreeView, ctNodes,
-      MainForm.MainMenuFrame.ViewNodeCombo.ItemIndex);
+    MainForm.MapViewerFrame.ViewNodeCombo.ItemIndex := ParamCombo.ItemIndex + 1;
+    mapthemes.ChangeTheme(ctNodes, MainForm.MapViewerFrame.ViewNodeCombo.ItemIndex);
     for I := 1 to project.GetItemCount(project.ctNodes) do
       GetFilteredNodeColor(I);
   end;
 
   if LinkQuery then
   begin
-    MainForm.MainMenuFrame.ViewLinkCombo.ItemIndex := ParamCbx.ItemIndex + 1;
-    mapthemes.ChangeTheme(MainForm.LegendTreeView, ctLinks,
-      MainForm.MainMenuFrame.ViewLinkCombo.ItemIndex);
+    MainForm.MapViewerFrame.ViewLinkCombo.ItemIndex := ParamCombo.ItemIndex + 1;
+    mapthemes.ChangeTheme(ctLinks, MainForm.MapViewerFrame.ViewLinkCombo.ItemIndex);
     for I := 1 to project.GetItemCount(project.ctLinks) do
       GetFilteredLinkColor(I);
   end;
+
   ResultPanel.Caption := IntToStr(FilteredCount) + ' ' + rsItemsFound;
   FilteredCount := 0;
   MainForm.MapFrame.RedrawMap;
@@ -176,13 +175,13 @@ var
 begin
   Result := clNone;
   if not NodeQuery then exit;
-  Theme := ParamCbx.ItemIndex + 1;
+  Theme := ParamCombo.ItemIndex + 1;
   TimePeriod := mapthemes.TimePeriod;
   Value := mapthemes.GetNodeValue(NodeIndex, Theme, TimePeriod);
   if (Value <> MISSING) and IsFiltered(Value) then
   begin
     Inc(FilteredCount);
-    Result := $00277FFF;
+    Result := clRed;  //00277FFF;
   end;
 end;
 
@@ -194,21 +193,21 @@ var
 begin
   Result := clGray;
   if not LinkQuery then exit;
-  Theme := ParamCbx.ItemIndex + 1;
+  Theme := ParamCombo.ItemIndex + 1;
   TimePeriod := mapthemes.TimePeriod;
   Value := mapthemes.GetLinkValue(LinkIndex, Theme, TimePeriod);
   if Theme = ltFlow then Value := Abs(Value);
   if (Value <> MISSING) and IsFiltered(Value) then
   begin
     Inc(FilteredCount);
-    Result := $00277FFF;
+    Result := clRed;  //00277FFF;
   end;
 end;
 
 function TMapQueryFrame.IsFiltered(const Value: Single):Boolean;
 begin
   Result := false;
-  case ConditionCbx.ItemIndex of
+  case ConditionCombo.ItemIndex of
   0: if Value < Target then Result := true;
   1: if Value = Target then Result := true;
   2: if Value > Target then Result := true;

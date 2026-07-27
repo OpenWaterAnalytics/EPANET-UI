@@ -14,9 +14,9 @@ object ProjectSetupForm: TProjectSetupForm
   OnShow = FormShow
   object Label1: TLabel
     Left = 16
-    Height = 19
+    Height = 15
     Top = 324
-    Width = 106
+    Width = 83
     Caption = 'Unit System: US'
     ParentColor = False
   end
@@ -50,9 +50,9 @@ object ProjectSetupForm: TProjectSetupForm
   end
   object CheckBox1: TCheckBox
     Left = 14
-    Height = 25
+    Height = 19
     Top = 352
-    Width = 246
+    Width = 189
     Caption = 'Save as defaults for new projects'
     TabOrder = 1
   end
@@ -64,8 +64,6 @@ object ProjectSetupForm: TProjectSetupForm
     BevelOuter = bvNone
     ClientHeight = 310
     ClientWidth = 368
-    ParentBackground = False
-    ParentColor = False
     TabOrder = 0
     TabStop = True
     object ValueListEditor1: TValueListEditor
@@ -131,8 +129,8 @@ object ProjectSetupForm: TProjectSetupForm
       ChildSizing.ShrinkVertical = crsScaleChilds
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
       ChildSizing.ControlsPerLine = 4
-      ClientHeight = 45
-      ClientWidth = 362
+      ClientHeight = 34
+      ClientWidth = 364
       Columns = 4
       ItemIndex = 0
       Items.Strings = (

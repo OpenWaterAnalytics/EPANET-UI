@@ -1,11 +1,11 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.0
+ Version:      1.0.3
  Module:       sysresults
  Description:  computes time series of system-wide variables from
                simulation results saved to file
  License:      see LICENSE
- Last Updated: 03/07/2026
+ Last Updated: 06/19/2026
 =====================================================================}
 
 unit sysresults;
@@ -53,7 +53,7 @@ begin
       else
         Result := rsMillionGallons;
     SysPressure:
-      Result := project.PressUnitsStr[project.PressUnits];
+      Result := project.PressureUnitsStr[project.PressureUnits];
   end;
 end;
 

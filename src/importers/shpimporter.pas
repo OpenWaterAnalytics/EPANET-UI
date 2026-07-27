@@ -1,11 +1,11 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.0
+ Version:      1.0.3
  Module:       shpimporter
  Description:  a wizard dialog form used to import a pipe network
                from a shapefile
  License:      see LICENSE
- Last Updated: 03/07/2026
+ Last Updated: 06/19/2026
 =====================================================================}
 
 unit shpimporter;
@@ -94,17 +94,20 @@ type
     procedure FileBtnClick(Sender: TObject);
     procedure ViewLinkAttribLabelClick(Sender: TObject);
     procedure ViewNodeAttribLabelClick(Sender: TObject);
+
   private
     NodeFile:   string;      // Name of node shape file
     LinkFile:   string;      // Name of link shape file
     HasChanged: Boolean;     // true if new data loaded
     Bitmap:     TBitMap;     // Bitmap used to preview network
+
     function  LoadDbfFields(Fname: string; aGrid: TStringGrid): Boolean;
     procedure ClearDataGrid(aGrid: TStringGrid);
     procedure SetButtonStates;
     function  ReadPrjFile: Boolean;
     function  ReadEpsg(Prj: string): string;
     function  ReadUnits(Prj: string): string;
+
   public
 
   end;
@@ -273,6 +276,10 @@ begin
 end;
 
 procedure TShpImporterForm.PrjFileLabelClick(Sender: TObject);
+//
+// Read contents of a .prj file if supplied with node or link shapefiles
+// otherwise have user select a .prj file to view from file system.
+//
 var
   S: string;
 begin

@@ -1,11 +1,11 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.0
+ Version:      1.0.3
  Module:       overviewmap.pas
  Description:  a frame with a full-scale outline of the network map
                with a rectangle drawn around the current view area.
  License:      see LICENSE
- Last Updated: 03/07/2026
+ Last Updated: 06/19/2026
 =====================================================================}
 
 unit overviewmapframe;
@@ -23,10 +23,7 @@ type
   { TOverviewMapFrame }
 
   TOverviewMapFrame = class(TFrame)
-    CloseBtn: TSpeedButton;
     PaintBox1: TPaintBox;
-    TopPanel: TPanel;
-    procedure CloseBtnClick(Sender: TObject);
     procedure PaintBox1MouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure PaintBox1MouseMove(Sender: TObject; Shift: TShiftState; X,
@@ -59,7 +56,7 @@ implementation
 {$R *.lfm}
 
 uses
-  main, mapthemes, mapcoords, utils;
+  main, mapthemes, mapcoords;
 
 procedure TOverviewMapFrame.Init;
 begin
@@ -93,7 +90,7 @@ begin
   SavedLinkTheme := mapthemes.LinkTheme;
   mapthemes.LinkTheme := 0;
   Map.Options.BackColor := MainForm.MapFrame.Map.Options.BackColor;
-  Map.Extent := mapcoords.GetBounds(MainForm.MapFrame.GetExtent);
+  Map.Extent := MainForm.MapFrame.Map.GetBounds;
   Map.ZoomLevel := 0;
   Map.Rescale;
   Map.Redraw;
@@ -135,12 +132,6 @@ begin
       DragY := Y;
     end;
   end;
-end;
-
-procedure TOverviewMapFrame.CloseBtnClick(Sender: TObject);
-begin
-  MainForm.OverviewPanel.Hide;
-  utils.FindTreeNode(MainForm.LegendTreeView, 'Overview Map').StateIndex := 0;
 end;
 
 procedure TOverviewMapFrame.PaintBox1MouseMove(Sender: TObject;

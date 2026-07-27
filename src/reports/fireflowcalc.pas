@@ -1,10 +1,10 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.0
+ Version:      1.0.3
  Module:       fireflow.pas
- Description:  calculates fire flows for the project
+ Description:  computes fire flows for designated set of project nodes
  License:      see LICENSE
- Last Updated: 03/07/2026
+ Last Updated: 06/19/2026
 =====================================================================}
 
 unit fireflowcalc;
@@ -43,7 +43,7 @@ procedure SortResults(SortIndex: Integer; SortOrder: TSortOrder);
 implementation
 
 uses
-  main, project, epanet2, reportviewer, fireflowrpt, fireflowprogress,
+  main, project, epanet2, reportframe, fireflowrpt, fireflowprogress,
   resourcestrings;
 
 // Definition of TimeType (seconds) depending on OS
@@ -75,6 +75,10 @@ var
   PatternFactor:    Single;
 
 procedure SetPatternFactor;
+//
+// Find the demand pattern factor for node FireNodeIndex for the time
+// period being analyzed.
+//
 var
   PatternIndex:  Integer = -1;
   PatternStep:   TimeType = 1;
@@ -179,6 +183,9 @@ begin
 end;
 
 procedure SearchPressureZone;
+//
+// Find which node in the Pressure Zone set has the lowest pressure.
+//
 var
   I:         Integer;
   N:         Integer;
@@ -210,6 +217,9 @@ begin
 end;
 
 function FindCriticalPressure(Q: Single): Integer;
+//
+// Find the critcial pressure under fire flow Q.
+//
 var
   Pressure: Single = 0;
 begin
@@ -332,6 +342,9 @@ begin
 end;
 
 function RunStaticAnalysis: Integer;
+//
+// Run a hydraulic analysis with no fire flow.
+//
 var
   I: Integer;
   J: Integer;
@@ -363,6 +376,9 @@ begin
 end;
 
 function GetUcfFlow: Single;
+//
+// Find project flow units per fire flow units (either GPM or LPM).
+//
 begin
   if project.GetUnitsSystem = usUS then
      Result := project.FlowUcf[project.FlowUnits] / project.FlowUcf[EN_GPM]
@@ -371,14 +387,20 @@ begin
 end;
 
 function GetUcfPressure: Single;
+//
+// Find project pressure units per fire flow pressure (either psi or kPa).
+//
 begin
-  Result := PressUcf[project.PressUnits]; // Pressure units per PSI
+  Result := PressUcf[project.PressureUnits]; // Pressure units per PSI
   if project.GetUnitsSystem = usSI then
-    Result := Result / PressUcf[EN_KPA];  // Pressure units per kPa
+    Result := Result / PressUcf[EN_KPA];     // Pressure units per kPa
 end;
 
 procedure Open(DesignQ, DesignP: Single; Duration: Integer;
   FireNodes: array of Integer; PressZoneType: Integer);
+//
+// Save the design parameters selected for the fire flow analysis.
+//
 var
   I: Integer;
   Xrpt: Single = 0;
@@ -418,12 +440,18 @@ begin
 end;
 
 procedure Close;
+//
+// Free memory used for fire flow analysis.
+//
 begin
   SetLength(StaticPressures, 0);
   SetLength(FireFlowResults, 0);
 end;
 
 procedure FindFireFlow(I: Integer);
+//
+// Perform a fire flow analysis for node I.
+//
 var
   Pstatic: Single;
   AvailableFlow: Single = 0;
@@ -447,7 +475,7 @@ begin
   ErrCode := FindCriticalPressure(DesignFlow);
   if ErrCode > 0 then
   begin
-    TFireFlowFrame(ReportViewerForm.Report).WriteToLog(
+    TFireFlowFrame(MainForm.ReportFrame.Report).WriteToLog(
       Format(rsSolverFailure, [project.GetID(ctNodes, FireNodeIndex), ErrCode]));
     exit;
   end;
@@ -467,7 +495,7 @@ begin
       CriticalPressure - DesignPressure, AvailableFlow);
     if ErrCode > 0 then
     begin
-      TFireFlowFrame(ReportViewerForm.Report).WriteToLog(
+      TFireFlowFrame(MainForm.ReportFrame.Report).WriteToLog(
         Format(rsSearchFailure, [project.GetID(ctNodes, FireNodeIndex), ErrCode]));
       exit;
     end;
@@ -484,6 +512,9 @@ begin
 end;
 
 function FindAllFireFlows: Integer;
+//
+// Perform a fire flow analysis for all designated nodes.
+//
 var
   ErrCode: Integer;
   FireFlowProgressForm: TFireFlowProgressForm;
@@ -495,7 +526,7 @@ begin
   // Run a static analysis (with no fire flow)
   ErrCode := RunStaticAnalysis;
   if ErrCode <> 0 then
-    TFireFlowFrame(ReportViewerForm.Report).WriteToLog(
+    TFireFlowFrame(MainForm.ReportFrame.Report).WriteToLog(
       Format(rsStaticFailure, [ErrCode]))
 
   else
@@ -538,7 +569,7 @@ var
 begin
   Result := 0;
   case SortIndex of
-    0:
+    0: // Sort by node ID
       begin
         K := FireFlowResults[J1].FireNode;
         S1 := project.GetID(ctNodes, K);
@@ -546,21 +577,23 @@ begin
         S2 := project.GetID(ctNodes, K);
         Result := CompareText(S1, S2);
       end;
-    1:
+
+    1: // Sort by static pressure
       Result := math.CompareValue(FireFlowResults[J1].StaticPress,
                                     FireFlowResults[J2].StaticPress);
-    2:
+    2: // Target fire flow is same for all nodes
       Result := 0;
-    3:
+
+    3: // Sort by pressure at target fire flow
       Result := math.CompareValue(FireFlowResults[J1].DesignFlowPress,
                                     FireFlowResults[J2].DesignFlowPress);
-    4:
+    4: // Sort by available fire flow
       Result := math.CompareValue(FireFlowResults[J1].AvailableFlow,
                                     FireFlowResults[J2].AvailableFlow);
-    5:
+    5: // Sort by critical pressure
       Result := math.CompareValue(FireFlowResults[J1].CriticalPress,
                                     FireFlowResults[J2].CriticalPress);
-    6:
+    6: // Sort by critical node ID
       begin
         K := FireFlowResults[J1].CriticalNode;
         S1 := project.GetID(ctNodes, K);
@@ -572,6 +605,10 @@ begin
 end;
 
 procedure SortResults(SortIndex: Integer; SortOrder: TSortOrder);
+//
+// Sort the fire flow analysis nodes by values in the SortIndex column
+// of the fire flow results table.
+//
 var
   I, J, R: integer;
 begin

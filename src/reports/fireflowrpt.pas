@@ -1,13 +1,25 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.0
+ Version:      1.0.3
  Module:       fireflowrpt
  Description:  A frame that displays results of a fire flow analysis
  License:      see LICENSE
- Last Updated: 03/07/2026
+ Last Updated: 06/19/2026
 =====================================================================}
 
 unit fireflowrpt;
+
+{
+ This frame contains a PageControl with 4 TabSheets that display
+ - a summary of the fire flow analysis
+ - a table with fire flow results for all selected nodes
+ - the network map showing the available fire flow
+ - any error messages generated during the analysis.
+
+ The selection of analysis parameters and nodes to analyze is made
+ on the main form's FireFlowSelectorFrame (see fireflowselector.pas).
+ The fire flow calculations are made in fireflowcalc.pas.
+}
 
 {$mode ObjFPC}{$H+}
 
@@ -27,12 +39,14 @@ type
   { TFireFlowFrame }
 
   TFireFlowFrame = class(TFrame)
+    LogMemo: TMemo;
     PageControl1:  TPageControl;
+    Panel1: TPanel;
+    SummaryGrid: TStringGrid;
     TabSheet1:     TTabSheet;
     TabSheet2:     TTabSheet;
     TabSheet3:     TTabSheet;
     TabSheet4:     TTabSheet;
-    SummaryGrid:   TStringGrid;
     DetailsGrid:   TDrawGrid;
     FullExtentBtn: TToolButton;
     Label1:        TLabel;
@@ -45,14 +59,10 @@ type
     PressLabel:    TLabel;
     LegendPanel:   TPanel;
     MapPanel:      TPanel;
-    LogMemo:       TMemo;
     ExportMenu:    TPopupMenu;
     MnuCopy:       TMenuItem;
     MnuSave:       TMenuItem;
-    MnuSettings:   TMenuItem;
-    Separator1:    TMenuItem;
     PaintBox1:     TPaintBox;
-    Panel1:        TPanel;
     Panel2:        TPanel;
     Panel3:        TPanel;
     Shape1:        TShape;
@@ -75,7 +85,6 @@ type
     procedure MapSheetResize(Sender: TObject);
     procedure MnuCopyClick(Sender: TObject);
     procedure MnuSaveClick(Sender: TObject);
-    procedure MnuSettingsClick(Sender: TObject);
     procedure PaintBox1MouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure PaintBox1MouseMove(Sender: TObject; Shift: TShiftState; X,
@@ -99,14 +108,13 @@ type
     PressZone:      Integer;
     HasResults:     Boolean;
     FlowUnits:      string;
-    PressUnits:     string;
+    PressureUnits:  string;
     Map:            Tmap;
     MapOffset:      TPoint;
     MapPanStart:    TPoint;
     MapPanning:     Boolean;
 
     procedure RefreshSummary;
-    procedure ShowFireFlowSelector(InitSelector: Boolean);
     function  GetGridColHeading(aCol: Integer): string;
     function  GetGridCellText(aCol: Integer; aRow: Integer): string;
     procedure SaveResults(FileName: string);
@@ -136,8 +144,7 @@ implementation
 {$R *.lfm}
 
 uses
-  main, project, config, reportviewer, fireflowcalc, mapthemes, mapcoords,
-  resourcestrings;
+  main, project, config, fireflowcalc, mapthemes, resourcestrings;
 
 const
   SummaryLabels: array[0..6] of string =
@@ -157,12 +164,12 @@ begin
   if project.GetUnitsSystem = usUS then
   begin
     FlowUnits := rsGpm;
-    PressUnits := rsPsi;
+    PressureUnits := rsPsi;
   end
   else
   begin
     FlowUnits := rsLpm;
-    PressUnits := rsKpa;
+    PressureUnits := rsKpa;
   end;
   Color := config.ThemeColor;
 
@@ -179,8 +186,11 @@ begin
   end;
   InitMap;
   PageControl1.ActivePageIndex := 0;
-  ShowFireFlowSelector(true);
+  PageControl1.Visible := false;
   MainForm.EnableMainForm(false);
+  MainForm.HideHintPanelFrames;
+  MainForm.FireFlowSelectorFrame.Init;
+  MainForm.FireFlowSelectorFrame.Show;
 end;
 
 procedure TFireFlowFrame.CloseReport;
@@ -188,7 +198,10 @@ begin
   fireflowcalc.Close;
   if Assigned(Map) then FreeAndNil(Map);
   MainForm.EnableMainForm(true);
-  MainForm.FireFlowSelectorFrame.Visible := false;                                                  
+  MainForm.GroupSelectorFrame.Close;
+  MainForm.HideHintPanelFrames;
+  MainForm.ShowPage(MainForm.MapPage);
+  MainForm.MapFrame.RedrawMap;
 end;
 
 function TFireFlowFrame.IsEmpty: Boolean;
@@ -227,8 +240,8 @@ begin
     LogMemo.SelStart := 0;
   end;
 
+  PageControl1.Visible := true;
   PageControl1.ActivePageIndex := 0;
-  ReportViewerForm.Show;
 end;
 
 procedure TFireFlowFrame.ShowPopupMenu;
@@ -237,12 +250,6 @@ var
 begin
   P := Self.ClientToScreen(Point(0, 0));
   ExportMenu.PopUp(P.x,P.y);
-end;
-
-procedure TFireFlowFrame.MnuSettingsClick(Sender: TObject);
-begin
-  ReportViewerForm.Hide;
-  ShowFireFlowSelector(false);
 end;
 
 procedure TFireFlowFrame.MnuCopyClick(Sender: TObject);
@@ -272,17 +279,6 @@ begin
     if Execute then
       SaveResults(FileName);
   end;
-end;
-
-procedure TFireFlowFrame.ShowFireFlowSelector(InitSelector: Boolean);
-begin
-  ReportViewerForm.Hide;
-  MainForm.HideHintPanelFrames;
-  MainForm.FireFlowSelectorFrame.Visible := true;
-  if InitSelector then
-    MainForm.FireFlowSelectorFrame.Init
-  else
-    MainForm.FireFlowSelectorFrame.ShowFirstPage;
 end;
 
 procedure TFireFlowFrame.SetFireFlowSelection(DesignQ: Single; DesignP: Single;
@@ -367,15 +363,15 @@ begin
     0:
       Result := LineEnding + LineEnding + rsFFnode;
     1:
-      Result := rsFFstatic + LineEnding + rsFFpress + LineEnding + PressUnits;
+      Result := rsFFstatic + LineEnding + rsFFpress + LineEnding + PressureUnits;
     2:
       Result := rsFFmax + LineEnding + rsFFflow + LineEnding + FlowUnits;
     3:
-      Result := rsFFresid + LineEnding + rsFFpress + LineEnding + PressUnits;
+      Result := rsFFresid + LineEnding + rsFFpress + LineEnding + PressureUnits;
     4:
       Result := rsFFavail + LineEnding + rsFFflow + LineEnding + FlowUnits;
     5:
-      Result := rsFFcritical + LineEnding + rsFFpress + LineEnding + PressUnits;
+      Result := rsFFcritical + LineEnding + rsFFpress + LineEnding + PressureUnits;
     6:
       Result := LineEnding + rsFFcritical + LineEnding + rsFFnode;
     else Result := '';
@@ -445,10 +441,11 @@ begin
   with SummaryGrid do
   begin
     Cells[1,0] := FloatToStrF(DesignFlow, ffFixed, 7, 0) + ' ' + FlowUnits;
-    Cells[1,1] := FloatToStrF(DesignPress, ffFixed, 7, 0) + ' ' + PressUnits;
+    Cells[1,1] := FloatToStrF(DesignPress, ffFixed, 7, 0) + ' ' + PressureUnits;
     Cells[1,2] := MainForm.FireFlowSelectorFrame.TimeOfDayCombo.Text;
     Cells[1,3] := IntToStr(DetailsGrid.RowCount - 1) + ' nodes';
-    Cells[1,4] := MainForm.FireFlowSelectorFrame.Label17.Caption;
+    with MainForm.FireFlowSelectorFrame.PressureZoneGroup do
+      Cells[1,4] := Items[ItemIndex];
     if N = 0 then
     begin
       Cells[1,5] := 'N/A';
@@ -494,7 +491,7 @@ begin
   SavedLinkTheme := mapthemes.LinkTheme;
   mapthemes.NodeTheme := 0;
   mapthemes.LinkTheme := 0;
-  Map.Extent := mapcoords.GetBounds(MainForm.MapFrame.GetExtent);
+  Map.Extent := MainForm.MapFrame.Map.GetBounds;
   Map.Rescale;
   Map.Redraw;
   DrawFireFlowNodes;
@@ -697,7 +694,8 @@ begin
     [Space, rsFFpress, rsFFflow, rsFFpress, rsFFflow, rsFFpress, rsFFCritical]);
   Slist.Add(Line);
   Line := Format('%-20s'#9'%-12s'#9'%-12s'#9'%-12s'#9'%-12s'#9'%-12s'#9'%-20s',
-    [rsFFnode, PressUnits, FlowUnits, PressUnits, FlowUnits, PressUnits, rsFFnode]);
+    [rsFFnode, PressureUnits, FlowUnits, PressureUnits, FlowUnits,
+    PressureUnits, rsFFnode]);
   Slist.Add(Line);
   for R := 1 to DetailsGrid.RowCount - 1 do
   begin

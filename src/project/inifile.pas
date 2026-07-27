@@ -1,10 +1,10 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.2
+ Version:      1.0.3
  Module:       inifile
  Description:  saves and retrieves project settings to an inifile
  License:      see LICENSE
- Last Updated: 03/07/2026
+ Last Updated: 06/19/2026
 ====================================================================}
 
 unit inifile;
@@ -93,7 +93,7 @@ begin
   end;
 
   project.SetFlowUnits(Options[htFlowUnits]);
-  project.SetPressUnits(Options[htPressUnits]);                                               
+  project.SetPressureUnits(Options[htPressUnits]);                                               
   project.SetDefHydOptions(Options);
   epanet2.ENsetoption(EN_STATUS_REPORT, EN_NORMAL_REPORT);
 end;
@@ -134,11 +134,12 @@ end;
 procedure ReadProjectDefaults(FileName: string; var WebMapSource: Integer);
 var
   I:   Integer;
+  P:   TPoint;
   Ini: TIniFile;
   S:   string;
   DS:  Char;
 begin
-  WebMapSource := -1;
+  WebMapSource := 0;
   if not FileExists(Filename) then exit;
   DS := DefaultFormatSettings.DecimalSeparator;
   Ini := TIniFile.Create(FileName);
@@ -178,7 +179,7 @@ begin
       S := ColorToString(DefaultOptions.BackColor);
       BackColor := StringToColor(Ini.ReadString('MAP', 'BACKCOLOR', S));
     end;
-    WebMapSource := Ini.ReadInteger('MAP', 'WEBMAPSOURCE', -1);
+    WebMapSource := Ini.ReadInteger('MAP', 'WEBMAPSOURCE', 0);
 
     for I := Low(mapthemes.NodeColors) to High(mapthemes.NodeColors) do
     begin
@@ -192,11 +193,26 @@ begin
       mapthemes.LinkColors[I] := StringToColor(
         Ini.ReadString('LEGENDS', 'LINK' + IntToStr(I), S));
     end;
+
+    P.X := Ini.ReadInteger('LEGENDS', 'NODE_LEFT', 0);
+    P.Y := Ini.ReadInteger('LEGENDS', 'NODE_TOP', 0);
+    MainForm.MapFrame.NodeLegend.SetLocation(P);
+    MainForm.MapViewerFrame.NodeLegendBox.Checked :=
+      Ini.ReadBool('LEGENDS', 'NODE_VISIBLE', false);
+    MainForm.MapFrame.NodeLegend.Framed :=
+      Ini.ReadBool('LEGENDS', 'NODE_FRAMED', true);
+
+    P.X := Ini.ReadInteger('LEGENDS', 'LINK_LEFT', 0);
+    P.Y := Ini.ReadInteger('LEGENDS', 'LINK_TOP', 10);
+    MainForm.MapFrame.LinkLegend.SetLocation(P);
+    MainForm.MapViewerFrame.LinkLegendBox.Checked :=
+      Ini.ReadBool('LEGENDS', 'LINK_VISIBLE', false);
+    MainForm.MapFrame.LinkLegend.Framed :=
+      Ini.ReadBool('LEGENDS', 'LINK_FRAMED', true);
+
   finally
     Ini.Free;
   end;
-  UpdateLegendMarkers(ctNodes, mapthemes.NodeColors);
-  UpdateLegendMarkers(ctLinks, mapthemes.LinkColors);
 end;
 
 procedure WriteProjectDefaults(FileName: string; WebMapSource: Integer);
@@ -246,6 +262,7 @@ end;
 procedure WriteProjectMapOptions(FileName: string; WebMapSource:Integer);
 var
   I:   Integer;
+  P:   TPoint;
   Ini: TIniFile;
 begin
   Ini := TIniFile.Create(FileName);
@@ -270,6 +287,23 @@ begin
       for I := Low(mapthemes.LinkColors) to High(mapthemes.LinkColors) do
         Ini.WriteString('LEGENDS', 'LINK' + IntToStr(I),
           ColorToString(mapthemes.LinkColors[I]));
+
+      P := MainForm.MapFrame.NodeLegend.GetLocation;
+      Ini.WriteInteger('LEGENDS', 'NODE_LEFT', P.X);
+      Ini.WriteInteger('LEGENDS', 'NODE_TOP', P.Y);
+      Ini.WriteBool('LEGENDS', 'NODE_VISIBLE',
+        MainForm.MapViewerFrame.NodeLegendBox.Checked);
+      Ini.WriteBool('LEGENDS', 'NODE_FRAMED',
+        MainForm.MapFrame.NodeLegend.Framed);
+
+      P := MainForm.MapFrame.LinkLegend.GetLocation;
+      Ini.WriteInteger('LEGENDS', 'Link_LEFT', P.X);
+      Ini.WriteInteger('LEGENDS', 'Link_TOP', P.Y);
+      Ini.WriteBool('LEGENDS', 'LINK_VISIBLE',
+        MainForm.MapViewerFrame.LinkLegendBox.Checked);
+      Ini.WriteBool('LEGENDS', 'LINK_FRAMED',
+        MainForm.MapFrame.LinkLegend.Framed);
+
     except
     end;
 

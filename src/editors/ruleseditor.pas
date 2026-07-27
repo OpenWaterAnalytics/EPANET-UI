@@ -1,10 +1,10 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.0
+ Version:      1.0.3
  Module:       ruleseditor
  Description:  a form that edits a project's rule-based controls
  License:      see LICENSE
- Last Updated: 03/07/2026
+ Last Updated: 06/19/2026
 =====================================================================}
 
 unit ruleseditor;
@@ -127,6 +127,7 @@ procedure TRulesEditorForm.FormCreate(Sender: TObject);
 begin
   Color := config.ThemeColor;
   Font.Size := config.FontSize;
+  RuleGrid.FixedColor := Color;
   RuleGrid.Font.Name := config.MonoFont;
   RuleMemo.Font.Name := config.MonoFont;
   NewRules := TStringList.Create;
@@ -147,8 +148,6 @@ procedure TRulesEditorForm.FormShow(Sender: TObject);
 var
   Location: TPoint;
 begin
-  Color := config.ThemeColor;
-  RuleGrid.FixedColor := Color;
   if not Shown then
   begin
     Location := MainForm.LeftPanel.ClientOrigin;
@@ -159,7 +158,7 @@ begin
   if RuleGrid.RowCount > 1 then
   begin
     RuleGrid.Row := 1;
-    ShowRule(0);
+    ShowRule(1);
   end;
   RuleGrid.SetFocus;
 end;
@@ -182,7 +181,7 @@ begin
   end
   else
   begin
-    ErrMsg := Format(rsRuleError, [Err, RuleGrid.Cells[1,BadRuleIndex]]);
+    ErrMsg := Format(rsRuleError, [RuleGrid.Cells[1,BadRuleIndex]]);
     utils.MsgDlg(rsInvalidData, ErrMsg, mtError, [mbOK], self);
     RestoreRules;
   end;
@@ -231,9 +230,9 @@ begin
   HasChanged := true;
   Index := RuleGrid.Row;
   RuleGrid.MoveColRow(false, Index, Index + 1);
-  NewRules.Exchange(Index - 1, Index);
-  RuleGrid.Row := Index + 1;
-  ShowRule(Index);
+  NewRules.Exchange(Index, Index + 1);
+  RuleGrid.Row := Index;
+  ShowRule(RuleGrid.Row);
   RuleGrid.SetFocus;
 end;
 
@@ -242,11 +241,11 @@ var
   Index: Integer;
 begin
   HasChanged := true;
-  Index := RuleGrid.Row - 1;
-  RuleGrid.MoveColRow(false, Index, Index + 1);
-  NewRules.Exchange(Index - 1, Index);
+  Index := RuleGrid.Row;
+  RuleGrid.MoveColRow(false, Index, Index - 1);
+  NewRules.Exchange(Index, Index - 1);
   RuleGrid.Row := Index;
-  ShowRule(Index - 1);
+  ShowRule(Index);
   RuleGrid.SetFocus;
 end;
 
@@ -269,11 +268,19 @@ begin
   Index := RuleGrid.Row;
   if Index = 0 then exit;
   RuleGrid.DeleteRow(Index);
-  NewRules.Delete(Index - 1);
-  Index := RuleGrid.Row;
-  ShowRule(Index - 1);
+  NewRules.Delete(Index);
+  if RuleGrid.RowCount > 1 then
+  begin
+    Index := RuleGrid.Row;
+    ShowRule(Index);
+    RuleGrid.SetFocus;
+  end
+  else
+  begin
+    RuleMemo.Clear;
+    ClearEditorPanel;
+  end;
   SetButtonStates;
-  RuleGrid.SetFocus;
 end;
 
 procedure TRulesEditorForm.AcceptEditsBtnClick(Sender: TObject);
@@ -286,8 +293,8 @@ begin
     utils.MsgDlg(rsMissingID, rsNoIDAssigned, mtError, [mbOK], self);
     exit;
   end;
-  ClearEditorPanel;
   if RuleChanged then ReplaceRule(Rule);
+  ClearEditorPanel;
   RuleGrid.SetFocus;
 end;
 
@@ -299,7 +306,7 @@ end;
 procedure TRulesEditorForm.CancelEditsBtnClick(Sender: TObject);
 begin
   ClearEditorPanel;
-  ShowRule(RuleGrid.Row-1);
+  ShowRule(RuleGrid.Row);
   RuleGrid.SetFocus;
 end;
 
@@ -346,20 +353,20 @@ procedure TRulesEditorForm.ReplaceRule(Rule: string);
 var
   Index: Integer;
 begin
- Index := RuleGrid.Row;
- if EditAction = Editing then
+  Index := RuleGrid.Row;
+  if EditAction = Editing then
   begin
-    NewRules[Index - 1] := Rule;
+    NewRules[Index]  := Rule;
     RuleGrid.Cells[1, Index] := GetRuleID(Rule);
-  end;
-  if EditAction = Inserting then
+  end
+  else if EditAction = Inserting then
   begin
     Index := RuleGrid.Row + 1;
-    NewRules.Insert(Index - 1, Rule);
+    NewRules.Insert(Index, Rule);
     RuleGrid.InsertRowWithValues(Index, ['1', GetRuleID(Rule)]);
     RuleGrid.Row := Index;
   end;
-  ShowRule(Index - 1);
+  ShowRule(Index);
   HasChanged := true;
   SetButtonStates;
 end;
@@ -386,29 +393,40 @@ begin
   and (aRow >= 1) then
   begin
     OldRow := aRow;
-    ShowRule(aRow - 1);
+    ShowRule(aRow);
   end;
 end;
 
 procedure TRulesEditorForm.GetObjectInfo(ObjIndex: Integer; ObjCode: Integer;
       var ObjType: Integer; var ObjID: string);
 begin
+  // Rule object is a node
   ObjID := '';
   if ObjCode = EN_R_NODE then
   begin
     epanet2.ENgetnodetype(ObjIndex, ObjType);
     ObjID := project.GetID(ctNodes, ObjIndex);
   end
+
+  // Rule object is a link
   else if ObjCode = EN_R_LINK then
   begin
     epanet2.ENgetlinktype(ObjIndex, ObjType);
+
+    // Treat CV pipe as a regular pipe
     if ObjType < EN_PIPE then
       ObjType := EN_PIPE
+
+    // This is for valves
     else if ObjType > EN_PUMP then
       ObjType := EN_PUMP + 1;
+
+    // Convert ObjType to index in ObjWord
     ObjType := EN_TANK + ObjType;
     ObjID := project.GetID(ctLinks, ObjIndex);
   end
+
+  // Rule object is system
   else
     ObjType := 8;
 end;
@@ -421,21 +439,36 @@ var
   Rule: string;
   EnabledCode: Integer = 1;
 begin
+  // Add an initial item to rule stringlists
+  // (so that their indexes stay in synch with the RuleGrid rows)
+  NewRules.Add('New Rules');
+  OldRules.Add('Old Rules');
+  OldRulesEnabled.Add('Enabled');
+
+  // Size RuleGrid to project's number of current rules
+  // (plus 1 for the fixed header row)
   nRules := 0;
   epanet2.ENgetcount(EN_RULECOUNT, nRules);
   RuleGrid.RowCount := nRules + 1;
+
+  // Retrieve each current rule from the project
   for R := 1 to nRules do
   begin
+    // Add rule's ID and enabled flag to row R of the RuleGrid
     epanet2.ENgetruleID(R, ID);
     RuleGrid.Cells[1,R] := ID;
     epanet2.ENgetruleenabled(R, EnabledCode);
     RuleGrid.Cells[0,R] := IntToStr(EnabledCode);
+
+    // Add the rule's text to the rule stringlists
     Rule := GetRuleAsString(R);
     NewRules.Add(Rule);
     OldRules.Add(Rule);
     OldRulesEnabled.Add(RuleGrid.Cells[0,R]);
   end;
-  if nRules > 0 then ShowRule(0);
+
+  // Show the first rule in the EditorPanel's RuleMemo
+  if nRules > 0 then ShowRule(1);
   SetButtonStates;
   HasChanged := false;
 end;
@@ -445,7 +478,7 @@ var
   Rule: string;
 begin
   RuleMemo.Clear;
-  if I < 0 then exit;
+  if I <= 0 then exit;
   Rule := NewRules[I];
   RuleMemo.Text := Rule;
   SetButtonStates;
@@ -486,18 +519,21 @@ begin
 end;
 
 procedure TRulesEditorForm.GetPremises(R: Integer; N: Integer; var Rule: string);
+//
+// Add the text of the R-th rule's N premises onto the string Rule.
+//
 var
   line: string;
   p: Integer;
-  logop: Integer = 0;
-  objCode: Integer = 0;
-  objType: Integer = 0;
-  objIndex: Integer = 0;
-  objID: string;
-  varCode: Integer = 0;
-  relop: Integer = 0;
-  status: Integer = 0;
-  setting: Single = 0;
+  logop: Integer = 0;    // logical operand
+  objCode: Integer = 0;  // object (node, link, system) code
+  objType: Integer = 0;  // object type (junction, tank, pipe, pump, valve)
+  objIndex: Integer = 0; // index in object array
+  objID: string;         // object ID
+  varCode: Integer = 0;  // object variable
+  relop: Integer = 0;    // relational operand
+  status: Integer = 0;   // link status
+  setting: Single = 0;   // link setting
 begin
   objID := '';
   for p := 1 to N do
@@ -512,7 +548,12 @@ begin
     if setting <= EN_MISSING then
       line := line + StatusWord[status]
     else
-      line := line + Format('%0.4f', [setting]);
+    begin
+      if varCode =  EN_R_CLOCKTIME then
+        line := line + utils.TimeOfDayStr(Round(setting))
+      else
+        line := line + Format('%0.4f', [setting]);
+    end;
     Rule := Rule + sLineBreak + line;
   end;
 end;
@@ -579,17 +620,15 @@ end;
 function TRulesEditorForm.ReplaceRules(var BadRuleIndex: Integer): Integer;
 var
   I: Integer;
-  N: Integer;
   Rule: string;
 begin
   Result := 0;
   DeleteRules;
   Rule := '';
   BadRuleIndex := 0;
-  N := NewRules.Count;
-  for I := 1 to N do
+  for I := 1 to RuleGrid.RowCount - 1 do
   begin
-    Rule := NewRules[I-1];
+    Rule := NewRules[I];
     Result := epanet2.ENaddrule(PAnsiChar(Rule));
     if Result > 0 then
     begin
@@ -609,7 +648,7 @@ var
 begin
   DeleteRules;
   N := OldRules.Count;
-  for I := 0 to N-1 do
+  for I := 1 to N-1 do
   begin
     Rule := OldRules[I];
     epanet2.ENaddrule(PAnsiChar(Rule));

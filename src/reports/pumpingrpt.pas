@@ -1,10 +1,10 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.0
+ Version:      1.0.3
  Module:       pumpingrpt
- Description:  a frame that displays a pumping report
+ Description:  a frame to display a simulation's pumping report
  License:      see LICENSE
- Last Updated: 03/07/2026
+ Last Updated: 06/19/2026
 =====================================================================}
 
 unit pumpingrpt;
@@ -27,7 +27,6 @@ type
     MnuSave:     TMenuItem;
     Label1:      TLabel;
     Panel1:      TPanel;
-    Panel2:      TPanel;
     StringGrid1: TStringGrid;
 
     procedure MnuCopyClick(Sender: TObject);
@@ -159,7 +158,7 @@ procedure TPumpingRptFrame.RefreshReport;
 var
   KwHrsPerFlow: string;
 begin
-  StringGrid1.FixedColor := config.ThemeColor;
+////  StringGrid1.FixedColor := config.ThemeColor;
   if project.GetUnitsSystem = 0 then
     KwHrsPerFlow := rsKwHrsPerMgal
   else
@@ -223,6 +222,7 @@ begin
   begin
     S := project.GetTitle(0);
     Slist.Add(S);
+    Slist.Add('');
     S := rsPumpingReport;
     Slist.Add(S);
     Slist.Add('');
@@ -230,7 +230,7 @@ begin
     begin
       S := Format('%-20s', [Cells[0, I]]);
       for J := 1 to ColCount - 1 do
-        S := S + Format('%20s', [Cells[J, I]]);
+        S := S + #9 + Format('%-12s', [Cells[J, I]]);
       Slist.Add(S);
     end;
   end;

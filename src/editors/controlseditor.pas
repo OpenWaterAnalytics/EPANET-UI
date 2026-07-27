@@ -1,11 +1,14 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.0
+ Version:      1.0.3
  Module:       controlseditor
  Description:  a form that edits a project's set of simple controls
  License:      see LICENSE
- Last Updated: 03/07/2026
+ Last Updated: 06/19/2026
 =====================================================================}
+
+unit controlseditor;
+
 {
  This unit edits a project's set of Simple Control statements (not to
  be confused with Lazarus components/controls). They have the format:
@@ -37,8 +40,6 @@ _____________________________________________
   EditorPage2    - contains an EditPanel with components for editing a control
   BottomBtnPanel - contains OK and Cancel buttons
 }
-
-unit controlseditor;
 
 {$mode objfpc}{$H+}
 
@@ -146,6 +147,7 @@ procedure TControlsEditorForm.FormCreate(Sender: TObject);
 begin
   Color := Config.ThemeColor;
   Font.Size := Config.FontSize;
+  ControlsGrid.FixedColor := Color;
   ControlsGrid.Font.Name := config.MonoFont;
   ControlsGrid.RowCount := 1;
   EditorNotebook.PageIndex := 0;
@@ -156,8 +158,6 @@ procedure TControlsEditorForm.FormShow(Sender: TObject);
 var
   Location: TPoint;
 begin
-  Color := config.ThemeColor;
-  ControlsGrid.FixedColor := Color;
   if not Shown then
   begin
     Location := MainForm.LeftPanel.ClientOrigin;
@@ -174,7 +174,7 @@ end;
 
 procedure TControlsEditorForm.OkBtnClick(Sender: TObject);
 //
-//  Updates the project's set of Simple Control statements when the
+//  Update the project's set of Simple Control statements when the
 //  form's OkBtn is clicked.
 //
 var
@@ -220,7 +220,7 @@ end;
 
 procedure TControlsEditorForm.CancelBtnClick(Sender: TObject);
 //
-//  Hides this form with no changes made when the CancelBtn is clicked.
+//  Hide this form with no changes made when the CancelBtn is clicked.
 //
 begin
   EditorNotebook.PageIndex := 0;
@@ -232,7 +232,7 @@ end;
 
 procedure TControlsEditorForm.LinkBtnClick(Sender: TObject);
 //
-//  Places the ID name of the currently selected network link
+//  Place the ID name of the currently selected network link
 //  into the LinkEdit component when the LinkBtn is clicked.
 //
 var
@@ -251,7 +251,7 @@ end;
 
 procedure TControlsEditorForm.NodeBtnClick(Sender: TObject);
 //
-//  Places the ID name of the currently selected network node
+//  Place the ID name of the currently selected network node
 //  into the NodeEdit component when the NodeBtn is clicked.
 //
 var
@@ -270,7 +270,7 @@ end;
 
 procedure TControlsEditorForm.AcceptEditBtnClick(Sender: TObject);
 //
-//  Replaces (or inserts) a control into the form's ControlsGrid
+//  Replace (or insert) a control into the form's ControlsGrid
 //  after the user finishes editing it.
 //
 var
@@ -382,7 +382,7 @@ end;
 
 procedure TControlsEditorForm.IfBtnChange(Sender: TObject);
 //
-//  Changes the type of control being edited between a Level-Based
+//  Change the type of control being edited between a Level-Based
 //  and Time-Based control.
 //
 begin
@@ -411,7 +411,7 @@ end;
 
 procedure TControlsEditorForm.SetButtonStates;
 //
-//  Changes the state of the buttons on the BtnPanel when the contents
+//  Change the state of the buttons on the BtnPanel when the contents
 //  of the ControlsGrid changes.
 //
 var
@@ -452,7 +452,7 @@ end;
 
 procedure TControlsEditorForm.LoadControls;
 //
-//  Loads the project's set of Simple Controls into the ControlsGrid
+//  Load the project's set of Simple Controls into the ControlsGrid
 //  when called by EditSimpleControls in the editor.pas unit.
 //
 var
@@ -485,7 +485,7 @@ end;
 
 function TControlsEditorForm.ControlToStr(const I: Integer): string;
 //
-//  Converts the contents of the project's I-th Simple Control into
+//  Convert the contents of the project's I-th Simple Control into
 //  a string.
 //
 var
@@ -557,7 +557,7 @@ function TControlsEditorForm.StrToControl(const sControl: string;
   var aType: Integer; var aLink: Integer; var aNode: Integer;
   var aSetting: Single; var aLevel: Single): Boolean;
 //
-//  Parses the string representation of a control listed in the ControlsGrid
+//  Parse the string representation of a control listed in the ControlsGrid
 //  into its set of properties prior to adding it the project.
 //
 var
@@ -611,8 +611,8 @@ end;
 
 procedure TControlsEditorForm.SetControlProperties(const aControl: string);
 //
-//  Takes the string representation of a control listed in the ControlsGrid
-//  and loads it set of properties into the components in the EditPanel.
+//  Take the string representation of a control listed in the ControlsGrid
+//  and load its properties into the components in the EditPanel.
 //
 var
   aList: TStringList;
@@ -658,7 +658,7 @@ end;
 
 function TControlsEditorForm.PropertiesToStr: string;
 //
-//  Converts the set of properties of a control being edited in
+//  Convert the properties of a control being edited in
 //  the EditPanel into its string representation.
 //
 begin

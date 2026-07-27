@@ -10,13 +10,30 @@ object LabelEditorForm: TLabelEditorForm
   LCLVersion = '4.4.0.0'
   OnClose = FormClose
   OnCreate = FormCreate
-  object Edit1: TEdit
+  object Panel1: TPanel
     Left = 0
     Height = 28
     Top = 0
     Width = 120
     Align = alClient
+    BevelOuter = bvNone
+    BorderStyle = bsSingle
+    ClientHeight = 24
+    ClientWidth = 116
     TabOrder = 0
-    OnKeyPress = Edit1KeyPress
+    object Edit1: TEdit
+      Left = 0
+      Height = 24
+      Top = 0
+      Width = 116
+      Align = alClient
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -13
+      Font.Pitch = fpVariable
+      Font.Quality = fqDraft
+      ParentFont = False
+      TabOrder = 0
+      OnKeyPress = Edit1KeyPress
+    end
   end
 end

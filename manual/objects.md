@@ -24,7 +24,7 @@ For map labels:
 ## Selecting an Object
 - Left-click the mouse over the object on the Network Map to select it and have its properties appear in the ***Property Editor***.
 - Once a node, link or label is selected you can use the arrow buttons at the top of the ***Property Editor*** to select the previous or next node, link, or label.
-- You can also select ***Project > Locate*** from the Menu Bar to make an ***Object Locator*** panel appear above the Map Legend from which you can enter the ID name of a node or link to be selected.
+- You can also select ***Project > Locate*** from the Menu Bar to make an ***Object Locator*** panel appear above the Map Viewer from which you can enter the ID name of a node or link to be selected.
 
 ## Moving an Object
 Select the node or map label to be moved. Then with the <kbd>Ctrl</kbd> key and left mouse button pressed move the mouse to object's new position. You can also use the <kbd>Ctrl</kbd> plus arrow keys to move the object with more precision.
@@ -39,13 +39,19 @@ To edit the properties of an object:
 - Editor fields that contain a <imgt images/Ellipsis.png> button will launch a special customized editor form when clicked on or when <kbd>Enter</kbd> is pressed.
 
 NOTE:
+Double clicking on a map label will allow you to edit the label's text directly on the map.
+
+NOTE:
 To edit non-visual elements, such as Analysis Options and Control Actions, you would select their category from the ***Project Explorer***.
 
 ## Editing a Group of Objects
-To edit a property for a group of objects first select ***Edit > Group Edit*** from the Menu Bar. Follow the instructions that appear above the Map Legend to draw a polygon that contains the objects to be edited. A dialog form will then appear in which you can select the category of object to edit, the property to edit and the new value that all objects of that category within the polygon will be assigned.
+To edit a property for a group of objects, first select ***Edit > Group Edit*** from the Menu Bar and then choose either ***Nodes*** or ***Links*** from the dropdown menu that appears. Objects on the network map will change their color to gray indicating that they have not yet been selected for editing. A ***Group Selector*** panel will appear above the Map Viewer that instructs you to click on nodes or links to select them (to be colored red) or deselect them (to be colored gray). Objects can also be selected by the value of their Tag property or by using the mouse to draw a polygon region on the map that surrounds them. Once satisfied with your selection, click the panel's <kbd>Next</kbd> button to display a dialog from which you can choose the property to edit and the new value that all selected objects will be assigned.
+
+NOTE:
+With the exception of the Network Map, the EPANET-UI workspace remains disabled while group editing is in progress.
 
 ## Deleting a Group of Objects
-To delete a group of objects, select ***Edit > Group Delete*** from the Menu Bar and follow the instructions that appear above the Map Legend to draw a polygon that contains the objects to be deleted.
+To delete a group of objects, select ***Edit > Group Delete*** from the Menu Bar and follow the instructions that appear above the Map Viewer to draw a polygon that contains the objects to be deleted.
 
 ## Copying and Pasting Objects
 The properties of an object can be copied and pasted into another object of the same type. To do so:
@@ -58,7 +64,7 @@ The properties of an object can be copied and pasted into another object of the 
 To reverse the direction of a link, first select the link and then select ***Edit > Reverse Link*** from the Menu Bar. Or you can right-click on the link and select ***Reverse*** from the popup menu that appears.
 
 ## Reshaping a Link
-To reshape a link, first select the link and then select ***Edit > Reshape Link*** from the Menu Bar. A set of instructions will appear in a panel above the Map Legend telling you how to proceed. Alternatively you can right-click on the link and select ***Reshape*** from the popup menu that appears.
+To reshape a link, first select the link and then select ***Edit > Reshape Link*** from the Menu Bar. A set of instructions will appear in a panel above the Map Viewer telling you how to proceed. Alternatively you can right-click on the link and select ***Reshape*** from the popup menu that appears.
 
 NOTE:
 The EPANET-UI workspace will remain disabled and you will not be able to pan or zoom the map while a link is being reshaped.

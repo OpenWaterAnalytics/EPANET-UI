@@ -1,10 +1,11 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.0
+ Version:      1.0.3
  Module:       sysflowrpt
- Description:  a frame that displays a system flow report
+ Description:  a frame that reports system inflow, outflow and storage
+               volumes in each time period of a simulation
  License:      see LICENSE
- Last Updated: 03/07/2026
+ Last Updated: 06/19/2026
 =====================================================================}
 
 unit sysflowrpt;
@@ -24,20 +25,21 @@ type
   { TSysFlowFrame }
 
   TSysFlowFrame = class(TFrame)
-    PageControl1:           TPageControl;
-    TabSheet1:              TTabSheet;
-    TabSheet2:              TTabSheet;
+    Notebook1:              TNotebook;
+    ChartPage:              TPage;
+    DataPage:               TPage;
     Chart1:                 TChart;
+    DataGrid:               TDrawGrid;
     Chart1AreaSeries1:      TAreaSeries;
     ListChartSource1:       TListChartSource;
     ChartGUIConnectorBGRA1: TChartGUIConnectorBGRA;
     ChartStyles1:           TChartStyles;
     DateTimeIntervalChartSource1: TDateTimeIntervalChartSource;
-    Panel1:                 TPanel;
-    DataGrid:               TDrawGrid;
     ExportMenu:             TPopupMenu;
-    Separator1:             TMenuItem;
+    MnuChart:               TMenuItem;
+    MnuData:                TMenuItem;
     MnuTimeOfDay:           TMenuItem;
+    Separator1:             TMenuItem;
     MnuCopy:                TMenuItem;
     MnuSave:                TMenuItem;
 
@@ -45,7 +47,9 @@ type
       aRect: TRect; aState: TGridDrawState);
     procedure DataGridPrepareCanvas(Sender: TObject; aCol, aRow: Integer;
       aState: TGridDrawState);
+    procedure MnuChartClick(Sender: TObject);
     procedure MnuCopyClick(Sender: TObject);
+    procedure MnuDataClick(Sender: TObject);
     procedure MnuSaveClick(Sender: TObject);
     procedure MnuTimeOfDayClick(Sender: TObject);
 
@@ -150,14 +154,13 @@ begin
   if results.Nperiods = 1 then with ListChartSource1 do
       AddXYList(1, [Stored*Vcf, Produced*Vcf, Consumed*Vcf]);
   RefreshGrid;
-  PageControl1.ActivePage := TabSheet1;
+  Notebook1.PageIndex := 0;
 end;
 
 procedure TSysFlowFrame.RefreshGrid;
 begin
   with DataGrid do
   begin
-    FixedColor := config.ThemeColor;
     Clear;
     RowCount := ListChartSource1.Count + 1;
     RowHeights[0] := (2 * DefaultRowHeight) + (DefaultRowHeight div 2);
@@ -183,7 +186,7 @@ procedure TSysFlowFrame.MnuCopyClick(Sender: TObject);
 var
   Slist: TStringList;
 begin
-  if PageControl1.ActivePage = TabSheet1 then
+  if Notebook1.ActivePage = 'ChartPage' then
     Chart1.CopyToClipboardBitmap
   else
   begin
@@ -197,21 +200,25 @@ begin
   end;
 end;
 
+procedure TSysFlowFrame.MnuDataClick(Sender: TObject);
+begin
+  Notebook1.PageIndex := 1;
+end;
+
 procedure TSysFlowFrame.DataGridPrepareCanvas(Sender: TObject; aCol,
   aRow: Integer; aState: TGridDrawState);
 var
   MyTextStyle: TTextStyle;
 begin
   MyTextStyle := DataGrid.Canvas.TextStyle;
-  if (aRow = 0) then
-  begin
-    MyTextStyle.SingleLine := false;
-    if (aCol > 0) then
-      MyTextStyle.Alignment := taCenter;
-  end
-  else if aCol > 0 then
-    MyTextStyle.Alignment := taCenter;
+  if (aRow = 0) then MyTextStyle.SingleLine := false;
+  MyTextStyle.Alignment := taCenter;
   DataGrid.Canvas.TextStyle := MyTextStyle;
+end;
+
+procedure TSysFlowFrame.MnuChartClick(Sender: TObject);
+begin
+  Notebook1.PageIndex := 0;
 end;
 
 procedure TSysFlowFrame.DataGridDrawCell(Sender: TObject; aCol, aRow: Integer;
@@ -273,7 +280,7 @@ end;
 
 procedure TSysFlowFrame.MnuSaveClick(Sender: TObject);
 begin
-  if PageControl1.ActivePage = TabSheet1 then
+  if Notebook1.ActivePage = 'ChartPage' then
     SaveChart
   else
     SaveTable;
@@ -321,17 +328,24 @@ begin
   // Add a title to the contents' stringlist
   S := project.GetTitle(0);
   Slist.Add(S);
+  Slist.Add('');
   S := rsSysFlowReport;
   Slist.Add(S);
   Slist.Add('');
 
   // Add each line of header text as separate rows
-  S := rsElapsed + #9 + rsTime + #9 + rsVolume + #9 + rsVolume + #9 + rsVolume;
+
+  S := rsElapsed + '   ' + #9 + rsRptTime + '      ' +  #9 + rsVolume + '    ' +
+       #9 +  rsVolume + '    ' + #9 + rsVolume + '    ';
   Slist.Add(S);
-  S := rsTime + #9 + rsOf + #9 + rsStored + #9 + rsProduced + #9 + rsConsumed;
+
+  S := rsRptTime + '      ' + #9 + rsOf + '        ' + #9 + rsStored + '    ' +
+       #9  + rsProduced + '  ' + #9 + rsConsumed +'  ';
   Slist.Add(S);
+
   S := Chart1.LeftAxis.Title.Caption;
-  S := '(' + rsHrs + ')' + #9 + rsDay + #9 + S + #9 + S + #9 + S;
+  S := '(' + rsHrs + ')     ' + #9 +  rsDay + '       ' + #9 + S + '        ' +
+       #9 + S + '        ' + #9 + S + '        ';
   Slist.Add(S);
 
   // Add each row of the DataGrid to the stringlist
@@ -339,9 +353,9 @@ begin
   begin
     for R := 1 to RowCount-1 do
     begin
-      S := GetDataGridValue(0, R);
+      S := Format('%-10S', [GetDataGridValue(0, R)]);
       for C := 1 to ColCount-1 do
-        S := S + #9 + GetDataGridValue(C, R);
+        S := S + #9 + Format('%-10S', [GetDataGridValue(C, R)]);
       Slist.Add(S);
     end;
   end;

@@ -1,10 +1,10 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.0
+ Version:      1.0.3
  Module:       curveeditor
  Description:  a form that manages a project's set of Data Curves
  License:      see LICENSE
- Last Updated: 03/07/2026
+ Last Updated: 06/19/2026
 =====================================================================}
 
 unit curveeditor;
@@ -160,6 +160,7 @@ begin
       SelectedIndex := Row - 1;  //Adjust for <blank> row 1
     end;
   end;
+  if HasChanged then project.HasChanged := true;
   ModalResult := mrOK;
 end;
 
@@ -333,6 +334,7 @@ begin
   X := 0;
   Y := 0;
   Notebook1.PageIndex := 1;
+  ClearBtnClick(self);
 
   // Editing a new curve
   if CurveIndex < 0 then
@@ -340,7 +342,6 @@ begin
     OldId := projectbuilder.FindUnusedID(ctCurves, 0);
     IdEdit.Text := OldId;
     DescripEdit.Text := '';
-    ClearBtnClick(self);
     TypeCombo.ItemIndex := ctGeneric;
     TypeComboChange(self);
   end
@@ -425,9 +426,11 @@ begin
   begin
     Msg := project.GetIdError(ctCurves, ID);
     if Length(Msg) > 0 then
+    begin
       utils.MsgDlg(rsInvalidData, Msg, mtError, [mbOK]);
-    Result := false;
-   end;
+      Result := false;
+    end;
+  end;
 end;
 
 procedure TCurveEditorForm.ExtractCurveData(var X: array of Single;

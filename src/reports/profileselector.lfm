@@ -15,6 +15,7 @@ object ProfileSelectorFrame: TProfileSelectorFrame
     Top = 0
     Width = 237
     Align = alTop
+    BevelOuter = bvNone
     Caption = 'Profile Plot Selector'
     ClientHeight = 30
     ClientWidth = 237
@@ -22,7 +23,7 @@ object ProfileSelectorFrame: TProfileSelectorFrame
     ParentFont = False
     TabOrder = 0
     object CloseBtn: TSpeedButton
-      Left = 207
+      Left = 212
       Height = 26
       Hint = 'Close'
       Top = 0

@@ -1,14 +1,16 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.0
+ Version:      1.0.3
  Module:       webmap
  Description:  class that retrieves an image from a web map service
  License:      see LICENSE
- Last Updated: 03/07/2026
+ Last Updated: 06/19/2026
 =====================================================================}
 
-// Uses the TMapServer component in the webmapserver unit to
-// retrieve a street map image from an internet map tile service.
+{
+ Uses the TMapServer component in the webmapserver unit to
+ retrieve a street map image from an internet map tile service.
+}
 
 unit webmap;
 
@@ -71,7 +73,7 @@ type
 implementation
 
 uses
-  main;
+  main, utils, resourcestrings;
 
 constructor TWebMap.Create(aBitmap: TBitmap);
 begin
@@ -97,6 +99,7 @@ begin
     MapServer.GetMapImage(CenterLatLon.X, CenterLatLon.Y, W, H, ZoomLevel, Bitmap);
     Result := true;
   except
+    utils.MsgDlg(rsWmsFailure, rsNoMapImage, mtInformation, [mbOK], MainForm)
   end;
 end;
 

@@ -1,10 +1,10 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.0
+ Version:      1.0.3
  Module:       projectsummary
  Description:  a form that displays a summary of a project's objects
  License:      see LICENSE
- Last Updated: 03/07/2026
+ Last Updated: 06/19/2026
 =====================================================================}
 
 unit projectsummary;
@@ -56,7 +56,6 @@ var
   S: string = '';
   T: TimeType = 0;
 begin
-  Color := config.FormColor;
   Font.Size := config.FontSize;
   ShowNodeCount;
   ShowLinkCount;
@@ -118,10 +117,13 @@ var
   PipeCount:  Integer = 0;
   PumpCount:  Integer = 0;
   ValveCount: Integer = 0;
-  ValveTypeCount: array[0..6] of Integer = (0,0,0,0,0,0,0);
+
+  // See project.ValveTypeStr for the 7 different types of valves
+  ValveTypeCount: array[Low(ValveTypeStr) .. High(ValveTypeStr)] of Integer;
 begin
   epanet2.ENgetcount(EN_LINKCOUNT, Count);
   TreeView1.Items[5].Text := IntToStr(Count) + ' ' + rsLinks;
+  for I := Low(ValveTypeStr) to High(ValveTypeStr) do ValveTypeCount[I] := 0;
   for I := 1 to Count do
   begin
     J := GetLinkType(I);
@@ -145,7 +147,9 @@ begin
     Items[6].Text := IntToStr(PipeCount) + ' ' + rsPipes;
     Items[7].Text := IntToStr(PumpCount) + ' ' + rsPumps;
     Items[8].Text := IntToStr(ValveCount) + ' ' + rsValves;
-    for K := 0 to 6 do
+
+    // ValveTypeStr defined in project.pas
+    for K := Low(ValveTypeStr) to High(ValveTypeStr) do
     begin
       Items[9+K].Text := IntToStr(ValveTypeCount[K]) + ' ' +
         ValveTypeStr[K] + rsS;
@@ -158,8 +162,12 @@ var
   I:     Integer;
   K:     Integer = 0;
   Count: Integer = 0;
-  CurveTypeCount: array[0..5] of Integer = (0,0,0,0,0,0);
+
+  // See project.CurveTypeStr for the different types of curves
+  CurveTypeCount: array[Low(CurveTypeStr)..High(CurveTypeStr)] of Integer;
+
 begin
+  for I := Low(CurveTypeStr) to High(CurveTypeStr) do CurveTypeCount[I] := 0;
   epanet2.ENgetcount(EN_CURVECOUNT, Count);
   TreeView1.Items[17].Text := IntToStr(Count) + ' ' + rsDataCurves;
   for I := 1 to Count do
@@ -167,7 +175,7 @@ begin
     epanet2.ENgetcurvetype(I, K);
     Inc(CurveTypeCount[K]);
   end;
-  for K := 0 to 5 do
+  for K := Low(CurveTypeStr) to High(CurveTypeStr) do
   begin
     TreeView1.Items[18+K].Text := IntToStr(CurveTypeCount[K]) + ' ' +
       CurveTypeStr[K] + ' ' + rsCurves;

@@ -1,10 +1,10 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.0
+ Version:      1.0.3
  Module:       patterneditor
  Description:  a form that manages a project's set of Time Patterns
  License:      see LICENSE
- Last Updated: 03/07/2026
+ Last Updated: 06/19/2026
 =====================================================================}
 
 unit patterneditor;
@@ -424,8 +424,9 @@ begin
     epanet2.ENgetpatternlen(PatternIndex, Imax);
     with DataGrid do
     begin
+      Clean([gzNormal, gzFixedCells]);
       BeginUpdate;
-      if Imax > MAXPERIODS then ColCount := Imax + 1;
+      ColCount := Imax + 1;
       for I := 1 to ColCount - 1 do
         Cells[I,0] := IntToStr(I);
       for I := 1 to Imax do
@@ -469,6 +470,7 @@ var
 begin
   with DataGrid do
   begin
+    Clean([gzNormal, gzFixedCells]);
     BeginUpdate;
     ColCount := MAXPERIODS + 1;
     RowCount := 2;

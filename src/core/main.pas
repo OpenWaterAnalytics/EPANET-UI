@@ -1,15 +1,18 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.2
+ Version:      1.0.3
  Module:       main
  Description:  main form of a graphical user interface for the
                EPANET water distribution system analysis engine
  License:      see LICENSE
- Last Updated: 03/18/2026
+ Last Updated: 06/19/2026
 =====================================================================}
+
+unit main;
+
 {
- The application's main form consists of several panels as shown
- below that are populated with different Frame components:
+ EPANET-UI's main form consists of several panels, as shown below,
+ that are populated with different Frame components:
  ______________________________________________________________
  |                        MenuPanel                           |
  |____________________________________________________________|
@@ -18,7 +21,7 @@
  |_______________|         MapPanel            | ProjectPanel |
  |               |                             |              |
  |               |                             |              |
- |LegendTreeView |                             |              |
+ |  ViewPanel    |                             |              |
  |               |                             |              |
  |               |                             |              |
  |_______________|_____________________________|______________|
@@ -32,18 +35,14 @@
  MapPanel - contains a MapFrame that displays a map of the EPANET pipe
  network being analyzed and handles user interaction with it.
 
- LeftPanel - contains a HintPanel and a LegendTreeView.
-
  HintPanel - shares space with several other pop-up panels that are normally
  hidden and are used to display progam instructions or implement map operations.
 
- LegendTreeView - shows the symbology used to colorize the themes displayed on
- the network map.
+ ViewPanel - contains a MapViewerFrame used to select node & link themes
+ and time periods to view on the network map.
 
  StatusPanel - contains a StatusBarFrame that displays key project properties.
 }
-
-unit main;
 
 {$mode objfpc}{$H+}
 
@@ -52,37 +51,52 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ComCtrls, ExtCtrls,
   Menus, StdCtrls, Buttons, LCLIntf, LCLtype, ExtDlgs, fileutil,
-  ImgList, Themes, IniPropStorage, Math,
+  ImgList, Themes, IniPropStorage, LazHelpHTML, Math,
 
   // EPANET-UI units
-  mainmenu, mrumanager, projectframe, mapframe, overviewmapframe, statusframe,
-  mapgeoref, mapalign, maplocater, mapquery, mapexporter, tseriesselector,
-  profileselector, pcntileselector, fireflowselector;
+  mainmenu, filemenu, mrumanager, projectframe, mapframe, mapviewerframe,
+  overviewmapframe, statusframe, mapgeoref, mapalign, maplocater, mapquery,
+  tseriesselector, profileselector, pcntileselector, fireflowselector,
+  groupselector, groupeditor, reportframe;
 
 type
 
   // StatusBar sections
-  TStatusBarIndex = (sbAutoLength = 1, sbFlowUnits, sbPressUnits, sbHeadLoss,
+  TStatusBarIndex = (sbAutoLength = 1, sbFlowUnits, sbPressureUnits, sbHeadLoss,
                      sbDemands, sbQuality, sbResults, sbXY);
 
   { TMainForm }
 
   TMainForm = class(TForm)
+    BottomReportPanel:    TPanel;
+    BottomReportSplitter: TSplitter;
+    IniPropStorage1:      TIniPropStorage;
+    HelpViewer:           THTMLBrowserHelpViewer;
+    HelpDB:               THTMLHelpDatabase;
+
     EditingImageList:     TImageList;
     ImportImageList:      TImageList;
-    IniPropStorage1:      TIniPropStorage;
+    LeftReportPanel:      TPanel;
+    LeftReportSplitter:   TSplitter;
+    MapPage:              TPage;
+    MapPanel:             TPanel;
     MarkerImageList:      TImageList;
     MaterialImageList:    TImageList;
+    Notebook1:            TNotebook;
+    ReportPage:           TPage;
     PopupImageList:       TImageList;
     MaterialToolbarList:  TImageList;
     LegendImageList:      TImageList;
+    ReportPanel:          TPanel;
+    RightReportPanel:     TPanel;
+    RightReportSplitter:  TSplitter;
     WindowImageList:      TImageList;
 
+    TopPanel:             TPanel;
     MainPanel:            TPanel;
-    LegendTitlePanel:     TPanel;
     MenuPanel:            TPanel;
     LeftSpacerPanel:      TPanel;
-    MapPanel:             TPanel;
+    ViewPanel:            TPanel;
     OverviewPanel:        TPanel;
     StatusPanel:          TPanel;
     Leftpanel:            TPanel;
@@ -92,8 +106,7 @@ type
     HintTitleLabel:       TLabel;
     HintTextLabel:        TLabel;
 
-    LegendTreeView:       TTreeView;
-    Splitter2:            TSplitter;
+    Splitter1:            TSplitter;
 
     FontDialog1:          TFontDialog;
     OpenDialog1:          TOpenDialog;
@@ -101,21 +114,22 @@ type
     SavePictureDialog1:   TSavePictureDialog;
 
     procedure FormActivate(Sender: TObject);
+    procedure FormChangeBounds(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure FormCreate(Sender: TObject);
     procedure FormDropFiles(Sender: TObject; const FileNames: array of string);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure FormResize(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure PopupImageListGetWidthForPPI(Sender: TCustomImageList; AImageWidth,
       APPI: Integer; var AResultWidth: Integer);
-    procedure LegendTreeViewSelectionChanged(Sender: TObject);
     procedure MRUMenuMgrRecentFile(Sender: TObject; const AFileName: String);
     procedure StatusPanelPaint(Sender: TObject);
 
   private
     IsActivated: Boolean;
-    AppHelpFile: string;
+    IsResized:   Boolean;
 
     procedure CheckBounds;
     procedure CreateFrames;
@@ -126,23 +140,28 @@ type
     function  SaveFileDlg: Integer;
     procedure SetMruFiles;
     procedure ShowWelcomePage;
+    procedure SizeReportPanel;
     procedure StartNewProject;
 
   public
     MainMenuFrame:         TMainMenuFrame;
-    MapFrame :             TMapFrame;
+    FileMenuFrame:         TFileMenuFrame;
+    MapFrame:              TMapFrame;
+    MapViewerFrame:        TMapViewerFrame;
     OverviewMapFrame:      TOverviewMapFrame;
+    ReportFrame:           TReportFrame;
     GeoRefFrame:           TGeoRefFrame;
     MapAlignFrame:         TMapAlignFrame;
     LocaterFrame:          TMapLocaterFrame;
     QueryFrame:            TMapQueryFrame;
-    ExporterFrame:         TMapExporterFrame;
     ProjectFrame:          TProjectFrame;
     StatusBarFrame:        TStatusBarFrame;
     ProfileSelectorFrame:  TProfileSelectorFrame;
     TseriesSelectorFrame:  TTseriesSelectorFrame;
     PcntileSelectorFrame:  TPcntileSelectorFrame;
     FireFlowSelectorFrame: TFireFlowSelectorFrame;
+    GroupSelectorFrame:    TGroupSelectorFrame;
+    GroupEditorFrame:      TGroupEditorFrame;
     MruMenuMgr:            TMRUMenuManager;
     AppIniFile:            string;
 
@@ -159,6 +178,7 @@ type
     procedure InitFormContents(Filename: String; WebMapSource: Integer);
     procedure ProjectSetup;
     procedure ShowHintPanel(Title: String; Content: String);
+    procedure ShowPage(aPage: TPage);
     procedure UpdateStatusBar(Index: TStatusBarIndex; S: String);
     procedure UpdateXYStatus(const X: Double; const Y: Double);
     procedure ViewHelp(Topic: String);
@@ -174,7 +194,7 @@ implementation
 
 uses
   project, projectloader, projectbuilder, projectsetup, welcome,
-  config, inifile, utils, reportviewer, mapthemes, resourcestrings;
+  config, inifile, utils, mapthemes, resourcestrings;
 
 { TmainForm }
 
@@ -187,17 +207,24 @@ var
   AppIniDir: string;
 begin
   IsActivated := false;
+  IsResized := false;
   project.Open;
   MainPanel.Align := alClient;
   MapPanel.Align := alClient;
-  CreateFrames;
 
   Application.HintColor := $00E1FFFF; //00F9F4F0;
   Screen.HintFont.Color := clBlack;
   Screen.HintFont.Size := config.FontSize;
   Application.ShowButtonGlyphs := sbgNever;
 
-  AppHelpFile := ExtractFilePath(Application.ExeName) + 'manual.html';
+  // Setup Help system
+  HelpDB.BaseURL := 'file://' + ExtractFilePath(Application.ExeName);
+  HelpDB.KeywordPrefix := 'html/';
+  HelpDB.AutoRegister := true;
+  HelpViewer.AutoRegister := true;
+  HelpFile := 'manual.html';
+
+  // Set name of ini file
   AppIniFile := '';
   AppIniDir := GetAppConfigDir(false);
   if ForceDirectories(AppIniDir) then
@@ -211,7 +238,9 @@ begin
   HintTitleLabel.Font.Style := [fsBold];
   Color := config.ThemeColor;
   HintPanel.Color := $00E1FFFF;
+  config.SetHeaderColor(TopPanel);
   SetMruFiles;
+  CreateFrames;
 
   // Disable floating point exceptions
   SetExceptionMask([exInvalidOp, exDenormalized, exZeroDivide, exOverflow,
@@ -223,10 +252,6 @@ begin
   MruMenuMgr := TMRUMenuManager.Create(self);
   with MruMenuMgr do begin
     MaxRecent := 8;
-    PopupMenu := MainMenuFrame.MruMenu;
-    MaxItemLength := 80;
-    MenuCaptionMask := '%d. %s';
-    OnRecentFile := @MRUMenuMgrRecentFile;
     LoadRecentFilesFromIni(AppIniFile, 'MRU_FILES');
   end;
 end;
@@ -240,6 +265,14 @@ begin
     MainMenuFrame.Align := alClient;
     MainMenuFrame.Init;
   end;
+  if not Assigned(FileMenuFrame) then
+  begin
+    FileMenuFrame := TFileMenuFrame.Create(self);
+    FileMenuFrame.Parent := self;
+    FileMenuFrame.Top := MainMenuFrame.MenuBarPanel.Height;
+    FileMenuFrame.Left := 0;
+    FileMenuFrame.Init;
+  end;
   if not Assigned(MapFrame) then
   begin
     MapFrame := TMapFrame.Create(self);
@@ -247,12 +280,25 @@ begin
     MapFrame.Align := alClient;
     MapFrame.Init;
   end;
+  if not Assigned(MapViewerFrame) then
+  begin
+    MapViewerFrame := TMapViewerFrame.Create(self);
+    MapViewerFrame.Parent := ViewPanel;
+    MapViewerFrame.Align := alClient;
+    MapViewerFrame.Init;
+  end;
   if not Assigned(OverviewMapFrame) then
   begin
     OverviewMapFrame := TOverviewMapFrame.Create(self);
     OverviewMapFrame.Parent := OverviewPanel;
     OverviewMapFrame.Align := alClient;
-    OverviewMapFrame.Init;
+  end;
+  if not Assigned(ReportFrame) then
+  begin
+    ReportFrame := TReportFrame.Create(self);
+    ReportFrame.Parent := ReportPanel;
+    ReportFrame.Align := alClient;
+    ReportFrame.Init;
   end;
   if not Assigned(ProjectFrame) then
   begin
@@ -296,13 +342,6 @@ begin
     QueryFrame.Init;
     QueryFrame.Visible := false;
   end;
-  if not Assigned(ExporterFrame) then
-  begin
-    ExporterFrame := TMapExporterFrame.Create(self);
-    ExporterFrame.Parent := LeftPanel;
-    ExporterFrame.Align := alTop;
-    ExporterFrame.Visible := false;
-  end;
   if not Assigned(ProfileSelectorFrame) then
   begin
     ProfileSelectorFrame := TProfileSelectorFrame.Create(self);
@@ -331,27 +370,31 @@ begin
     FireFlowSelectorFrame.Align := alTop;
     FireFlowSelectorFrame.Visible := false;
   end;
+  if not Assigned(GroupSelectorFrame) then
+  begin
+    GroupSelectorFrame := TGroupSelectorFrame.Create(self);
+    GroupSelectorFrame.Parent := LeftPanel;
+    GroupSelectorFrame.Align := alTop;
+    GroupSelectorFrame.Visible := false;
+  end;
+  if not Assigned(GroupEditorFrame) then
+  begin
+    GroupEditorFrame := TGroupEditorFrame.Create(self);
+    GroupEditorFrame.Parent := LeftPanel;
+    GroupEditorFrame.Align := alTop;
+    GroupEditorFrame.Visible := false;
+  end;
 end;
 
 procedure TMainForm.FormShow(Sender: TObject);
-var
-  W, H: Integer;
 begin
   // Check that form fits within desktop area
   if self.WindowState <> wsMaximized then
     CheckBounds;
-
-  // Center ReportViewerForm in MainForm
-  W := (Self.Width - ReportViewerForm.Width) div 2;
-  if W > 0 then
-    ReportViewerForm.Left := Self.Left + W;
-  H := (Self.Height - ReportViewerForm.Height) div 2;
-  if H > 0 then
-    ReportViewerForm.Top := Self.Top + H;
-  ReportViewerForm.Color := config.ThemeColor;
-
+  SizeReportPanel;
   ProjectFrame.InitSplit;
   MapFrame.ResizeMap;
+  OverviewMapFrame.Init;
 end;
 
 procedure TMainForm.PopupImageListGetWidthForPPI(Sender: TCustomImageList;
@@ -382,15 +425,35 @@ begin
   end;
 end;
 
+procedure TMainForm.FormChangeBounds(Sender: TObject);
+//
+//  Resize the ReportPanel on Notebook1's ReportPage if form was resized.
+//
+begin
+  if IsResized then
+  begin
+    SizeReportPanel;
+    IsResized := false;
+  end;
+end;
+
 procedure TMainForm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
-  project.Close;
+  // Close any open report
+  ReportFrame.CloseReport;
+  GroupSelectorFrame.Close;
+
+  // Close map display
   MapFrame.Close;
   OverviewMapFrame.Close;
-  ReportViewerForm.Close;
+
+  // Close project
+  project.Close;
+
+  // Save program preference to ini file
   if Length(AppIniFile) > 0 then
   begin
-  MruMenuMgr.SaveRecentFilesToIni(AppIniFile, 'MRU_FILES');
+    MruMenuMgr.SaveRecentFilesToIni(AppIniFile, 'MRU_FILES');
     config.SavePreferences(AppIniFile);
   end;
   CloseAction := caFree;
@@ -421,13 +484,30 @@ begin
   else if Shift = [ssCtrl] then
     MapFrame.MoveObjectByPixel(Key)
 
+  // Delete key pressed
+  else if (Key = VK_DELETE) and MainMenuFrame.Enabled and
+  MainMenuFrame.ProjectDeleteBtn.Enabled then
+    MainMenuFrame.ProjectDeleteBtnClick(Sender)
+
   // Key applies to a map operation
   else
     MapFrame.GoKeyDown(Key, Shift);
 end;
 
+procedure TMainForm.FormResize(Sender: TObject);
+//
+//  Set form's resize indicator to true so that ReportPanel gets resized
+//  when FormChangeBounds fires and not when form just changes postion.
+//
+begin
+  if IsActivated then IsResized := true;
+end;
+
 procedure TMainForm.FormDropFiles(Sender: TObject;
   const FileNames: array of string);
+//
+// Allow drag and drop of EPANET input files.
+//
 begin
   if SaveFileDlg = mrCancel then exit;
   OpenFile(FileNames[0]);
@@ -435,6 +515,9 @@ end;
 
 procedure TMainForm.MRUMenuMgrRecentFile(Sender: TObject;
   const AFileName: String);
+//
+// Open an input file from the Most Recentlu Used list.
+//
 begin
   if SaveFileDlg = mrCancel then exit;
   if not FileExists(AFileName) then
@@ -461,11 +544,6 @@ begin
   ThemeServices.DrawElement(StatusPanel.Canvas.Handle, Details, R);
 end;
 
-procedure TMainForm.LegendTreeViewSelectionChanged(Sender: TObject);
-begin
-  MapFrame.ChangeMapLayer(LegendTreeView);
-end;
-
 procedure TMainForm.ShowHintPanel(Title: String; Content: String);
 begin
   HideHintPanelFrames;
@@ -477,8 +555,6 @@ end;
 procedure TMainForm.HideHintPanel;
 begin
   HintPanel.Hide;
-  with ReportViewerForm do
-    if Report <> nil then Show;
 end;
 
 procedure TMainForm.HideHintPanelFrames;
@@ -487,11 +563,26 @@ begin
   MapAlignFrame.Hide;
   LocaterFrame.Hide;
   QueryFrame.CloseBtnClick(Self);
-  ExporterFrame.Hide;
   TseriesSelectorFrame.Hide;
   PcntileSelectorFrame.Hide;
   FireFlowSelectorFrame.Hide;
-  ReportViewerForm.Hide;
+end;
+
+procedure TMainForm.ShowPage(aPage: TPage);
+begin
+  if aPage = MapPage then
+  begin
+    MapViewerFrame.MapRadioButton.Checked := true;
+    if ReportFrame.Report = nil then
+      MapViewerFrame.ReportRadioButton.Enabled := false;
+    Notebook1.PageIndex := 0;
+  end
+  else if aPage = ReportPage then
+  begin
+    MapViewerFrame.ReportRadioButton.Enabled := true;
+    MapViewerFrame.ReportRadioButton.Checked := true;
+    Notebook1.PageIndex := 1;
+  end;
 end;
 
 procedure TMainForm.CheckBounds;
@@ -522,17 +613,39 @@ begin
     Top := WorkArea.Top;
 end;
 
+procedure TMainForm.SizeReportPanel;
+//
+// Size report panel (inside the ReportPage of Notebook1) to 600 x 480, if
+// possible, by resizing the left, right, and bottom panels that surround it.
+//
+var
+  Vspace, Hspace, PPI: Integer;
+  H, W: Integer;
+begin
+  PPI := Screen.PixelsPerInch;
+  H := (480 * PPI) div 96;
+  W := (600 * PPI) div 96;
+  Vspace := (20 * PPI) div 96;
+  Hspace := (40 * PPI) div 96;
+  Vspace := Max(Notebook1.Height - H, Vspace);
+  Hspace := Max(Notebook1.Width - W, Hspace);
+  Hspace := Hspace div 2;
+  BottomReportPanel.Height := Vspace;
+  LeftReportPanel.Width := Hspace;
+  RightReportPanel.Width := Hspace;
+end;
+
 {------------------------------------------------------------------------------
   File Menu Procedures
 ------------------------------------------------------------------------------}
 procedure TMainForm.FileImport(FileType: String);
 begin
   if SameText(FileType, 'shp') then
-    projectBuilder.ImportShapeFile
+    projectbuilder.ImportShapeFile
   else if SameText(FileType, 'dxf') then
-    projectBuilder.ImportDxfFile
+    projectbuilder.ImportDxfFile
   else if SameText(FileType, 'csv') then
-    projectBuilder.ImportCsvFile;
+    projectbuilder.ImportCsvFile;
 end;
 
 procedure TMainForm.FileNew(ShowSetupForm: Boolean);
@@ -581,7 +694,7 @@ begin
     inifile.WriteProjectDefaults(ChangeFileExt(FileName, '.ini'),
       MapFrame.GetWebBasemapSource);
     project.InpFile := FileName;
-    Self.Caption := 'EPANET-UI: ' + ChangeFileExt(ExtractFileName(FileName), '');
+    Self.Caption := rsEpanetUI + ': ' + ChangeFileExt(ExtractFileName(FileName), '');
     MruMenuMgr.AddToRecent(FileName);
   end;
 end;
@@ -663,8 +776,8 @@ begin
   StatusBarFrame.AutoLengthCheckBox.Checked := false;
   StatusBarFrame.SetPanelText(Ord(sbFlowUnits), rsFlowUnitsType + ' ' +
     project.FlowUnitsStr[FlowUnits]);
-  StatusBarFrame.SetPanelText(Ord(sbPressUnits), rsPressUnitsType + ' ' +
-    project.PressUnitsStr[PressUnits]);                                                                                                               
+  StatusBarFrame.SetPanelText(Ord(sbPressureUnits), rsPressUnitsType + ' ' +
+    project.PressureUnitsStr[PressureUnits]);                                                                                                               
   StatusBarFrame.SetPanelText(Ord(sbHeadLoss), rsHlossType + ' ' +
     project.DefOptions[htHlossModel]);
   StatusBarFrame.SetPanelText(Ord(sbDemands), rsDemandsDDA);
@@ -683,20 +796,17 @@ begin
   case Index of
 
     sbFlowUnits:
-      // Update units shown in LegendTreeView in case unit system changes
+      // Update theme units in case unit system changes
       begin
         Txt := rsFlowUnitsType + ' ' + S;
-        mapthemes.ChangeTheme(LegendTreeView, ctNodes,
-          MainMenuFrame.ViewNodeCombo.ItemIndex);
-        mapthemes.ChangeTheme(LegendTreeView, ctLinks,
-          MainMenuFrame.ViewLinkCombo.ItemIndex);
+        mapthemes.ChangeTheme(ctNodes, MapViewerFrame.ViewNodeCombo.ItemIndex);
+        mapthemes.ChangeTheme(ctLinks, MapViewerFrame.ViewLinkCombo.ItemIndex);
       end;
 
-    sbPressUnits:
+    sbPressureUnits:
       begin
         Txt := rsPressUnitsType + ' ' + S;
-        mapthemes.ChangeTheme(LegendTreeView, ctNodes,
-          MainMenuFrame.ViewNodeCombo.ItemIndex);
+        mapthemes.ChangeTheme(ctNodes, MapViewerFrame.ViewNodeCombo.ItemIndex);
       end;
 
     sbHeadLoss:
@@ -755,27 +865,24 @@ begin
 end;
 
 procedure TMainForm.StartNewProject;
-var
-  TreeNode: TTreeNode;
 begin
-  ReportViewerForm.CloseReport;
-  ReportViewerForm.Hide;
+  ReportFrame.CloseReport;
   HideHintPanelFrames;
   project.Clear;
   MapFrame.InitMapOptions;
   MapPanel.Color:= MapFrame.Map.Options.BackColor;
   MapFrame.Clear;
-  TreeNode := utils.FindTreeNode(LegendTreeView, rsBasemap);
-  if TreeNode <> nil then
-    TreeNode.Visible := false;
   OverviewPanel.Visible := false;
   project.Init;
   ProjectFrame.Init;
+  MapViewerFrame.Init;
   InitStatusBar;
   inifile.ReadAppDefaults(AppIniFile);
   project.HasChanged := false;
-  Caption := 'EPANET-UI';
+  Caption := rsEpanetUI;
   MainMenuFrame.Reset;
+  MapViewerFrame.MapRadioButton.Checked := true;
+  MapViewerFrame.ReportRadioButton.Enabled := false;
 end;
 
 procedure TMainForm.ProjectSetup;
@@ -791,8 +898,7 @@ begin
         inifile.WriteAppDefaults(AppIniFile);
       if SetupForm.RemoveResults then
       begin
-        ReportViewerForm.CloseReport;
-        ReportViewerForm.Hide;
+        ReportFrame.CloseReport;
         project.RemoveResults;
         MapFrame.RedrawMap;
       end;
@@ -830,15 +936,15 @@ begin
   if (Result = 200) then
   begin
     utils.MsgDlg(rsFileError, rsLoadErrors, mtInformation, [mbOk], Self);
-    ReportViewerForm.ShowReport(rtStatus);
+    ReportFrame.ShowReport(rtStatus);
   end
 
   // Could not open file
   else if Result > 0 then
   begin
-    Caption := 'EPANET-UI';
+    Caption := rsEpanetUI;
     utils.MsgDlg(rsFileError, rsNoLoadProject, mtError, [mbOk], Self);
-    ReportViewerForm.ShowReport(rtStatus);
+    ReportFrame.ShowReport(rtStatus);
   end;
   project.HasChanged := false;
 end;
@@ -848,33 +954,35 @@ begin
   MapPanel.Color := MapFrame.Map.Options.BackColor;
   ProjectFrame.Init;
 
-  Caption := 'EPANET-UI: ' + ChangeFileExt(ExtractFileName(FileName), '');
+  Caption := rsEpanetUI + ': ' + ChangeFileExt(ExtractFileName(FileName), '');
   UpdateStatusBar(sbFlowUnits, project.FlowUnitsStr[project.FlowUnits]);
-  UpdateStatusBar(sbPressUnits, project.PressUnitsStr[project.PressUnits]);
+  UpdateStatusBar(sbPressureUnits, project.PressureUnitsStr[project.PressureUnits]);
   UpdateStatusBar(sbHeadLoss, project.GetHlossModelStr);
   UpdateStatusBar(sbDemands, project.GetDemandModelStr);
   UpdateStatusBar(sbQuality, project.GetQualModelStr);
   UpdateStatusBar(sbResults, rsNoResults);
   UpdateStatusBar(sbXY, '');
 
-  MainMenuFrame.InitMapThemes;
+  MapViewerFrame.InitMapThemes;
   MruMenuMgr.AddToRecent(FileName);
   MapFrame.LoadBasemapFromWeb(WebMapSource, project.MapEPSG, project.MapUnits);
   MapFrame.DrawFullExtent;
-
 end;
 
 procedure TMainForm.EnableMainForm(State: Boolean);
+//
+//  Enable/disable the main form based on State value.
+//
 begin
   MainMenuFrame.Enabled := State;
   ProjectFrame.Enabled := State;
-  LegendTreeView.Enabled := State;
+  MapViewerFrame.Enabled := State;
   if State then HideHintPanel;
 end;
 
 function TMainForm.GetCmndLineFile: string;
 //
-//  Gets the name of a startup project file on program's command line
+//  Get the name of a startup project file on program's command line
 //
 var
   StartupFile: string = '';
@@ -889,17 +997,9 @@ begin
 end;
 
 procedure TMainForm.ViewHelp(Topic: String);
-var
-  Url: string;
 begin
-  Url := 'file://' + AppHelpFile + Topic;
-  {$IFDEF Windows}
-  if config.IsDefaultBrowserChromium then
-  begin
-    Url := '"' + Url + '"';
-  end;
-  {$ENDIF}
-  OpenUrl(Url);
+  Application.HelpKeyword('html/manual.html' + Topic);
+  HelpKeyword := '';
 end;
 
 end.

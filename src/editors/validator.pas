@@ -861,12 +861,11 @@ begin
       begin
         I := EN_PRV + AnsiIndexText(S, project.ValveTypeStr);
         X := I;
-        K := epanet2.ENsetlinkvalue(Index, 29, X);
+        K := epanet2.ENsetlinkvalue(Index, EN_VALVE_TYPE, X);
         if K = 219 then
           ShowError(Format(rsBadTankConnect, [S]), OldValue, NewValue)
         else if K = 220 then
-          ShowError(Format(rsBadValveConnect, [S]), OldValue, NewValue)
-        else editor.Edit(ctLinks, Index-1);
+          ShowError(Format(rsBadValveConnect, [S]), OldValue, NewValue);
       end;
 
     8: // Valve setting
@@ -916,7 +915,18 @@ begin
       begin
         epanet2.ENgetlinktype(Index, I);
         K := AnsiIndexText(S, project.ValveStatusStr);
-        epanet2.ENsetlinkvalue(Index, EN_INITSTATUS, K);
+
+        // For K  = 0 (Closed) or K = 1 (Open)
+        if K <= 1 then
+          epanet2.ENsetlinkvalue(Index, EN_INITSTATUS, K)
+        else
+
+        // For K = 2 (None) must assign value to valve's EN_INITSETTING
+        // (EPANET Toolkit quirk)
+        begin
+          epanet2.ENgetlinkvalue(Index, EN_INITSETTING, X);
+          epanet2.ENsetlinkvalue(Index, EN_INITSETTING, X);
+        end;
       end;
   end;
 end;

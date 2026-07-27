@@ -17,7 +17,7 @@ object MapQueryFrame: TMapQueryFrame
     Caption = 'Find'
     ParentColor = False
   end
-  object FindCbx: TComboBox
+  object FindCombo: TComboBox
     Left = 64
     Height = 24
     Top = 38
@@ -31,7 +31,7 @@ object MapQueryFrame: TMapQueryFrame
     Style = csOwnerDrawFixed
     TabOrder = 0
     Text = 'Nodes'
-    OnChange = FindCbxChange
+    OnChange = FindComboChange
   end
   object Label2: TLabel
     Left = 16
@@ -41,7 +41,7 @@ object MapQueryFrame: TMapQueryFrame
     Caption = 'with'
     ParentColor = False
   end
-  object ParamCbx: TComboBox
+  object ParamCombo: TComboBox
     Left = 64
     Height = 24
     Top = 77
@@ -50,7 +50,7 @@ object MapQueryFrame: TMapQueryFrame
     Style = csOwnerDrawFixed
     TabOrder = 1
   end
-  object ConditionCbx: TComboBox
+  object ConditionCombo: TComboBox
     Left = 16
     Height = 24
     Top = 117
@@ -95,6 +95,7 @@ object MapQueryFrame: TMapQueryFrame
     Top = 0
     Width = 239
     Align = alTop
+    BevelOuter = bvNone
     Caption = 'Map Query'
     ClientHeight = 28
     ClientWidth = 239
@@ -102,10 +103,10 @@ object MapQueryFrame: TMapQueryFrame
     ParentFont = False
     TabOrder = 5
     object CloseBtn: TSpeedButton
-      Left = 209
+      Left = 212
       Height = 26
       Hint = 'Close'
-      Top = 2
+      Top = 0
       Width = 26
       Anchors = [akTop, akRight]
       AutoSize = True

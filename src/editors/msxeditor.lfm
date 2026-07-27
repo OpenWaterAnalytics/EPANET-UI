@@ -139,7 +139,7 @@ object MsxEditorForm: TMsxEditorForm
       Height = 370
       Top = 45
       Width = 598
-      PageIndex = 1
+      PageIndex = 4
       Align = alClient
       TabOrder = 0
       object Overview: TPage
@@ -795,8 +795,8 @@ object MsxEditorForm: TMsxEditorForm
           Width = 533
           BevelOuter = bvNone
           BorderStyle = bsSingle
-          ClientHeight = 312
-          ClientWidth = 529
+          ClientHeight = 316
+          ClientWidth = 533
           Color = clWindow
           ParentBackground = False
           ParentColor = False
@@ -1179,7 +1179,7 @@ object MsxEditorForm: TMsxEditorForm
             end          
             item
               Title.Caption = 'Comment'
-              Width = 276
+              Width = 295
             end>
           DefaultRowHeight = 25
           FixedColor = clDefault
@@ -1196,7 +1196,7 @@ object MsxEditorForm: TMsxEditorForm
             82
             91
             310
-            276
+            295
           )
         end
       end
@@ -1230,7 +1230,7 @@ object MsxEditorForm: TMsxEditorForm
             end          
             item
               Title.Caption = 'Comment'
-              Width = 276
+              Width = 285
             end>
           DefaultRowHeight = 25
           FixedColor = clDefault
@@ -1247,7 +1247,7 @@ object MsxEditorForm: TMsxEditorForm
             82
             100
             310
-            276
+            285
           )
         end
       end

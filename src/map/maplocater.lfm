@@ -16,17 +16,18 @@ object MapLocaterFrame: TMapLocaterFrame
     Top = 0
     Width = 239
     Align = alTop
+    BevelOuter = bvNone
     Caption = 'Object Locater'
     ClientHeight = 28
     ClientWidth = 239
     Font.Style = [fsBold]
     ParentFont = False
-    TabOrder = 3
+    TabOrder = 0
     object CloseBtn: TSpeedButton
-      Left = 209
+      Left = 212
       Height = 26
       Hint = 'Close'
-      Top = 2
+      Top = 0
       Width = 26
       Anchors = [akTop, akRight]
       AutoSize = True
@@ -108,7 +109,7 @@ object MapLocaterFrame: TMapLocaterFrame
     Top = 140
     Width = 200
     ItemHeight = 0
-    TabOrder = 2
+    TabOrder = 3
     OnClick = ItemsListboxClick
   end
   object NamedLabel: TLabel
@@ -125,7 +126,7 @@ object MapLocaterFrame: TMapLocaterFrame
     Top = 78
     Width = 144
     MaxLength = 31
-    TabOrder = 1
+    TabOrder = 2
     OnChange = NameEditChange
     OnKeyDown = NameEditKeyDown
   end
@@ -153,7 +154,7 @@ object MapLocaterFrame: TMapLocaterFrame
       'all Valves'
     )
     Style = csOwnerDrawFixed
-    TabOrder = 0
+    TabOrder = 1
     Text = 'a Node'
     OnChange = FindComboChange
   end

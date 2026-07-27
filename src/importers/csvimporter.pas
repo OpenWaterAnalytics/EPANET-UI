@@ -1,11 +1,11 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.0
+ Version:      1.0.3
  Module:       csvloader
  Description:  a wizard dialog form used to import a pipe network
                from a CSV text file
  License:      see LICENSE
- Last Updated: 03/07/2026
+ Last Updated: 06/19/2026
 =====================================================================}
 
 unit csvimporter;
@@ -71,6 +71,7 @@ type
       aState: TGridDrawState);
     procedure ViewPipeCsvFileClick(Sender: TObject);
     procedure ViewNodeCsvFileClick(Sender: TObject);
+
   private
     NodeFile:     string;      // Name of node CSV file
     PipeFile:     string;      // Name of pipe CSV file

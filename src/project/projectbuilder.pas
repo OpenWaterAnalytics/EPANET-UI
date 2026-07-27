@@ -1,10 +1,10 @@
 {====================================================================
  project:      EPANET-UI
- Version:      1.0.0
+ Version:      1.0.3
  Module:       projectbuilder
  Description:  Adds new objects to a project
  License:      see LICENSE
- Last Updated: 03/07/2026
+ Last Updated: 06/19/2026
 =====================================================================}
 
 unit projectbuilder;
@@ -22,6 +22,8 @@ procedure AddLink(LinkType: Integer; Node1: Integer; Node2: Integer);
 procedure AddPattern;
 procedure AddCurve;
 procedure AddLabel(Location: TPoint; Xcoord: Double; Ycoord: Double);
+procedure EditLabelText(LabelIndex: Integer; Location: TPoint);
+
 procedure ImportShapeFile;
 procedure ImportDxfFile;
 procedure ImportCsvFile;
@@ -74,13 +76,13 @@ begin
   begin
     epanet2.ENsetcoord(NodeIndex, Xcoord, Ycoord);
     epanet2.ENsetnodevalue(NodeIndex, EN_ELEVATION,
-      StrToFloatDef(project.DefProps[1], 0));
+      StrToFloatDef(project.DefProps[ptNodeElev], 0));
     if NodeType = ntTank then
     begin
       epanet2.ENsetnodevalue(NodeIndex, EN_MAXLEVEL,
-        StrToFloatDef(project.DefProps[2], 0.0));
+        StrToFloatDef(project.DefProps[ptTankHt], 0.0));
       epanet2.ENsetnodevalue(NodeIndex, EN_TANKDIAM,
-        StrToFloatDef(project.DefProps[3], 0.0));
+        StrToFloatDef(project.DefProps[ptTankDiam], 0.0));
     end;
     MainForm.MapFrame.RedrawMap;
     MainForm.ProjectFrame.SelectItem(ctNodes, NodeIndex-1);
@@ -128,9 +130,10 @@ begin
       if project.AutoLength then
         Length := project.FindLinkLength(LinkIndex)
       else
-        Length := StrToFloatDef(project.DefProps[4], 0.0);
-      ENsetpipedata(LinkIndex, Length, StrToFloatDef(project.DefProps[5], 0.0),
-        StrToFloatDef(project.DefProps[6], 0.0), 0.0);
+        Length := StrToFloatDef(project.DefProps[ptPipeLen], 0.0);
+      ENsetpipedata(LinkIndex, Length,
+        StrToFloatDef(project.DefProps[ptPipeDiam], 0.0),
+        StrToFloatDef(project.DefProps[ptPipeRough], 0.0), 0.0);
     end;
     MainForm.MapFrame.RedrawMap;
     MainForm.OverviewMapFrame.Redraw;
@@ -174,7 +177,7 @@ begin
     utils.MsgDlg(rsCreateFail, rsNoAddCurve, mtError, [mbOK]);
 end;
 
-function GetLabelText(Location: TPoint): string;
+function GetLabelText(Location: TPoint; Text: string): string;
 var
   LabelEditorForm: TLabelEditorForm;
 begin
@@ -182,9 +185,10 @@ begin
   LabelEditorForm := TLabelEditorForm.Create(MainForm.MapFrame);
   with LabelEditorForm do
   try
-    Left := Location.x;
+    Left := Location.X;
     Top := Location.Y;
     Width := 200;
+    Edit1.Text := Text;
     if ShowModal = mrOK then Result := Edit1.Text;
   finally
     Free;
@@ -193,10 +197,10 @@ end;
 
 procedure AddLabel(Location: TPoint; Xcoord: Double; Ycoord: Double);
 var
-  S:        string;
+  S:        string = '';
   MapLabel: TMapLabel;
 begin
-  S := GetLabelText(Location);
+  S := GetLabelText(Location, S);
   if Length(S) = 0 then exit;
   MapLabel := TMapLabel.Create;
   MapLabel.X := Xcoord;
@@ -205,6 +209,26 @@ begin
   MainForm.MapFrame.RedrawMap;
   MainForm.ProjectFrame.SelectItem(ctLabels, project.MapLabels.Count-1);
   project.HasChanged := true;
+end;
+
+procedure EditLabelText(LabelIndex: Integer; Location: TPoint);
+var
+  S1, S2: string;
+  P: TPoint;
+  MapLabel: TMapLabel;
+begin
+  MapLabel := TMapLabel(MapLabels.Objects[LabelIndex]);
+  if MapLabel = nil then exit;
+  P.X := MainForm.MapFrame.Map.GetXpix(MapLabel.X);
+  P.Y := MainForm.MapFrame.Map.GetYpix(MapLabel.Y);
+  P := MainForm.MapFrame.MapBox.ClientToScreen(P);
+  S1 := project.MapLabels[LabelIndex];
+  S2 := GetLabelText(P, S1);
+  if (Length(S2) > 0) and (S2 <> S1) then
+  begin
+    project.MapLabels[LabelIndex] := S2;
+    project.HasChanged := true;
+  end;
 end;
 
 procedure ImportShapeFile;

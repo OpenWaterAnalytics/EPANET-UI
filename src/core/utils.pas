@@ -1,10 +1,10 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.0
+ Version:      1.0.3
  Module:       utils
  Description:  contains various utility functions
  License:      see LICENSE
- Last Updated: 03/07/2026
+ Last Updated: 06/19/2026
 =====================================================================}
 
 unit utils;
@@ -27,12 +27,14 @@ function  CreateTempFile(Prefix: string): string;
 
 function  FindTreeNode(aTreeView: TTreeView; Text: string): TTreeNode;
 function  Float2Str(const X: Double; const N: Integer): string;
+
 procedure GetTextSize(const aText: string; aFont: TFont; var H, W: Integer);
 procedure GrayscaleBitmap(Bitmap: TBitmap);
 
 function  HasInternetConnection: Boolean;
 function  Haversine(X1, Y1, X2, Y2: Double): Double;
 function  HttpRequest(aUrl: string; var Str: string): Boolean;
+
 procedure InvertBitmap(Bitmap: TBitmap);
 
 function  MsgDlg(const Title: string; const Msg: string; DlgType: TMsgDlgType;
@@ -42,9 +44,10 @@ function  MsgDlg(const Title: string; const Msg: string; DlgType: TMsgDlgType;
 
 function  PointInPolygon(const P: TDoublePoint; const Bounds: TDoubleRect;
           const Npts: Integer; Poly: TPolygon): Boolean;
-function  PointOnLine(const P1: TPoint; const P2: TPoint;
-          const P: TPoint; const Ptol: Integer): Boolean;
+function  PointOnLine(const Pt, P1, P2: TPoint): Boolean;
+function  PointOnPoint(const P1, P2: TPoint): Boolean;
 function  PolygonBounds(Poly: TPolygon; const Npts: Integer): TDoubleRect;
+
 procedure ResizeControl(aControl:TControl;
           const ParentWidth, ParentHeight: Integer;
           const WidthRatio, HeightRatio: Integer;
@@ -58,15 +61,6 @@ function  Time2Str(T: Integer): string;
 function  TimeOfDayStr(T: Integer): string;
 
 implementation
-
-uses
-  reportviewer;
-
-type
-  TMyHTTPRequest = class(TThread)
-  protected
-      procedure Execute; override;
-  end;
 
 var
   ConnectedToInternet: Boolean;
@@ -266,28 +260,17 @@ function HasInternetConnection: Boolean;
 //  Check if an internet connection exists.
 //
 var
-  MyThread: TMyHTTPRequest;
-begin
-  ConnectedToInternet := false;
-  MyThread := TMyHTTPRequest.Create(true);
-  MyThread.FreeOnTerminate := true;
-  MyThread.Start;
-  Sleep(2000);
-  Result := ConnectedToInternet;
-end;
-
-procedure TMyHTTPRequest.Execute;
-var
   Client: TFPHttpClient;
 begin
+  Result := false;
   Client := TFPHttpClient.Create(nil);
   try
     Client.ConnectTimeout := 2000;
     try
       Client.Get('http://www.example.com');
-      ConnectedToInternet := true;
+      Result := true;
     except
-      ConnectedToInternet := false;
+      Result := false;
     end;
   finally
     Client.Free;
@@ -336,7 +319,10 @@ begin
         Client.AllowRedirect := true;
         Client.Get(aUrl, Response);
       except
-        raise;
+        on E: Exception do
+        begin
+          raise;
+        end;
       end;
 
     finally
@@ -387,7 +373,7 @@ begin
   end;
 end;
 
-function  MsgDlg(const Title: string; const Msg: string; DlgType: TMsgDlgType;
+function MsgDlg(const Title: string; const Msg: string; DlgType: TMsgDlgType;
           Buttons: TMsgDlgButtons): Integer; overload;
 //
 // Display a message dialog in center of currently active form.
@@ -396,7 +382,7 @@ begin
   Result := TaskDlg(Title, Msg, DlgType, Buttons, Screen.ActiveForm);
 end;
 
-function  MsgDlg(const Title: string; const Msg: string; DlgType: TMsgDlgType;
+function MsgDlg(const Title: string; const Msg: string; DlgType: TMsgDlgType;
           Buttons: TMsgDlgButtons; F: TForm): Integer; overload;
 //
 // Display a message dialog in center of a specific form.
@@ -405,7 +391,7 @@ begin
   Result := TaskDlg(Title, Msg, DlgType, Buttons, F);
 end;
 
-function  PointInPolygon(const P: TDoublePoint; const Bounds: TDoubleRect;
+function PointInPolygon(const P: TDoublePoint; const Bounds: TDoubleRect;
           const Npts: Integer; Poly: TPolygon): Boolean;
 //
 // Determine if point is contained in a polygon.
@@ -440,49 +426,45 @@ begin
   end;
 end;
 
-function PointOnLine(const P1: TPoint; const P2: TPoint;
-          const P: TPoint; const Ptol: Integer): Boolean;
+function PointOnPoint(const P1, P2: TPoint): Boolean;
 //
-//  Determine if point P is within Ptol distance of the line
-//  between points P1 and P2.
+// Check if point P1 lies on point P2.
+//
+const
+  PIXTOL2: Integer = 5 * 5; // Square of pixel tolerance
+var
+  dx, dy: Integer;
+begin
+  dx:= P1.X - P2.X;
+  dy:= P1.Y - P2.Y;
+  Result:= (dx*dx + dy*dy) <= PIXTOL2;
+end;
+
+function PointOnLine(const Pt, P1, P2: TPoint): Boolean;
+//
+//  Check if point Pt is on the line between points P1 and P2.
 //
 var
-  dx: Integer;
-  dy: Integer;
-  dx1: Integer;
-  dy1: Integer;
-  a: Integer;
-  b: Integer;
-  c: Integer;
+  dx, dy, t, len2: Double;
+  closest: TPoint;
 begin
-  Result := false;
-  dx := P2.X - P1.X;
-  dy := P2.Y - P1.Y;
-  dx1 := P.X - P1.X;
-  dy1 := P.Y - P1.Y;
-  if (Abs(dx) > 0)
-  and (Abs(dy) < Abs(dx)) then
-  begin
-    if (dx * dx1 >= 0)
-    and (Abs(dx1) <= Abs(dx)) then
-    begin
-      a := (dy * dx1);
-      b := (dx * dy1);
-      c := Abs(dx * Ptol);
-      if Abs(a - b) <= c then Result := true;
-    end;
-  end
-  else if Abs(dy) > 0 then
-  begin
-    if (dy * dy1 >= 0)
-    and (Abs(dy1) <= Abs(dy)) then
-    begin
-      a := (dx * dy1);
-      b := (dy * dx1);
-      c := Abs(dy * Ptol);
-      if Abs(a - b) <= c then Result := true;
-    end;
+  dx:= P2.X - P1.X;
+  dy:= P2.Y - P1.Y;
+  len2:= dx*dx + dy*dy;
+  if len2 = 0 then begin
+    Result:= PointOnPoint(Pt, P1);
+    exit;
   end;
+  t:= ((Pt.X - P1.X) * dx + (Pt.Y - P1.Y) * dy) / len2;
+  if t < 0 then
+    closest:= P1
+  else if t > 1 then
+    closest:= P2
+  else begin
+    closest.X:= Round(P1.X + t * dx);
+    closest.Y:= Round(P1.Y + t * dy);
+  end;
+  Result:= PointOnPoint(Pt, closest);
 end;
 
 function  PolygonBounds(Poly: TPolygon; const Npts: Integer): TDoubleRect;
@@ -608,16 +590,6 @@ var
   TD: TTaskDialog;
   ShowReportForm: Boolean = false;
 begin
-
-  // If the ReportViewerForm is showing then hide it so this dialog
-  // doesn't get hidden behind it
-  if ReportViewerForm.Visible
-  and (ReportViewerForm.WindowState <> wsMinimized) then
-  begin
-    ReportViewerForm.Hide;
-    ShowReportForm := true;
-  end;
-
   TD := TTaskDialog.Create(F);
   try
     TD.Caption := 'EPANET-UI';  //The dialog window caption
@@ -648,7 +620,6 @@ begin
       TD.MainIcon := tdiNone;
     if TD.Execute then Result := TD.ModalResult;
   finally
-    if ShowReportForm then ReportViewerForm.Show;
     TD.Free;
   end;
 end;

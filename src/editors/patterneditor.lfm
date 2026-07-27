@@ -16,7 +16,7 @@ object PatternEditorForm: TPatternEditorForm
     Height = 460
     Top = 0
     Width = 480
-    PageIndex = 1
+    PageIndex = 0
     Align = alClient
     TabOrder = 0
     object Page1: TPage

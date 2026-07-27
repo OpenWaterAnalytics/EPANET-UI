@@ -1,10 +1,10 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.0
+ Version:      1.0.3
  Module:       webmapfinder
  Description:  a form that finds the geographic coords of an address
  License:      see LICENSE
- Last Updated: 03/07/2026
+ Last Updated: 06/19/2026
 =====================================================================}
 
 unit webmapfinder;
@@ -145,6 +145,9 @@ begin
 end;
 
 function TWebMapFinderForm.GetString(aUrl: string; var Str: string): Boolean;
+//
+// Retrieve a string result from an HTTP request.
+//
 var
   Client: TFPHTTPClient;
   Response: TStringList;

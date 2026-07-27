@@ -389,20 +389,6 @@
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
-        <Filename Value="src\core\basemapmenu.pas"/>
-        <IsPartOfProject Value="True"/>
-        <ComponentName Value="BasemapMenuForm"/>
-        <HasResources Value="True"/>
-        <ResourceBaseClass Value="Form"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src\map\mapexporter.pas"/>
-        <IsPartOfProject Value="True"/>
-        <ComponentName Value="MapExporterFrame"/>
-        <HasResources Value="True"/>
-        <ResourceBaseClass Value="Frame"/>
-      </Unit>
-      <Unit>
         <Filename Value="src\thirdparty\epanetmsx.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit>
@@ -464,13 +450,6 @@
       <Unit>
         <Filename Value="src\editors\msxfileprocs.pas"/>
         <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src\editors\groupeditor.pas"/>
-        <IsPartOfProject Value="True"/>
-        <ComponentName Value="GroupEditorForm"/>
-        <HasResources Value="True"/>
-        <ResourceBaseClass Value="Form"/>
       </Unit>
       <Unit>
         <Filename Value="src\reports\profilerpt.pas"/>
@@ -545,13 +524,6 @@
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
-        <Filename Value="src\core\reportviewer.pas"/>
-        <IsPartOfProject Value="True"/>
-        <ComponentName Value="ReportViewerForm"/>
-        <HasResources Value="True"/>
-        <ResourceBaseClass Value="Form"/>
-      </Unit>
-      <Unit>
         <Filename Value="src\simulator\sysresults.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit>
@@ -583,6 +555,55 @@
       <Unit>
         <Filename Value="src\thirdparty\mrumanager.pas"/>
         <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\core\basemapmenu.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="BasemapMenuForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\core\filemenu.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="FileMenuFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\editors\groupeditor.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="GroupEditorFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\project\groupselector.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="GroupSelectorFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\themes\maplegend.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="MapLegendFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\core\mapviewerframe.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="MapViewerFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\core\reportframe.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="ReportFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
       </Unit>
     </Units>
   </ProjectOptions>

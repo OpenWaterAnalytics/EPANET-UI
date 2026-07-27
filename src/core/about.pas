@@ -1,10 +1,10 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.1
+ Version:      1.0.3
  Module:       about
  Description:  'About EPANET' form
  License:      see LICENSE
- Last Updated: 03/13/2026
+ Last Updated: 06/19/2026
 =====================================================================}
 
 unit about;
@@ -45,7 +45,7 @@ resourcestring
     'MIT license<br>'+
     'Copyright (c) 2019 by the <a href="https://github.com/OpenWaterAnalytics/'+
     'EPANET/blob/dev/AUTHORS">Authors</a></p>'+
-    '<p><a href="https://github.com/USEPA/EPANETMSX">EPA EPANET-MSX 2.0</a><br>'+
+    '<p><a href="https://github.com/USEPA/EPANETMSX/tree/dev">EPA EPANET-MSX 2.0</a><br>'+
     'MIT license<br>'+
     'Copyright (c) 2022 by the <a href="https://github.com/USEPA/EPANETMSX/'+
     'blob/master/Doc/AUTHORS">Authors</a></p>'+
@@ -55,6 +55,10 @@ resourcestring
     '<p><a href="https://github.com/OrdnanceSurvey/proj.4">Proj.4 4.4</a><br>'+
     'MIT license<br>'+
     'Copyright (c) 2000, Frank Warmerdam</p>'+
+    '<p><u>Internet Map Providers:</u><br>' +
+    'OpenStreetMap contributers<br>' +
+    'Microsoft Corporation and its data suppliers<br>' +
+    'ESRI and its data suppliers</p>' +
     '<p>Icons provided by <a href="https://icons8.com">icons8</a></p>';
 
 type
@@ -62,22 +66,22 @@ type
   { TAboutForm }
 
   TAboutForm = class(TForm)
-    Image1: TImage;
-    Label2: TLabel;
+    Image1:       TImage;
+    Label2:       TLabel;
+    Panel1:       TPanel;
+    Panel2:       TPanel;
+    Panel3:       TPanel;
+    Panel4:       TPanel;
     PageControl1: TPageControl;
-    Panel1: TPanel;
-    Panel2: TPanel;
-    Panel3: TPanel;
-    Panel4: TPanel;
     TabSheet1:    TTabSheet;
     TabSheet2:    TTabSheet;
     TabSheet3:    TTabSheet;
+    HtmlViewer1:  THtmlViewer;
     HtmlViewer2:  THtmlViewer;
-    HtmlViewer3:  THtmlViewer;
 
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-    procedure HtmlViewer3HotSpotClick(Sender: TObject; const SRC: ThtString;
+    procedure HtmlViewer2HotSpotClick(Sender: TObject; const SRC: ThtString;
       var Handled: Boolean);
     procedure PageControl1Change(Sender: TObject);
   private
@@ -104,10 +108,10 @@ begin
   Font.Size := config.FontSize;
   Panel3.Caption := rsAbout;
   Panel4.Caption := rsVersions;
+  HtmlViewer1.DefFontSize := config.FontSize;
+  HtmlViewer1.LoadFromString(rsLicense);
   HtmlViewer2.DefFontSize := config.FontSize;
-  HtmlViewer2.LoadFromString(rsLicense);
-  HtmlViewer3.DefFontSize := config.FontSize;
-  HtmlViewer3.LoadFromString(rsAcknowledgements);
+  HtmlViewer2.LoadFromString(rsAcknowledgements);
   PageControl1.ActivePageIndex := 0;
 end;
 
@@ -117,7 +121,7 @@ begin
   if Key = VK_ESCAPE then Close;
 end;
 
-procedure TAboutForm.HtmlViewer3HotSpotClick(Sender: TObject;
+procedure TAboutForm.HtmlViewer2HotSpotClick(Sender: TObject;
   const SRC: ThtString; var Handled: Boolean);
 begin
   OpenUrl(SRC);
@@ -126,7 +130,7 @@ end;
 procedure TAboutForm.PageControl1Change(Sender: TObject);
 begin
   if PageControl1.ActivePage = TabSheet3 then
-    HtmlViewer3.SetFocus;
+    HtmlViewer2.SetFocus;
 end;
 
 end.
