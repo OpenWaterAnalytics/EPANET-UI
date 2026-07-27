@@ -127,6 +127,11 @@ begin
       MainForm.ProjectFrame.PropEditor.Cells[1,Prop] := OldValue;
     end;
 
+    // Recalculate this link's length if auto-length is on
+    if project.AutoLength
+    and (project.GetLinkType(Index) <= ltPipe) then
+      project.SetPipeLength(Index);
+
     // Redraw the network map
     MainForm.MapFrame.RedrawMap;
   end;
