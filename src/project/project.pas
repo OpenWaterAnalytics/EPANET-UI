@@ -922,10 +922,23 @@ begin
           else
             utils.MsgDlg(rsDeleteFail, Format(rsNoDelNode, [R,S]),
               mtInformation, [mbOK], MainForm)
+        end
+        else  // Nur bei erfolgreichem Löschen
+        begin
+          // Cache-Eintrag entfernen (wenn Basemap aktiv)
+          if MainForm.MapFrame.HasWebBasemap and mapcoords.HasCachedNodeCoords then
+            mapcoords.RemoveCachedNodeCoord(Index);
         end;
       end;
     ctLinks:
-      epanet2.ENdeletelink(Index, EN_UNCONDITIONAL);
+      begin
+        R := epanet2.ENdeletelink(Index, EN_UNCONDITIONAL);
+        if R = 0 then
+        begin
+          if MainForm.MapFrame.HasWebBasemap and mapcoords.HasCachedNodeCoords then
+            mapcoords.RemoveCachedLinkVertices(Index);
+        end;
+      end;
     ctPatterns:
       epanet2.ENdeletepattern(Index);
     ctCurves:
@@ -1273,7 +1286,7 @@ begin
   Result := Single(Distance);
 end;
 
-function  FindLinkLength(LinkIndex: Integer): Single;
+function FindLinkLength(LinkIndex: Integer): Single;
 var
   J:     Integer;
   Node1: Integer = 0;
@@ -1283,27 +1296,42 @@ var
   Y1:    Double = 0;
   X2:    Double = 0;
   Y2:    Double = 0;
+  UseCache: Boolean;
 begin
   // Length is 0 for non-pipe links
   Result := 0;
   if GetLinkType(LinkIndex) > ltPipe then exit;
 
-  // Get coordinates of pipe's start node
+  // Get nodes at each end of pipe
   if epanet2.ENgetlinknodes(LinkIndex, Node1, Node2) <> 0 then exit;
-  if not GetNodeCoord(Node1, X1, Y1) then exit;
+
+  // Check if we should use cached coordinates (when web basemap is active)
+  UseCache := MainForm.MapFrame.HasWebBasemap and mapcoords.HasCachedNodeCoords;
+
+  // Get coordinates of pipe's start node
+  if UseCache then
+    mapcoords.GetCachedNodeCoord(Node1, X1, Y1)
+  else if not GetNodeCoord(Node1, X1, Y1) then
+    exit;
 
   // Add length between each pipe vertex to total length
   for J := 1 to GetVertexCount(LinkIndex) do
   begin
-    if not GetVertexCoord(LinkIndex, J, X2, Y2) then continue;
+    if UseCache then
+      mapcoords.GetCachedVertexCoord(LinkIndex, J, X2, Y2)
+    else if not GetVertexCoord(LinkIndex, J, X2, Y2) then
+      continue;
     Result := Result + MapDistance(X1, Y1, X2, Y2);
     X1 := X2;
     Y1 := Y2;
   end;
 
   // Add length to pipe's end node to total length
-  if GetNodeCoord(Node2, X2, Y2) then
-    Result := Result + MapDistance(X1, Y1, X2, Y2);
+  if UseCache then
+    mapcoords.GetCachedNodeCoord(Node2, X2, Y2)
+  else if not GetNodeCoord(Node2, X2, Y2) then
+    exit;
+  Result := Result + MapDistance(X1, Y1, X2, Y2);
 
   // Apply proper unit conversion to result
   Units := GetUnitsSystem;
