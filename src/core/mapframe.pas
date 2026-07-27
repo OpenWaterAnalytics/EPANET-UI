@@ -143,6 +143,10 @@ type
     Offset:      TPoint;
     CtrlPoint:   array[1..3] of TCtrlPoint;
 
+    // 👇 NEU: Getter für ProjTrans
+    function GetProjTrans: TProjTransform;
+    // 👆
+
     procedure AddNode(NodeType: Integer);
     procedure AddLink(LinkType: Integer);
     procedure AddLabel;
@@ -250,6 +254,9 @@ begin
   BaseMapFile := '';
   for I := 1 to 3 do
     CtrlPoint[I].Visible := false;
+
+  // Alten Koordinaten-Cache verwerfen, gehört zum vorherigen Projekt
+  mapcoords.ClearCache;
 
   PaintAction := paNone;
   MapBox.Refresh;
@@ -380,18 +387,47 @@ begin
   ShowHiliter;
 end;
 
+// ============================================================
+//  MOVEOBJECT - with reactive cache update for nodes + labels
+// ============================================================
 procedure TMapFrame.MoveObject(W: TDoublePoint);
+var
+  NativeX, NativeY: Double;
 begin
   if SelectedObjType = ctNodes then
   begin
     project.SetNodeCoord(SelectedObjIndex, W.X, W.Y);
-    project.AdjustLinkLengths(Node1);
+
+    // If a web basemap is active: transform the new WGS84 position back
+    // to the native projection and update the cache entry for this node.
+    if mapcoords.HasCachedNodeCoords and (ProjTrans <> nil) then
+    begin
+      NativeX := W.X;
+      NativeY := W.Y;
+      ProjTrans.Transform(NativeX, NativeY);
+      mapcoords.UpdateCachedNodeCoord(SelectedObjIndex, NativeX, NativeY);
+    end;
+
+    project.AdjustLinkLengths(SelectedObjIndex);
   end
   else if SelectedObjType = ctLabels then
+  begin
     project.SetLabelCoord(SelectedObjIndex, W.X, W.Y);
-  if (not project.HasChanged)
-  and (not project.IsEmpty) then
+
+    // Labels are not cached yet – keep the same guard pattern for future
+    // expansion, but do nothing for now.
+    if mapcoords.HasCachedNodeCoords and (ProjTrans <> nil) then
+    begin
+      NativeX := W.X;
+      NativeY := W.Y;
+      ProjTrans.Transform(NativeX, NativeY);
+      mapcoords.UpdateCachedLabelCoord(SelectedObjIndex, NativeX, NativeY);
+    end;
+  end;
+
+  if (not project.HasChanged) and (not project.IsEmpty) then
     project.HasChanged := true;
+
   RedrawMap;
   MainForm.OverviewMapFrame.Redraw;
 end;
@@ -1282,7 +1318,6 @@ begin
     MoveObject(W);
     EnterSelectionMode;
   end;
-
 end;
 
 procedure TMapFrame.MapBoxMouseWheelDown(Sender: TObject; Shift: TShiftState;
@@ -1388,13 +1423,25 @@ begin
   end;
 end;
 
+// ============================================================
+//  MOVE VERTEX - with reactive cache update
+// ============================================================
 procedure TMapFrame.MoveVertex(X: Integer; Y: Integer);
 var
   W: TDoublePoint;
+  NativeX, NativeY: Double;
 begin
   if SelectedVertex = 0 then exit;
   W := Map.ScreenToWorld(X, Y);
   project.SetVertexCoord(SelectedObjIndex, SelectedVertex, W.X, W.Y);
+  if mapcoords.HasCachedNodeCoords and (ProjTrans <> nil) then
+  begin
+    NativeX := W.X;
+    NativeY := W.Y;
+    ProjTrans.Transform(NativeX, NativeY);
+    mapcoords.UpdateCachedVertexCoord(SelectedObjIndex, SelectedVertex,
+      NativeX, NativeY);
+  end;
   RedrawMap;
   PaintAction := paVertices;
   MapBox.Refresh;
@@ -1476,6 +1523,19 @@ begin
   Yv[V] := Y;
   project.SetVertexCoords(I, Xv, Yv, NumVertices);
 
+  // Basemap aktiv: Vertex-Cache für diesen Link neu aufbauen
+  if HasWebBasemap and (ProjTrans <> nil) then
+  begin
+    mapcoords.ClearCachedLinkVertices(I);
+    for J := 1 to NumVertices do
+    begin
+      X1 := Xv[J-1];
+      Y1 := Yv[J-1];
+      ProjTrans.Transform(X1, Y1);
+      mapcoords.AppendCachedVertexCoord(I, J, X1, Y1);
+    end;
+  end;
+
   // Redraw vertex pts. with new vertex selected
   SelectedVertex := V + 1;
   PaintAction := paVertices;
@@ -1487,6 +1547,7 @@ var
   I:  Integer;
   J:  Integer;
   K:  Integer;
+  NativeX, NativeY: Double;
   Xv: array[0..project.MAX_VERTICES] of Double;
   Yv: array[0..project.MAX_VERTICES] of Double;
 begin
@@ -1505,6 +1566,20 @@ begin
   end;
   Dec(NumVertices);
   project.SetVertexCoords(I, Xv, Yv, NumVertices);
+
+  // Basemap aktiv: Vertex-Cache für diesen Link neu aufbauen
+  if HasWebBasemap and (ProjTrans <> nil) then
+  begin
+    mapcoords.ClearCachedLinkVertices(I);
+    for J := 1 to NumVertices do
+    begin
+      NativeX := Xv[J-1];
+      NativeY := Yv[J-1];
+      ProjTrans.Transform(NativeX, NativeY);
+      mapcoords.AppendCachedVertexCoord(I, J, NativeX, NativeY);
+    end;
+  end;
+
   if SelectedVertex > 1 then Dec(SelectedVertex);
   RedrawMap;
   PaintAction := paVertices;
@@ -1520,6 +1595,11 @@ begin
   SetLength(Yv, 0);
   if SelectedVertex = 0 then exit;
   project.SetVertexCoords(SelectedObjIndex, Xv, Yv, 0);
+
+  // Basemap aktiv: Vertex-Cache für diesen Link leeren
+  if HasWebBasemap and (ProjTrans <> nil) then
+    mapcoords.ClearCachedLinkVertices(SelectedObjIndex);
+
   SelectedVertex := 0;
   RedrawMap;
   PaintAction := paVertices;
@@ -1676,10 +1756,16 @@ begin
   if mapcoords.CanProjectionTransform(IntToStr(Epsg), '4326', Extent) then
   begin
     MainForm.Cursor := crHourGlass;
-	if not mapcoords.HasCachedNodeCoords then mapcoords.CacheNativeNodeCoords;
+    // Cache ALLE Koordinaten (Knoten, Vertices, Labels)
+    if not mapcoords.HasCachedNodeCoords then
+    begin
+      mapcoords.CacheNativeNodeCoords;
+      mapcoords.CacheNativeVertexCoords;
+      mapcoords.CacheNativeLabelCoords;
+    end;
     Transformed := mapcoords.DoProjectionTransform(IntToStr(Epsg),
       '4326', Extent);
-     MainForm.Cursor := crDefault;
+    MainForm.Cursor := crDefault;
   end;
   if not Transformed then
   begin
@@ -1697,6 +1783,17 @@ begin
   end;
   Result := true;
 end;
+
+// ============================================================
+//  GETTER FUNKTION FÜR ProjTrans
+// ============================================================
+
+function TMapFrame.GetProjTrans: TProjTransform;
+begin
+  Result := ProjTrans;
+end;
+
+// ============================================================
 
 procedure TMapFrame.ShowWebBasemap;
 begin
@@ -1780,4 +1877,3 @@ begin
 end;
 
 end.
-
