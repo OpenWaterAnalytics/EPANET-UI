@@ -30,8 +30,7 @@ implementation
 
 uses
   main, project, projectframe, mapframe, maplabel, labeleditor,
-  utils, shpimporter, dxfimporter, csvimporter, epanet2, resourcestrings;
-
+  utils, shpimporter, dxfimporter, csvimporter, epanet2, resourcestrings, mapcoords, projtransform;
 
 function FindUnusedID(Category: Integer; SubCategory: Integer): string;
 var
@@ -67,6 +66,7 @@ var
   ID:        string;
   NodeIndex: Integer = 0;
   Err:       Integer;
+  NativeX, NativeY: Double;
 begin
   ID := FindUnusedID(ctNodes, NodeType);
   Err := epanet2.ENaddnode(PChar(ID), NodeType, NodeIndex);
@@ -82,6 +82,16 @@ begin
       epanet2.ENsetnodevalue(NodeIndex, EN_TANKDIAM,
         StrToFloatDef(project.DefProps[3], 0.0));
     end;
+
+    // Cache erweitern (wenn Basemap aktiv)
+    if MainForm.MapFrame.HasWebBasemap and (MainForm.MapFrame.GetProjTrans <> nil) then
+    begin
+      NativeX := Xcoord;
+      NativeY := Ycoord;
+      MainForm.MapFrame.GetProjTrans.Transform(NativeX, NativeY);
+      mapcoords.InsertCachedNodeCoord(NodeIndex, NativeX, NativeY);
+    end;
+
     MainForm.MapFrame.RedrawMap;
     MainForm.ProjectFrame.SelectItem(ctNodes, NodeIndex-1);
     project.HasChanged := true;
@@ -96,12 +106,27 @@ var
   X: array[0..project.MAX_VERTICES] of Double;
   Y: array[0..project.MAX_VERTICES] of Double;
   N: Integer = 0;
+  I: Integer;
+  NativeX, NativeY: Double;
 begin
   MainForm.MapFrame.GetVertices(X, Y, N);
   if N > 0 then
   begin
     epanet2.ENsetvertices(LinkIndex, X[0], Y[0], N);
     project.HasChanged := true;
+
+    // Basemap aktiv: Vertex-Cache für diesen (neuen) Link füllen
+    if MainForm.MapFrame.HasWebBasemap and (MainForm.MapFrame.GetProjTrans <> nil) then
+    begin
+      mapcoords.InsertCachedLinkVertices(LinkIndex);
+      for I := 0 to N - 1 do
+      begin
+        NativeX := X[I];
+        NativeY := Y[I];
+        MainForm.MapFrame.GetProjTrans.Transform(NativeX, NativeY);
+        mapcoords.AppendCachedVertexCoord(LinkIndex, I + 1, NativeX, NativeY);
+      end;
+    end;
   end;
 end;
 
@@ -238,4 +263,3 @@ begin
 end;
 
 end.
-
