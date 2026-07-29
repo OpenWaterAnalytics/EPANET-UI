@@ -765,13 +765,11 @@ procedure PasteLinkProps(const Index: Integer; const LinkType: Integer);
 var
   I: Integer;
   J: Integer;
-  X: Single;
+  X: Single = 0;
 begin
   case LinkType of
     ltPipe:
       begin
-        if utils.Str2Float(project.CopiedProperties[6], X) then
-          epanet2.ENsetlinkvalue(Index, EN_LENGTH, X);
         if utils.Str2Float(project.CopiedProperties[7], X) then
           epanet2.ENsetlinkvalue(Index, EN_DIAMETER, X);
         if utils.Str2Float(project.CopiedProperties[8], X) then

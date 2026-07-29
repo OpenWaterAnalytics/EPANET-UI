@@ -108,7 +108,7 @@ This table is a complement to the Node Results Table, except that it displays re
 
 ### Calibration Report
 The ***Calibration Report*** compares simulated values of a parameter with values measured at particular nodes within the pipe network. The report contains four tabbed pages whose contents are as follows:
-- The **Calibration Data** page is used to select a choice of parameter and to provide measured values of it at specific loctions and times. These data are entered into a table, with separate columns for node or link ID, measurement time, and measured value. The table can be loaded with data, in the same format, residing in a text file as well as be saved to a file.
+- The **Calibration Data** page is used to select a choice of parameter and to provide measured values of it at specific locations and times. These data are entered into a table, with separate columns for node or link ID, measurement time, and measured value. The table can be loaded with data, in the same format, residing in a text file as well as be saved to a file.
 <imgl images/CalibrationData.png><br>
 - The **Time Series Plot** page plots both computed and measured parameter values versus time for each measurement location.
 <imgl images/CalibrationPlot.png><br>

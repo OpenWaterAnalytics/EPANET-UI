@@ -18,7 +18,7 @@ uses
 
 resourcestring
   // main.pas
-  rsEpanetUI      = 'EPANET-UI(1.0.3.6 Pre-Release)';
+  rsEpanetUI      = 'EPANET-UI';
   rsSelectInpFile = 'Select an EPANET Input File';
   rsFileNoExists  = 'Input file no longer exists.';
   rsInpFileOpen   = 'EPANET INP Files|*.inp|All Files|*.*';

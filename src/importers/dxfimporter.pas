@@ -90,7 +90,7 @@ implementation
 {$R *.lfm}
 
 uses
-  main, config, utils, project, dxfviewer, dxfloader, resourcestrings;
+  main, config, utils, dxfviewer, dxfloader, resourcestrings;
 
 const
   IntroTxt:        string = rsDxfIntro;

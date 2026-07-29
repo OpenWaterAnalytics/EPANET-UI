@@ -120,23 +120,29 @@ end;
 
 function TProjTransform.Transform(var X, Y: Double): Boolean;
 var
-  Z: Double = 0;
+  ZZ: Double = 0;
+  XX: Double;
+  YY: Double;
 begin
   Result := false;
   if (SrcProj = 0)
   or (DstProj = 0) then
     exit;
+  XX := X;
+  YY := Y;
   if IsSrcLatLong = 1 then
   begin
-    X := X * DEG_TO_RAD;
-    Y := Y * DEG_TO_RAD;
+    XX := XX * DEG_TO_RAD;
+    YY := YY * DEG_TO_RAD;
   end;
-  if proj.pj_transform(SrcProj, DstProj, 1, 1, X, Y, Z) <> 0 then exit;
+  if proj.pj_transform(SrcProj, DstProj, 1, 1, XX, YY, ZZ) <> 0 then exit;
   if IsDstLatLong = 1 then
   begin
-    X := X * RAD_TO_DEG;
-    Y := Y * RAD_TO_DEG;
+    XX := XX * RAD_TO_DEG;
+    YY := YY * RAD_TO_DEG;
   end;
+  X := XX;
+  Y := YY;
   Result := true;
 end;
 

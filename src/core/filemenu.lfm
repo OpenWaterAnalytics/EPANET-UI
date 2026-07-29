@@ -29,8 +29,8 @@ object FileMenuFrame: TFileMenuFrame
     Align = alClient
     BevelOuter = bvNone
     BorderStyle = bsSingle
-    ClientHeight = 331
-    ClientWidth = 401
+    ClientHeight = 327
+    ClientWidth = 397
     TabOrder = 1
     object Panel2: TPanel
       Left = 152
@@ -40,8 +40,8 @@ object FileMenuFrame: TFileMenuFrame
       Align = alClient
       BevelOuter = bvNone
       BorderStyle = bsSingle
-      ClientHeight = 327
-      ClientWidth = 245
+      ClientHeight = 323
+      ClientWidth = 241
       TabOrder = 0
       object Panel3: TPanel
         Left = 0
@@ -132,7 +132,7 @@ object FileMenuFrame: TFileMenuFrame
       Items.Strings = (
         ''
         'New'
-        'Open                >'
+        'Open'
         'Save'
         'Save as'
         'Import              >'

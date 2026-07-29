@@ -148,7 +148,7 @@ implementation
 {$R *.lfm}
 
 uses
-  main, config, project, resourcestrings;
+  main, config, resourcestrings;
 
 const
   BackColors: array [0..7] of TColor =

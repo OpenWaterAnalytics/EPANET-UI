@@ -184,7 +184,6 @@ procedure TFileMenuFrame.FilesListBoxMouseMove(Sender: TObject;
   Shift: TShiftState; X, Y: Integer);
 var
   Index: Integer;
-  Fname: string;
 begin
   Index := FilesListBox.GetIndexAtXY(X, Y);
   if Index >= 0 then

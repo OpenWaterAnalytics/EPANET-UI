@@ -96,7 +96,7 @@ implementation
 {$R *.lfm}
 
 uses
-  main, config, project, csvviewer, csvloader, resourcestrings;
+  main, config, csvviewer, csvloader, resourcestrings;
 
 const
 
