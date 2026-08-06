@@ -29,6 +29,7 @@ type
     CheckBox5: TCheckBox;
     CheckBox6: TCheckBox;
     CheckBox7: TCheckBox;
+    CheckBox8: TCheckBox;
     Label1:    TLabel;
     OkBtn:     TButton;
     CancelBtn: TButton;
@@ -43,6 +44,7 @@ type
   private
 
   public
+    ChangeColorTheme: Boolean;
     procedure GetPreferences(var ClearFileList: Boolean);
     procedure SetPreferences;
 
@@ -89,7 +91,8 @@ begin
   config.OpenLastFile     := CheckBox5.Checked;
   config.BackupFile       := CheckBox6.Checked;
   config.DecimalPlaces    := SpinEdit1.Value;
-  ClearFileList := CheckBox7.Checked;
+  ChangeColorTheme        := CheckBox7.Checked;
+  ClearFileList           := CheckBox8.Checked;
 end;
 
 end.

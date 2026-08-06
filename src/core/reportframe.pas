@@ -52,10 +52,9 @@ type
     Report: TFrame;
     procedure Init;
     procedure ShowReport(RptType: TReportType);
-    procedure ChangeColor(aColor: TColor);
+    procedure ChangeColor;
     procedure ChangeTimePeriod;
     procedure RefreshReport;
-    procedure UpdateReport;
     procedure ClearReport;
     procedure CloseReport;
 
@@ -229,24 +228,27 @@ begin
   end;
 end;
 
-procedure TReportFrame.ChangeColor(aColor: TColor);
+procedure TReportFrame.ChangeColor;
 //
-//  Change the form's background color in response to a change in
+//  Change the frame's color theme in response to a change in
 //  Program Preferences.
 //
 begin
-  Color := aColor;
+  Color := config.ThemeColor;
+  config.SetHeaderColor(TopPanel);
   if Report = nil then exit;
   case ReportType of
+    rtCalib:
+      TCalibRptFrame(Report).SetColors;
     rtPumping:
-      TPumpingRptFrame(Report).RefreshGrid;
+      TPumpingRptFrame(Report).SetColors;
     rtSysFlow:
-      TSysFlowFrame(Report).RefreshGrid;
+      TSysFlowFrame(Report).SetColors;
     rtTimeSeries:
-      TTimeSeriesFrame(Report).RefreshGrid;
+      TTimeSeriesFrame(Report).SetColors;
     rtNodes,
     rtLinks:
-      TNetworkRptFrame(Report).RefreshGrid;
+      TNetworkRptFrame(Report).SetColors;
   end;
 end;
 
@@ -296,13 +298,6 @@ begin
   end;
   Show;
   MainForm.ShowPage(MainForm.ReportPage);
-end;
-
-procedure TReportFrame.UpdateReport;
-begin
-  if Report = nil then exit;
-  if ReportType in [rtNodes, rtLinks] then
-    TNetworkRptFrame(Report).RefreshGrid;
 end;
 
 procedure TReportFrame.ClearReport;

@@ -371,7 +371,7 @@ begin
   UpdateDeleteBtn;
 
   // Update any report affected by this item deletion
-  MainForm.ReportFrame.UpdateReport;
+  MainForm.ReportFrame.RefreshReport;
 end;
 
 procedure TProjectFrame.ConvertItem(ToType: Integer);

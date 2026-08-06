@@ -28,15 +28,12 @@ object GroupEditorFrame: TGroupEditorFrame
     ParentFont = False
     TabOrder = 0
     object CloseBtn: TSpeedButton
-      Left = 207
-      Height = 26
+      Left = 210
+      Height = 22
       Hint = 'Close'
-      Top = 0
-      Width = 26
-      Align = alRight
+      Top = 3
+      Width = 22
       Anchors = [akTop, akRight]
-      AutoSize = True
-      Flat = True
       Glyph.Data = {
         76060000424D7606000000000000360000002800000014000000140000000100
         2000000000004006000064000000640000000000000000000000000000000000

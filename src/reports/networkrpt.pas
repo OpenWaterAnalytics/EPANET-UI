@@ -97,8 +97,9 @@ end;
     procedure CloseReport;
     procedure ClearReport;
     procedure RefreshReport;
-    procedure ShowPopupMenu;
     procedure RefreshGrid;
+    procedure SetColors;
+    procedure ShowPopupMenu;
 
   end;
 
@@ -216,6 +217,7 @@ begin
   IndexList := TIntegerList.Create;
   ClearReport;
   SetupTable;
+  SetColors;
 end;
 
 procedure TNetworkRptFrame.CloseReport;
@@ -288,6 +290,12 @@ begin
   else
     S := ' ' + rsFiltered + ' ';
   BottomPanel.Caption := S + IntToStr(DataGrid.RowCount - 1) + ' ' + rsItems;
+end;
+
+procedure TNetworkRptFrame.SetColors;
+begin
+  Color := config.ThemeColor;
+  DataGrid.FixedColor := config.ThemeColor;
 end;
 
 procedure TNetworkRptFrame.SetupTable;

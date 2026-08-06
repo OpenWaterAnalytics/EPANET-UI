@@ -25,7 +25,7 @@ procedure DrawNetwork(Map: TMap);
 implementation
 
 uses
-  project, mapthemes, mapoptions, maplabel, config;
+  project, mapthemes, mapoptions, maplabel, mapcoords, config;
 
 var
   LabelColor:    TColor;
@@ -123,7 +123,7 @@ begin
   Map.Canvas.LineTo(P2.X, P2.Y);
 end;
 
-function  ShowLinkSymbol(Map: TMap; LinkType: Integer): Boolean;
+function ShowLinkSymbol(Map: TMap; LinkType: Integer): Boolean;
 begin
   Result := false;
   if Map.Options.ShowLinkArrows then

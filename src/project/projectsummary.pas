@@ -56,6 +56,7 @@ var
   S: string = '';
   T: TimeType = 0;
 begin
+  Color := config.ThemeColor;
   Font.Size := config.FontSize;
   ShowNodeCount;
   ShowLinkCount;

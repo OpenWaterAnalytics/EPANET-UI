@@ -495,7 +495,7 @@ procedure TGroupEditorFrame.Init(ObjType: Integer);
 //
 begin
   Color := clCream;
-  TopPanel.Color := config.ThemeColor;
+  config.SetHeaderColor(TopPanel);
   ObjectType := ObjType;
   if not ObjectType in [ctNodes, ctLinks] then exit;
 
@@ -596,7 +596,7 @@ begin
       MainForm.MapFrame.Map.Extent := MainForm.MapFrame.Map.GetBounds;
       MainForm.MapFrame.RedrawMap;
       MainForm.OverviewMapFrame.Redraw;
-      MainForm.ReportFrame.UpdateReport;
+      MainForm.ReportFrame.RefreshReport;
     end;
   end;
 end;

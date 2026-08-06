@@ -58,12 +58,6 @@ procedure DoScalingTransform(FromScaling, ToScaling: TScalingInfo;
 procedure DoExtentTransform(FromScaling, ToScaling: TScalingInfo;
             FromExtent: TDoubleRect; var ToExtent: TDoubleRect);
 
-function  DoProjectionTransform(FromProj, ToProj: string;
-            var Bounds: TDoubleRect): Boolean;
-
-function  CanProjectionTransform(FromProj, ToProj: string;
-            Bounds: TDoubleRect): Boolean;
-
 function  FromWGS84ToWebMercator(LatLng: TDoublePoint): TDoublePoint;
 
 function  ManhattanDistance(P1, P2: TDoublePoint): Double;
@@ -71,12 +65,11 @@ function  ManhattanDistance(P1, P2: TDoublePoint): Double;
 implementation
 
 uses
-  main, project, projtransform;
+  main, project;
 
 const
   ScalingTransform = 0;
   AffineTransform = 1;
-  ProjectionTransform = 2;
 
 var
   S1: TScalingInfo;
@@ -87,7 +80,6 @@ var
   By: Double;
   Cx: Double;
   Cy: Double;
-  ProjTrans: TProjTransform;      // Used for projection transform
 
 function  DoublePoint(X, Y: Double): TDoublePoint;
 // Return a point with coords. X & Y.
@@ -227,16 +219,6 @@ begin
   Result.Y := Ay*X + By*Y + Cy;
 end;
 
-function ApplyProjectionTransform(var X, Y: Double): TDoublePoint;
-//
-//  Convert coord. X,Y from one coord. reference system to another.
-//
-begin
-  ProjTrans.Transform(X,Y);
-  Result.X := X;
-  Result.Y := Y;
-end;
-
 function ApplyTransform(TransformType: Integer; X, Y: Double): TDoublePoint;
 //
 //  Apply the TransformType coord. transform to coord. X,Y.
@@ -248,8 +230,6 @@ begin
       Result := ApplyAffineTransform(X, Y);
     ScalingTransform:
       Result := ApplyScalingTransform(X, Y);
-    ProjectionTransform:
-      Result := ApplyProjectionTransform(X, Y);
   end;
 end;
 
@@ -443,77 +423,6 @@ begin
   if Abs(P1.X - P2.X) > AbsTol + RelTol * Abs(P2.X) then exit;
   if Abs(P1.Y - P2.Y) > AbsTol + RelTol * Abs(P2.Y) then exit;
   Result := true;
-end;
-
-function  CanProjectionTransform(FromProj, ToProj: string;
-  Bounds: TDoubleRect): Boolean;
-//
-//  Check if map coords. can be transformed from CRS FromProj to ToProj.
-//
-var
-  ToBounds: TDoubleRect;
-begin
-  Result := false;
-  ProjTrans := TProjTransform.Create;
-  try
-
-    // Check that coords. of current bounding rectangle can be transformed
-    if ProjTrans.SetProjections(FromProj, ToProj) then
-    begin
-      ToBounds := Bounds;
-      ApplyProjectionTransform(ToBounds.LowerLeft.X, ToBounds.LowerLeft.Y);
-      ApplyProjectionTransform(ToBounds.UpperRight.X, ToBounds.UpperRight.Y);
-      if SameText(ToProj, '4326') then
-      begin
-        if not HasLatLonCoords(ToBounds) then exit;
-      end;
-    end;
-
-    // Check that a reverse transform can be made
-    if ProjTrans.SetProjections(ToProj, FromProj) then
-    begin
-      ApplyProjectionTransform(ToBounds.LowerLeft.X, ToBounds.LowerLeft.Y);
-      if not PointsEqual(ToBounds.LowerLeft, Bounds.LowerLeft) then exit;
-      ApplyProjectionTransform(ToBounds.UpperRight.X, ToBounds.UpperRight.Y);
-      if not PointsEqual(ToBounds.UpperRight, Bounds.UpperRight) then exit;
-    end;
-    Result := true;
-
-  finally
-    ProjTrans.Free;
-  end;
-end;
-
-function DoProjectionTransform(FromProj, ToProj: string;
-  var Bounds: TDoubleRect): Boolean;
-//
-//  Convert all network coord. data from CRS projection FromProj to
-//  CRS projection ToProj. It creates a module-level TProjTransform object
-//  that makes conversions in the projtransform unit using its Transform method.
-//
-begin
-  // Create a Projection Transform object
-  Result := false;
-  ProjTrans := TProjTransform.Create;
-  try
-
-    // Check that FromProj can be converted to ToProj
-    if ProjTrans.SetProjections(FromProj, ToProj) then
-    begin
-      // Transform coords. of the network's bounding rectangle
-      ApplyProjectionTransform(Bounds.LowerLeft.X, Bounds.LowerLeft.Y);
-      ApplyProjectionTransform(Bounds.UpperRight.X, Bounds.UpperRight.Y);
-
-      // Transform coords. for all network objects
-      TransformNodeCoords(ProjectionTransform);
-      TransformVertexCoords(ProjectionTransform);
-      TransformLabelCoords(ProjectionTransform);
-      Result := true;
-    end;
-
-  finally
-    ProjTrans.Free;
-  end;
 end;
 
 function GetZoomLevel(NorthEast: TDoublePoint; SouthWest: TDoublePoint;

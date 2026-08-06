@@ -18,7 +18,7 @@ uses
   Classes, SysUtils, Graphics, Controls, LCLIntf, Math,
 
   // EPANET-UI units
-  mapoptions, mapcoords, webmap;
+  mapoptions, mapcoords, webmap, projtransform;
 
 const
   MIN_ZOOM = -10;    // Minimum power of 2 when zooming out on the map
@@ -54,6 +54,9 @@ type
     Extent    : TDoubleRect;     // Bounding world rectangle at full extent
     ZoomLevel : Integer;         // Current zoom level
     CharHeight: Integer;         // Max. character height
+    ProjTransToWGS84   : TProjTransform;  // Transform native coords. to WGS84 (EPSG 4326)
+    ProjTransFromWGS84 : TProjTransform;  // Transform WGS84 to native coords.
+
     constructor Create;
     destructor  Destroy; override;
 
@@ -101,6 +104,11 @@ type
     function  WorldToScreen(X,Y: Double): TPoint;
     function  ScreenToWorld(X, Y: Integer): TDoublePoint;
 
+    function  CreateProjTrans(EPSG: string): Boolean;
+    procedure DeleteProjTrans;
+    procedure NativeToWGS84(var X: Double; var Y: Double);
+    procedure WGS84ToNative(var X: Double; var Y: Double);
+
     procedure DrawBoundingRect;
 
   end;
@@ -134,6 +142,10 @@ begin
   Basemap.WebMap := nil;
   Basemap.NeedsRedraw := false;
 
+  // Web basemap coordinate transforms
+  ProjTransToWGS84 := nil;
+  ProjTransFromWGS84 := nil;
+
   // Default world coordinates of map's extent
   Extent.LowerLeft.X := 0;
   Extent.LowerLeft.Y := 0;
@@ -148,6 +160,7 @@ end;
 
 destructor TMap.Destroy;
 begin
+  DeleteProjTrans;
   Bitmap.Free;
   Basemap.Picture.Free;
   Basemap.WebMap.Free;
@@ -214,8 +227,12 @@ var
   Bounds: TDoubleRect;
 begin
   Bounds := mapcoords.GetBounds(Extent);
-  if (Basemap.Picture.Bitmap.Width > 0)
-  and (Basemap.WebMap = nil) then
+  if Assigned(Basemap.WebMap) then
+  begin
+    NativeToWGS84(Bounds.LowerLeft.X, Bounds.LowerLeft.Y);
+    NativeToWGS84(Bounds.UpperRight.X, Bounds.UpperRight.Y);
+  end
+  else if (Basemap.Picture.Bitmap.Width > 0) then
   begin
     Bounds.LowerLeft.X := Min(Bounds.LowerLeft.X, Basemap.LowerLeft.X);
     Bounds.LowerLeft.Y := Min(Bounds.LowerLeft.Y, Basemap.LowerLeft.Y);
@@ -788,6 +805,7 @@ function TMap.WorldToScreen(X,Y: Double): TPoint;
 begin
   if Assigned(Basemap.WebMap) then
   begin
+    NativeToWGS84(X, Y);
     Result := Basemap.WebMap.FromLatLonToPixel(DoublePoint(X, Y));
     Result.X := (MapRect.Width div 2) + (Result.X - Basemap.WebMap.CenterPixel.X);
     Result.Y := (MapRect.Height div 2) + (Result.Y - Basemap.WebMap.CenterPixel.Y);
@@ -802,7 +820,8 @@ begin
   begin
     X := Basemap.WebMap.CenterPixel.X + (X - MapRect.Width div 2);
     Y := Basemap.WebMap.CenterPixel.Y + (Y - MapRect.Height div 2);
-    Result := Basemap.WebMap.FromPixelToLatLon(Point(X, Y))
+    Result := Basemap.WebMap.FromPixelToLatLon(Point(X, Y));
+    WGS84ToNative(Result.X, Result.Y);
   end
   else
     Result := DoublePoint(GetX(X), GetY(Y));
@@ -838,6 +857,45 @@ function  TMap.GetY(const Y: Integer): Double;
 //
 begin
   Result := CenterW.Y + (CenterP.Y - Y) * WPP;
+end;
+
+//-----------------------------------------
+//  Coordinate Transforms for Web Basemaps
+//-----------------------------------------
+
+procedure TMap.NativeToWGS84(var X: Double; var Y: Double);
+begin
+  if Assigned(ProjTransToWGS84) then ProjTransToWGS84.Transform(X,Y);
+end;
+
+procedure TMap.WGS84ToNative(var X: Double; var Y: Double);
+begin
+  if Assigned(ProjTransFromWGS84) then ProjTransFromWGS84.Transform(X,Y);
+end;
+
+function  TMap.CreateProjTrans(EPSG: string): Boolean;
+begin
+  Result := false;
+  if not Assigned(ProjTransToWGS84) then
+    ProjTransToWGS84 := TProjTransform.Create;
+  if ProjTransToWGS84 = nil then exit;
+  if not Assigned(ProjTransFromWGS84) then
+    ProjTransFromWGS84 := TProjTransform.Create;
+  if ProjTransFromWGS84 = nil then exit;
+  if not ProjTransFromWGS84.SetProjections('4326', EPSG) then exit;
+
+  if ProjTransToWGS84.SetProjections(EPSG, '4326') then
+  begin
+    NativeToWGS84(Extent.LowerLeft.X, Extent.LowerLeft.Y);
+    NativeToWGS84(Extent.UpperRight.X, Extent.UpperRight.Y);
+    Result := true;
+  end;
+end;
+
+procedure TMap.DeleteProjTrans;
+begin
+  FreeAndNil(ProjTransFromWGS84);
+  FreeAndNil(ProjTransToWGS84);
 end;
 
 end.

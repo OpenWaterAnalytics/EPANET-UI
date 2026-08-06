@@ -19,13 +19,11 @@ object PumpingRptFrame: TPumpingRptFrame
     BevelOuter = bvNone
     BorderStyle = bsSingle
     Caption = '  Total Cost: 0   Demand Charge: 0'
-    ClientHeight = 35
-    ClientWidth = 479
-    ParentBackground = False
-    ParentColor = False
+    ClientHeight = 31
+    ClientWidth = 475
     TabOrder = 0
     object Label1: TLabel
-      Left = 283
+      Left = 279
       Height = 15
       Top = 10
       Width = 165
@@ -35,7 +33,7 @@ object PumpingRptFrame: TPumpingRptFrame
       ParentColor = False
     end
   end
-  object StringGrid1: TStringGrid
+  object DataGrid: TStringGrid
     Left = 0
     Height = 205
     Top = 0
@@ -52,9 +50,9 @@ object PumpingRptFrame: TPumpingRptFrame
     Options = [goFixedVertLine, goFixedHorzLine, goHorzLine, goThumbTracking, goSmoothScroll, goFixedColSizing]
     TabOrder = 1
     TitleFont.Height = -12
-    OnClick = StringGrid1Click
-    OnCompareCells = StringGrid1CompareCells
-    OnPrepareCanvas = StringGrid1PrepareCanvas
+    OnClick = DataGridClick
+    OnCompareCells = DataGridCompareCells
+    OnPrepareCanvas = DataGridPrepareCanvas
     ColWidths = (
       69
       69

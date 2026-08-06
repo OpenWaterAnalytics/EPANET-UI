@@ -165,6 +165,7 @@ type
     MruMenuMgr:            TMRUMenuManager;
     AppIniFile:            string;
 
+    procedure SetColorTheme;
     procedure EnableMainForm(State: Boolean);
     procedure FileConfigure;
     procedure FileImport(FileType: String);
@@ -236,11 +237,10 @@ begin
 
   Font.Size := config.FontSize;
   HintTitleLabel.Font.Style := [fsBold];
-  Color := config.ThemeColor;
   HintPanel.Color := $00E1FFFF;
-  config.SetHeaderColor(TopPanel);
   SetMruFiles;
   CreateFrames;
+  SetColorTheme;
 
   // Disable floating point exceptions
   SetExceptionMask([exInvalidOp, exDenormalized, exZeroDivide, exOverflow,
@@ -633,6 +633,25 @@ begin
   BottomReportPanel.Height := Vspace;
   LeftReportPanel.Width := Hspace;
   RightReportPanel.Width := Hspace;
+end;
+
+procedure TMainForm.SetColorTheme;
+begin
+  Color := config.ThemeColor;
+  MainMenuFrame.SetColorTheme;
+  if not project.HasResults then
+    StatusBarFrame.SetPanelColor(Ord(sbResults), Color);
+  ReportFrame.ChangeColor;
+  config.SetHeaderColor(TopPanel);
+  config.SetHeaderColor(ProjectFrame.TopPanel);
+  config.SetHeaderColor(ProjectFrame.ItemPanel);
+  config.SetHeaderColor(LocaterFrame.TopPanel);
+  config.SetHeaderColor(GeoRefFrame.TopPanel);
+  config.SetHeaderColor(MapAlignFrame.TopPanel);
+  config.SetHeaderColor(QueryFrame.TopPanel);
+  config.SetHeaderColor(ProfileSelectorFrame.TopPanel);
+  config.SetHeaderColor(TseriesSelectorFrame.TopPanel);
+  config.SetHeaderColor(PcntileSelectorFrame.TopPanel);
 end;
 
 {------------------------------------------------------------------------------

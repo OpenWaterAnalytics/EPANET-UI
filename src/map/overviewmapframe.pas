@@ -90,7 +90,7 @@ begin
   SavedLinkTheme := mapthemes.LinkTheme;
   mapthemes.LinkTheme := 0;
   Map.Options.BackColor := MainForm.MapFrame.Map.Options.BackColor;
-  Map.Extent := MainForm.MapFrame.Map.GetBounds;
+  Map.Extent := {MainForm.MapFrame.} Map.GetBounds;
   Map.ZoomLevel := 0;
   Map.Rescale;
   Map.Redraw;

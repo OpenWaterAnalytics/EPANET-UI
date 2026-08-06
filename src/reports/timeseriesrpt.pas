@@ -92,6 +92,7 @@ type
     DataSeries:    array[0..MaxSeries-1] of TDataSeries;
 
     procedure PlotSeries(I: Integer);
+    procedure RefreshGrid;
     function  GetDataGridValue(C: Integer; R: Integer): string;
     procedure GetDataGridContents(Slist: TStringList);
     procedure FillLineSeries(aLineSeries: TLineSeries; ObjType: Integer;
@@ -105,7 +106,7 @@ type
     procedure CloseReport;
     procedure ClearReport;
     procedure RefreshReport;
-    procedure RefreshGrid;
+    procedure SetColors;
     procedure ShowPopupMenu;
     procedure ShowTimeSeriesSelector;
     procedure SetDataSeries(NewDataSeries: array of TDataSeries;
@@ -133,6 +134,7 @@ procedure TTimeSeriesFrame.InitReport;
 var
   I, FontSize: Integer;
 begin
+  SetColors;
   for I := 0 to High(DataSeries) do
   begin
     DataSeries[I].ObjType := -1;
@@ -177,6 +179,12 @@ var
 begin
   P := Self.ClientToScreen(Point(0, 0));
   PopupMenu1.PopUp(P.x,P.y);
+end;
+
+procedure TTimeSeriesFrame.SetColors;
+begin
+  Color := config.ThemeColor;
+  DataGrid.FixedColor := config.ThemeColor;
 end;
 
 procedure TTimeSeriesFrame.DataMenuItemClick(Sender: TObject);

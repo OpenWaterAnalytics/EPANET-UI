@@ -17,30 +17,29 @@ object ReportFrame: TReportFrame
     Align = alClient
     BevelOuter = bvNone
     BorderStyle = bsSingle
-    ClientHeight = 398
-    ClientWidth = 598
+    ClientHeight = 400
+    ClientWidth = 600
     TabOrder = 0
     object TopPanel: TPanel
       Left = 0
       Height = 28
       Top = 0
-      Width = 598
+      Width = 596
       Align = alTop
       BevelOuter = bvNone
       Caption = 'Title'
       ClientHeight = 28
-      ClientWidth = 598
+      ClientWidth = 596
       Font.Style = [fsBold]
       ParentFont = False
       TabOrder = 0
       object MenuBtn: TSpeedButton
         Left = 4
-        Height = 26
+        Height = 22
         Hint = 'Report Menu'
-        Top = 0
-        Width = 26
+        Top = 3
+        Width = 22
         Caption = 'Menu'
-        Flat = True
         Font.CharSet = ANSI_CHARSET
         Font.Color = clWhite
         Font.Pitch = fpVariable
@@ -110,13 +109,11 @@ object ReportFrame: TReportFrame
       end
       object CloseBtn: TSpeedButton
         Left = 570
-        Height = 26
+        Height = 22
         Hint = 'Close'
-        Top = 0
-        Width = 26
+        Top = 3
+        Width = 22
         Anchors = [akTop, akRight]
-        AutoSize = True
-        Flat = True
         Glyph.Data = {
           76060000424D7606000000000000360000002800000014000000140000000100
           2000000000004006000064000000640000000000000000000000000000000000
@@ -171,7 +168,6 @@ object ReportFrame: TReportFrame
           0000000000000000000000000000000000000000000000000000000000000000
           0000000000000000000000000000000000000000000000000000
         }
-        Images = mainForm.WindowImageList
         ImageIndex = 1
         ImageWidth = 16
         ShowCaption = False
@@ -182,9 +178,9 @@ object ReportFrame: TReportFrame
     end
     object ReportPanel: TPanel
       Left = 0
-      Height = 370
+      Height = 368
       Top = 28
-      Width = 598
+      Width = 596
       Align = alClient
       BevelOuter = bvNone
       BorderStyle = bsSingle

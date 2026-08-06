@@ -58,41 +58,69 @@ type
     BasemapLoadItem:      TMenuItem;
     BasemapMenu:          TPopupMenu;
     BasemapUnloadItem:    TMenuItem;
-    EditCopyBtn:          TToolButton;
-    EditPasteBtn:         TToolButton;
-    EditReverseBtn:       TToolButton;
-    EditSep1:             TToolButton;
-    EditSep2:             TToolButton;
-    EditToolBar:          TToolBar;
-    EditVertexBtn:        TToolButton;
+    EditConvertBtn: TToolButton;
+    EditCopyBtn: TToolButton;
+    EditPasteBtn: TToolButton;
+    EditReverseBtn: TToolButton;
+    EditSep1: TToolButton;
+    EditSep2: TToolButton;
+    EditToolBar: TToolBar;
+    EditVertexBtn: TToolButton;
     ExportMapToClipboard: TMenuItem;
     ExportMapToFile:      TMenuItem;
-    GroupEditBtn:         TToolButton;
-    HelpAboutBtn:         TToolButton;
-    HelpErrorsBtn:        TToolButton;
-    HelpSep1:             TToolButton;
-    HelpToolBar:          TToolBar;
-    HelpTopicsBtn:        TToolButton;
-    HelpTutorialBtn:      TToolButton;
-    HelpUnitsBtn:         TToolButton;
-    MapBasemapBtn:        TToolButton;
-    MapCopyMapBtn:        TToolButton;
-    MapExtentsBtn:        TToolButton;
-    MapOptionsBtn:        TToolButton;
-    MapQueryBtn:          TToolButton;
-    MapSep1:              TToolButton;
-    MapSep2:              TToolButton;
     BasemapAlignItem:     TMenuItem;
-    MapToolBar:           TToolBar;
-    MapZoomInBtn:         TToolButton;
-    MapZoomOutBtn:        TToolButton;
     ConvertMenuItem1:     TMenuItem;
     ConvertMenuItem2:     TMenuItem;
     ConvertMenuItem3:     TMenuItem;
     DxfFileMenuItem:      TMenuItem;
     ExportMenu: TPopupMenu;
+    FilePanel: TPanel;
+    GroupDeleteBtn: TToolButton;
+    GroupEditBtn: TToolButton;
+    HelpAboutBtn: TToolButton;
+    HelpErrorsBtn: TToolButton;
+    HelpSep1: TToolButton;
+    HelpToolBar: TToolBar;
+    HelpTopicsBtn: TToolButton;
+    HelpTutorialBtn: TToolButton;
+    HelpUnitsBtn: TToolButton;
+    MapBasemapBtn: TToolButton;
+    MapCopyMapBtn: TToolButton;
+    MapExtentsBtn: TToolButton;
+    MapOptionsBtn: TToolButton;
+    MapQueryBtn: TToolButton;
+    MapSep1: TToolButton;
+    MapSep2: TToolButton;
     MapToFileMenuItem: TMenuItem;
     MapToClipbrdMenuItem: TMenuItem;
+    MapToolBar: TToolBar;
+    MapZoomInBtn: TToolButton;
+    MapZoomOutBtn: TToolButton;
+    MenuBarPanel: TPanel;
+    MenuNotebook: TNotebook;
+    MenuPanel1: TPanel;
+    MenuPanel2: TPanel;
+    MenuPanel3: TPanel;
+    MenuPanel4: TPanel;
+    MenuPanel5: TPanel;
+    Page1: TPage;
+    Page2: TPage;
+    Page3: TPage;
+    Page4: TPage;
+    Page5: TPage;
+    ProjectAddBtn: TToolButton;
+    ProjectAnalyzeBtn: TToolButton;
+    ProjectDeleteBtn: TToolButton;
+    ProjectDetailsBtn: TToolButton;
+    ProjectFindBtn: TToolButton;
+    ProjectReportBtn: TToolButton;
+    ProjectSep1: TToolButton;
+    ProjectSep2: TToolButton;
+    ProjectSetupBtn: TToolButton;
+    ProjectSummaryBtn: TToolButton;
+    ProjectToolBar: TToolBar;
+    SpeedBar: TToolBar;
+    SpeedPanel: TPanel;
     TextFileMenuItem:     TMenuItem;
     ShapefileMenuItem:    TMenuItem;
     LinksMenuItem:        TMenuItem;
@@ -100,47 +128,20 @@ type
     ImportMenu:           TPopupMenu;
     MruMenu:              TPopupMenu;
     GroupEditMenu:        TPopupMenu;
-    SpeedPanel:           TPanel;
-    SpeedBar:             TToolBar;
-    ToolButton1:          TToolButton;
-    ToolButton2:          TToolButton;
-    ToolButton3:          TToolButton;
-    ToolButton4:          TToolButton;
-    ToolButton5:          TToolButton;
-    ToolButton6:          TToolButton;
-    ToolButton7:          TToolButton;
-    ToolButton8:          TToolButton;
-    ToolButton9:          TToolButton;
+    ToolButton1: TToolButton;
+    ToolButton2: TToolButton;
+    ToolButton3: TToolButton;
+    ToolButton4: TToolButton;
+    ToolButton5: TToolButton;
+    ToolButton6: TToolButton;
+    ToolButton7: TToolButton;
+    ToolButton8: TToolButton;
+    ToolButton9: TToolButton;
     ToValveMenuItem:      TMenuItem;
     ToPumpMenuItem:       TMenuItem;
     ToPipeMenuItem:       TMenuItem;
-    FilePanel:            TPanel;
     Panel1:               TPanel;
-    Panel2:               TPanel;
-    MenuBarPanel:         TPanel;
-    MenuPanel1:           TPanel;
-    MenuPanel2:           TPanel;
-    MenuPanel3:           TPanel;
-    MenuPanel4:           TPanel;
-    MenuPanel5:           TPanel;
-    MenuNotebook:         TNotebook;
-    Page1:                TPage;
-    Page2:                TPage;
-    Page3:                TPage;
-    Page4:                TPage;
-    Page5:                TPage;
     ConvertMenu:          TPopupMenu;
-    ProjectAddBtn:        TToolButton;
-    ProjectAnalyzeBtn:    TToolButton;
-    ProjectDeleteBtn:     TToolButton;
-    ProjectDetailsBtn:    TToolButton;
-    ProjectFindBtn:       TToolButton;
-    ProjectReportBtn:     TToolButton;
-    ProjectSep1:          TToolButton;
-    ProjectSep2:          TToolButton;
-    ProjectSetupBtn:      TToolButton;
-    ProjectSummaryBtn:    TToolButton;
-    ProjectToolBar:       TToolBar;
     RptProfileItem:       TMenuItem;
     ObjectMenu:           TPopupMenu;
     ReportMenu:           TPopupMenu;
@@ -162,8 +163,6 @@ type
     Separator6:           TMenuItem;
     Separator7:           TMenuItem;
     Separator8:           TMenuItem;
-    GroupDeleteBtn:       TToolButton;
-    EditConvertBtn:       TToolButton;
 
     procedure AddLabelItemClick(Sender: TObject);
     procedure AddLinkItemClick(Sender: TObject);
@@ -206,6 +205,7 @@ type
     procedure MenuMeasureItem(Sender: TObject; ACanvas: TCanvas;
       var AWidth, AHeight: Integer);
     procedure NodesMenuItemClick(Sender: TObject);
+    procedure ObjectMenuPopup(Sender: TObject);
 
     procedure ProjectAnalyzeBtnClick(Sender: TObject);
     procedure ProjectDeleteBtnClick(Sender: TObject);
@@ -258,7 +258,7 @@ const
 procedure TMainMenuFrame.Init;
 begin
   Color := clWindow;
-  MenuBarPanel.Color := config.menuColor;
+  MenuBarPanel.Color := config.MenuColor;
   Font.Size := config.FontSize;
   
   // Start with Project menu
@@ -425,6 +425,11 @@ begin
   MainForm.GroupEditorFrame.Init(ctNodes);
 end;
 
+procedure TMainMenuFrame.ObjectMenuPopup(Sender: TObject);
+begin
+  MainForm.ShowPage(MainForm.MapPage);
+end;
+
 procedure TMainMenuFrame.LinksMenuItemClick(Sender: TObject);
 begin
   GroupEditBtn.Down := True;
@@ -465,8 +470,13 @@ end;
 //---------------------------------------------------------
 
 procedure TMainMenuFrame.MapExtentsBtnClick(Sender: TObject);
+var
+  StartTime, Elapsed: QWord;
 begin
+  StartTime := GetTickCount64();
   MainForm.MapFrame.DrawFullExtent;
+  Elapsed := GetTickCount64() - StartTime;
+//  showmessage(IntToStr(Elapsed) + ' ms');
 end;
 
 procedure TMainMenuFrame.MapOptionsBtnClick(Sender: TObject);
@@ -899,12 +909,17 @@ end;
 
 procedure TMainMenuFrame.SetColorTheme;
 var
-  MenuBarPanelColor: TColor;
+  I: Integer;
 begin
-  MenuBarPanelColor := MenuBarPanel.Color;
-  Color := config.FormColor;
-  MenuBarPanel.Color := MenuBarPanelColor;
-  MenuPanel.Color := MenuNotebook.Color;
+  MenuPanel.Color := MenuBarPanel.Color;
+  MenuPanel.Font.Color := clWhite;
+  for I := 1 to 5 do
+  begin
+    with FindComponent('MenuPanel' + IntToStr(I)) as TPanel do
+      Color := config.MenuColor;
+  end;
+  MenuBarPanel.Color := config.MenuColor;
+  MenuPanelClick(MenuPanel);
 end;
 
 procedure TMainMenuFrame.UpdateEditMenuBtns;

@@ -1034,11 +1034,6 @@ function Save(FileName: string): Boolean;
 var
   ErrCode: Integer;
 begin
-  // If web basemap in use, transform project's coords. to original EPSG
-  if MainForm.MapFrame.HasWebBasemap then
-    DoProjectionTransform('4326', IntToStr(project.MapEpsg),
-      MainForm.MapFrame.Map.Extent);
-
   // Call EPANET Toolkit function to save project data to file
   ErrCode := epanet2.ENsaveinpfile(PAnsiChar(FileName));
   Result := (ErrCode = 0);
@@ -1049,11 +1044,6 @@ begin
     projectmapdata.SaveMapData(FileName);
     HasChanged := false;
   end;
-
-  // Transform project's coords. back to EPSG 4326 if web basemap used
-  if MainForm.MapFrame.HasWebBasemap then
-    DoProjectionTransform(IntToStr(project.MapEpsg), '4326',
-      MainForm.MapFrame.Map.Extent);
 end;
 
 procedure SetTitle(Line1: string; Line2: string; Line3: string);

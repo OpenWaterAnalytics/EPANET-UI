@@ -71,6 +71,7 @@ type
     procedure ClearReport;
     procedure RefreshReport;
     procedure RefreshGrid;
+    procedure SetColors;
     procedure ShowPopupMenu;
   end;
 
@@ -159,6 +160,7 @@ end;
 
 procedure TSysFlowFrame.RefreshGrid;
 begin
+  SetColors;
   with DataGrid do
   begin
     Clear;
@@ -174,6 +176,12 @@ var
 begin
   P := Self.ClientToScreen(Point(0, 0));
   ExportMenu.PopUp(P.x,P.y);
+end;
+
+procedure TSysFlowFrame.SetColors;
+begin
+  Color := config.ThemeColor;
+  DataGrid.FixedColor := config.ThemeColor;
 end;
 
 procedure TSysFlowFrame.MnuTimeOfDayClick(Sender: TObject);

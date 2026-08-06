@@ -539,8 +539,6 @@ end;
 
 procedure UpdateLegend(ThemeType: Integer; ThemeIndex: Integer;
   ThemeName: string; ThemeUnits: string);
-var
-  IsFramed: Boolean;
 begin
   if ThemeType = ctNodes then
   begin

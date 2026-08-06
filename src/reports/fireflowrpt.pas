@@ -491,7 +491,7 @@ begin
   SavedLinkTheme := mapthemes.LinkTheme;
   mapthemes.NodeTheme := 0;
   mapthemes.LinkTheme := 0;
-  Map.Extent := MainForm.MapFrame.Map.GetBounds;
+  Map.Extent := {MainForm.MapFrame.} Map.GetBounds;
   Map.Rescale;
   Map.Redraw;
   DrawFireFlowNodes;

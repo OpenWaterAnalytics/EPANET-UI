@@ -18,6 +18,7 @@ object MapViewerFrame: TMapViewerFrame
     BevelOuter = bvNone
     ClientHeight = 700
     ClientWidth = 237
+    Color = clWindow
     ParentBackground = False
     ParentColor = False
     TabOrder = 0
@@ -28,8 +29,8 @@ object MapViewerFrame: TMapViewerFrame
       Width = 237
       HorzScrollBar.Page = 1
       HorzScrollBar.Visible = False
-      VertScrollBar.Increment = 64
-      VertScrollBar.Page = 648
+      VertScrollBar.Increment = 66
+      VertScrollBar.Page = 660
       VertScrollBar.Smooth = True
       VertScrollBar.Tracking = True
       Align = alClient
@@ -39,7 +40,7 @@ object MapViewerFrame: TMapViewerFrame
       TabOrder = 0
       object FlowPanel1: TFlowPanel
         Left = 16
-        Height = 648
+        Height = 660
         Top = 0
         Width = 217
         Align = alTop
@@ -110,10 +111,10 @@ object MapViewerFrame: TMapViewerFrame
         object ThemesGroupBox: TGroupBox
           Left = 0
           Height = 189
-          Top = 72
+          Top = 76
           Width = 196
           Anchors = []
-          BorderSpacing.Top = 8
+          BorderSpacing.Top = 12
           Caption = 'Themes'
           ClientHeight = 169
           ClientWidth = 192
@@ -229,10 +230,10 @@ object MapViewerFrame: TMapViewerFrame
         object TimeGroupBox: TGroupBox
           Left = 0
           Height = 120
-          Top = 270
+          Top = 278
           Width = 196
           Anchors = []
-          BorderSpacing.Top = 8
+          BorderSpacing.Top = 12
           Caption = 'Time'
           ClientHeight = 100
           ClientWidth = 192
@@ -292,13 +293,13 @@ object MapViewerFrame: TMapViewerFrame
         end
         object LayersGroupBox: TGroupBox
           Left = 0
-          Height = 239
-          Top = 399
+          Height = 240
+          Top = 411
           Width = 196
           Anchors = []
-          BorderSpacing.Top = 8
+          BorderSpacing.Top = 12
           Caption = 'Layers'
-          ClientHeight = 219
+          ClientHeight = 220
           ClientWidth = 192
           Font.Style = [fsBold]
           ParentBackground = False

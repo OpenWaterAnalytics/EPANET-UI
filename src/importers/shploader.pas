@@ -49,8 +49,8 @@ const
   lDiam      = 8;
   lRough     = 9;
 
-var
-  ShpOptions: TShpOptions;
+//var
+//  ShpOptions: TShpOptions;
 
 function LoadShapeFile(theShpOptions: TShpOptions): Boolean;
 
@@ -75,8 +75,9 @@ var
   HasDegreesUnits:      Boolean;
   NeedsProjTransform:   Boolean;
   ProjTrans:            TProjTransform;
+  ShpOptions:           TShpOptions;
 
-function GetstringAttrib(Dbf: DBFHandle; I, J: Integer; var S: string): Boolean;
+function GetStringAttrib(Dbf: DBFHandle; I, J: Integer; var S: string): Boolean;
 begin
   S := '';
   Result := false;
@@ -774,18 +775,14 @@ begin
     HasDegreesUnits := true;
 end;
 
-function SetNeedsProjTransform: Boolean;
+procedure SetNeedsProjTransform;
 //
 //  Check if shapefile coordinates need to be transformed to project
 //  coordinates
 //
-var
-  Extent: TDoubleRect;
 begin
-  Result := true;
-  NeedsProjTransform := false;
-
   // Importing to an empty project -- no transform needed
+  NeedsProjTransform := false;
   if project.IsEmpty then
   begin
     project.MapUnits := ShpOptions.CoordUnits;
@@ -799,33 +796,17 @@ begin
   if project.MapUnits = muDegrees then
     DstEpsg := 4036;
 
-  // Check if projection transform not needed
-  if SrcEpsg = DstEpsg then exit;
-
-  // Check if projection transform can be made
-  if (SrcEpsg > 0) and (DstEpsg > 0) then
-  begin
-    Extent := MainForm.MapFrame.Map.Extent;
-    Result := CanProjectionTransform(
-      IntToStr(SrcEpsg), IntToStr(DstEpsg), Extent);
-  end
-  else if (SrcEpsg > 0) or (DstEpsg > 0) then
-    Result := false
-  else
-    exit;
-  NeedsProjTransform := Result;
-
-  // Display message if can't transform
-  if Result = false then
-    utils.MsgDlg(rsTransFail, rsNoShpTrans, mtInformation, [mbOk], MainForm);
+  // Check if projection transform needed
+  if SrcEpsg <> DstEpsg then NeedsProjTransform := true;
 end;
 
 function LoadShapeFile(theShpOptions: TShpOptions): Boolean;
+var
+  CanProjTransform: Boolean = false;
 begin
-  // See if coordinates need to be transformed
+  // Copy passed in shapefile options to static ShpOptions record
   Result := false;
   ShpOptions := theShpOptions;
-  if SetNeedsProjTransform = false then exit;
 
   // Set parameters used with snap tolerance bewteen nodes
   SetSnapParams;
@@ -833,15 +814,24 @@ begin
   ProjTrans := TProjTransform.Create;
   try
     // Set the projections required for coordinate transform
+    SetNeedsProjTransform;
     if NeedsProjTransform then
-      ProjTrans.SetProjections(IntToStr(SrcEPSG), IntToStr(DstEpsg));
+    begin
+      if (SrcEPSG > 0) and (DstEpsg > 0) then
+        CanProjTransform := ProjTrans.SetProjections(
+                            IntToStr(SrcEPSG), IntToStr(DstEpsg));
+      if not CanProjTransform then
+      begin
+        utils.MsgDlg(rsTransFail, rsNoShpTrans, mtInformation, [mbOk], MainForm);
+        exit;
+      end;
+    end;
 
     // Load contents of node & link shapefiles into project
     LoadNodes;
     LoadLinks;
 
     // Display the network map
-    MainForm.MapFrame.SetExtent(MainForm.MapFrame.Map.GetBounds);
     MainForm.MapFrame.DrawFullextent;
 
     // Update project's status

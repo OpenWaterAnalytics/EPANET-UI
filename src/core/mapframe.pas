@@ -127,7 +127,6 @@ type
     NumVertices:      Integer;
     SelectedVertex:   Integer;
     OldTickCount:     QWORD;          // Measures a small time delay
-    ProjTrans:        TProjTransform; // CRS projection transformation
 
     function  StartLinking(const X: Integer; const Y: Integer): Boolean;
     procedure EndLinking(const X: Integer; const Y: Integer);
@@ -151,7 +150,6 @@ type
     procedure ShowWebBasemap;
     procedure ShowPopupMenu;
     procedure FindBasemapLocation(MapSource: Integer);
-    function  WGS84Transform(MapEpsg: Integer; var Extent: TDoubleRect): Boolean;
 
     procedure HideHiliter;
     procedure ShowHiliter;
@@ -211,8 +209,6 @@ type
 
 
     procedure UnloadBasemap;
-    procedure UnloadWebBasemap;
-
     procedure ZoomIn(Dx: Integer; Dy: Integer);
     procedure ZoomOut(Dx: Integer; Dy: Integer);
 
@@ -251,9 +247,6 @@ begin
   PaintAction := paNone;
   Linking := false;
   Aligning := false;
-
-  // Initialize map CRS projection transform
-  ProjTrans := nil;
 
   // Create the markers used when georeferencing a basemap image
   for I := 1 to 3 do
@@ -294,8 +287,6 @@ var
   I: Integer;
 begin
   HideHiliter;
-  FreeAndNil(ProjTrans);
-
   Map.Reset;
   Offset := Point(0, 0);
   Aligning := false;
@@ -322,7 +313,6 @@ begin
   for I := 1 to 3 do
     CtrlPoint[I].Bitmap.Free;
   Map.Free;
-  ProjTrans.Free;
   SetLength(Points, 0);
 end;
 
@@ -386,6 +376,7 @@ end;
 
 procedure TMapFrame.SetMapCenter(X, Y: Double);
 begin
+  if Map.Basemap.WebMap <> nil then Map.NativeToWGS84(X, Y);
   Map.SetCenter(X, Y);
   RedrawMap;
 end;
@@ -1241,7 +1232,6 @@ begin
   if Assigned(Map) then
   begin
     XY := Map.ScreenToWorld(X, Y);
-    if ProjTrans <> nil then ProjTrans.Transform(XY.X, XY.Y);
     MainForm.UpdateXYStatus(XY.X, XY.Y);
   end;
 
@@ -1823,6 +1813,7 @@ procedure TMapFrame.LoadBasemapFromWeb(MapSource, Epsg, Units: Integer);
 // Use a WebMap basemap (from an internet mapping service) for the project.
 //
 var
+  TmpExtent:           TDoubleRect;
   NorthEast:           TDoublePoint = (X: -60; Y: 52.5);
   SouthWest:           TDoublePoint = (X: -130; Y: 17.5);
   ShowLocationFinder:  Boolean = false;
@@ -1833,41 +1824,42 @@ begin
   begin
     Map.Basemap.WebMap.SetSource(MapSource);
     Map.Basemap.NeedsRedraw := true;
-  end
+    exit;
+  end;
 
-  // Otherwise load a new WebMap with default extent (North America)
-  else
+  // If a network exists, replace default extent with network's
+  if not project.IsEmpty then
   begin
-
-    // If a network exists, replace default extent with network's
-    FreeAndNil(ProjTrans);
-    if not project.IsEmpty then
+    // Create a projection transform for map coords.
+    TmpExtent := Map.Extent;
+    if Epsg <> 4326 then
     begin
-
-      // Transform coordinates to WGS84 if a different EPSG provided
-      if (Epsg > 0) and (Epsg <> 4326) then
-        if not WGS84Transform(Epsg, Map.Extent) then exit;
-
-      // Check that (transformed) map extent has valid WGS84 coords.
-      if mapcoords.HasLatLonCoords(Map.Extent) then
+      if not Map.CreateProjTrans(IntToStr(Epsg)) then
       begin
-        NorthEast := Map.Extent.UpperRight;
-        SouthWest := Map.Extent.LowerLeft;
-      end
-      else
-      begin
-        utils.MsgDlg(rsInvalidData, rsInDegrees, mtInformation, [mbOk]);
+        utils.MsgDlg(rsTransFail, Format(rsNoTransform, [Epsg]), mtInformation,
+          [mbOk]);
+        Map.Extent := TmpExtent;
         exit;
       end;
+    end;
+    if mapcoords.HasLatLonCoords(Map.Extent) then
+    begin
+      NorthEast := Map.Extent.UpperRight;
+      SouthWest := Map.Extent.LowerLeft;
     end
-
-    // If no network then ask that the location finder form be shown
     else
-      ShowLocationFinder := true;
+    begin
+      utils.MsgDlg(rsInvalidData, rsInDegrees, mtInformation, [mbOk]);
+      exit;
+    end;
+  end
 
-    // Create a Web Basemap
-    Map.CreateWebBasemap(MapSource, NorthEast, SouthWest);
-  end;
+  // If no network then ask that the location finder form be shown
+  else
+    ShowLocationFinder := true;
+
+  // Create a Web Basemap
+  Map.CreateWebBasemap(MapSource, NorthEast, SouthWest);
 
   // Apply the Webmap as a backdrop for the network map
   // (If the web basemap can't be loaded it will be set to nil.)
@@ -1881,49 +1873,12 @@ begin
   end;
 end;
 
-function TMapFrame.WGS84Transform(MapEpsg: Integer; var Extent: TDoubleRect): Boolean;
-//
-// Transform network map coordinates from EPSG MapEpsg to EPSG 4326 (WGS84).
-//
-var
-  TmpExtent:   TDoubleRect;
-  Transformed: Boolean = false;
-begin
-  // Check that current map extent can be transformed
-  Result := false;
-  TmpExtent := Extent;
-  if mapcoords.CanProjectionTransform(IntToStr(MapEpsg), '4326', Extent) then
-  begin
-    MainForm.Cursor := crHourGlass;
-    Transformed := mapcoords.DoProjectionTransform(IntToStr(MapEpsg),
-      '4326', Extent);
-     MainForm.Cursor := crDefault;
-  end;
-  if not Transformed then
-  begin
-    Extent := TmpExtent;
-    utils.MsgDlg(rsTransFail, Format(rsNoTransform, [MapEpsg]), mtInformation,
-      [mbOk]);
-    exit;
-  end;
-
-  // Create a transform to re-project WGS84 to MapEPSG
-  // (used when displaying coords. on main form's status bar.)
-  if MapEpsg <> 4326 then
-  begin
-    ProjTrans := TProjTransform.Create;
-    ProjTrans.SetProjections('4326', IntToStr(MapEpsg));
-  end;
-  Result := true;
-end;
-
 procedure TMapFrame.TransformExtent(var ExtentRect: TDoubleRect);
 begin
-  if ProjTrans = nil then exit;
   with ExtentRect do
   begin
-    ProjTrans.Transform(LowerLeft.X, LowerLeft.Y);
-    ProjTrans.Transform(UpperRight.X, UpperRight.Y);
+    Map.WGS84ToNative(LowerLeft.X, LowerLeft.Y);
+    Map.WGS84ToNative(UpperRight.X, UpperRight.Y);
   end;
 end;
 
@@ -1970,25 +1925,14 @@ end;
 
 procedure TMapFrame.UnloadBasemap;
 begin
-  if HasWebBasemap then UnloadWebBasemap;
+  if HasWebBasemap then Map.DeleteProjTrans;
   Map.ClearBasemap;
   BasemapFile := '';
+  HasBasemap := false;
+  Map.Basemap.Visible := false;
   RedrawMap;
   MainForm.OverviewMapFrame.ShowMapExtent;
-  HasBasemap := false;
   MainForm.MapViewerFrame.SetBasemapCheckBox(false);
-end;
-
-procedure TMapFrame.UnloadWebBasemap;
-begin
-  // Revert coord. projection to its original value
-  FreeAndNil(ProjTrans);
-  if (project.MapEPSG > 0)
-  and (project.MapEPSG <> 4326) then
-  begin
-    mapcoords.DoProjectionTransform('4326', IntToStr(project.MapEPSG),
-      Map.Extent);
-  end;
 end;
 
 procedure TMapFrame.SetBasemapBrightness(Brightness: Integer);

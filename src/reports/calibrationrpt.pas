@@ -103,6 +103,7 @@ type
     procedure CloseReport;
     procedure ClearReport;
     procedure RefreshReport;
+    procedure SetColors;
     procedure ShowPopupMenu;
 
   end;
@@ -731,6 +732,7 @@ procedure TCalibRptFrame.InitReport;
 var
   I: Integer;
 begin
+  SetColors;
   ErrorStatsMemo.Font.Name := config.MonoFont;
 
   // Fill the VariableCombo combobox with the names of
@@ -771,6 +773,12 @@ begin
   RefreshTimeSeriesPlot;
   RefreshErrorStats;
   DataHasChanged := false;
+end;
+
+procedure TCalibRptFrame.SetColors;
+begin
+  Color := config.ThemeColor;
+  DataGrid.FixedColor := config.ThemeColor;
 end;
 
 end.

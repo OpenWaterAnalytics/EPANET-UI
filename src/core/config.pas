@@ -20,11 +20,13 @@ const
   WinFontSize = 9;
   NixFontSize = 9;
 
-  GrayTheme: Integer   = $00F3F3F3;   //00F0F0F0 00F8F8F8 00EEEEEE 00F9F4F0;
-  BlueTheme: Integer   = $00FDEEE3;   //Pale Blue
-  CreamTheme: Integer  = $00F0FBFF;   //clCream
-  MenuColor: Integer   = $00804C23;   //00B56C36 004F4F4F 00737A7D  00BE6E10
-  HeaderColor: Integer = $00F3F3F3;   //004F4F4F 00B56C36 00BE6E10  00737A7D 004C4641
+  GrayTheme: Integer       = $00F3F3F3;
+  BlueTheme: Integer       = $00FDEEE3;
+  CreamTheme: Integer      = $00F0FBFF;
+  GrayMenuColor: Integer   = $007E7969;
+  GrayHeaderColor: Integer = $007E7969;
+  BlueMenuColor: Integer   = $00BE6E10;
+  BlueHeaderColor: Integer = $00BE6E10;
 
   MonoFonts: array[1..3] of string =
     ('Noto Mono', 'Liberation Mono', 'DejaVu Sans Mono');
@@ -39,6 +41,8 @@ var
   BackupFile:        Boolean;
   ThemeColor:        TColor;
   FormColor:         TColor;
+  MenuColor:         TColor;
+  HeaderColor:       TColor;
   AlternateColor:    TColor;
   DecimalPlaces:     Integer;
   FontSize:          Integer;
@@ -48,6 +52,7 @@ var
   procedure ReadPreferences(FileName: string);
   procedure SavePreferences(FileName: string);
   procedure EditPreferences(var ClearFileList: Boolean);
+  procedure SetThemeColors;
   procedure SetHeaderColor(aHeader: TPanel);
   function  IsDefaultBrowserChromium: Boolean;
 
@@ -84,6 +89,8 @@ begin
   OpenLastFile := true;
   BackupFile := false;
   ThemeColor := GrayTheme;
+  MenuColor := GrayMenuColor;
+  HeaderColor := GrayHeaderColor;
   FormColor := clWindow;
   AlternateColor := $00F6F6F3;
   DecimalPlaces := 2;
@@ -107,14 +114,12 @@ begin
       OpenLastFile := Ini.ReadBool('Preferences', 'Open Last File', true);
       BackupFile := Ini.ReadBool('Preferences', 'Backup File', false);
       DecimalPlaces := Ini.ReadInteger('Preferences', 'Decimal Places', 2);
-
-      // Deprecated
-//    ThemeColor := Ini.ReadInteger('Preferences', 'Theme Color', ThemeColor);
-
+      ThemeColor := Ini.ReadInteger('Preferences', 'Theme Color', ThemeColor);
     finally
       Ini.Free;
     end;
   end;
+  SetThemeColors;
 end;
 
 procedure SavePreferences(FileName: string);
@@ -130,10 +135,7 @@ begin
     Ini.WriteBool('Preferences', 'Open Last File', OpenLastFile);
     Ini.WriteBool('Preferences', 'Backup File', BackupFile);
     Ini.WriteInteger('Preferences', 'Decimal Places', DecimalPlaces);
-
-    // Deprecated
-//  Ini.WriteInteger('Preferences', 'Theme Color', ThemeColor);
-
+    Ini.WriteInteger('Preferences', 'Theme Color', ThemeColor);
   finally
     Ini.Free;
   end;
@@ -144,10 +146,7 @@ procedure EditPreferences(var ClearFileList: Boolean);
 //  Called by MainForm.FileConfigure which is called when
 //  'Preferences' is selected from the FileMenuForm.
 //
-var
-  OldThemeColor: TColor;
 begin
-  OldThemeColor := ThemeColor;
   with TConfigForm.Create(MainForm) do
   try
     SetPreferences;
@@ -155,32 +154,42 @@ begin
     if ModalResult = mrOK then
     begin
       GetPreferences(ClearFileList);
-{
-      // Deprecated
-      if OldThemeColor <> ThemeColor then
+      if ChangeColorTheme then
       begin
-        with MainForm do
-        begin
-          Color := ThemeColor;
-          MapViewerFrame.Color := ThemeColor;
-          MainMenuFrame.SetColorTheme;
-          if not project.HasResults then
-            StatusBarFrame.SetPanelColor(Ord(sbResults), Color);
-        end;
-        MainForm.ReportFrame.ChangeColor(ThemeColor);
+        if ThemeColor = BlueTheme then
+          ThemeColor := GrayTheme
+        else
+          ThemeColor := BlueTheme;
+        SetThemeColors;
+        MainForm.SetColorTheme;
       end;
-}
     end;
   finally
     Free;
   end;
 end;
 
+procedure SetThemeColors;
+begin
+  if ThemeColor = BlueTheme then
+  begin
+    ThemeColor := BlueTheme;
+    MenuColor := BlueMenuColor;
+    HeaderColor := BlueHeaderColor;
+  end
+  else
+  begin
+    ThemeColor := GrayTheme;
+    MenuColor := GrayMenuColor;
+    HeaderColor := GrayHeaderColor;
+  end;
+end;
+
 procedure SetHeaderColor(aHeader: TPanel);
 begin
   aHeader.Color := HeaderColor;
-  aHeader.BorderStyle := bsSingle;
-//  aHeader.Font.Color := clWhite;
+  aHeader.BorderStyle := bsNone;
+  aHeader.Font.Color := clWhite;
 end;
 
 function IsDefaultBrowserChromium: Boolean;

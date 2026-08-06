@@ -27,13 +27,13 @@ type
     MnuSave:     TMenuItem;
     Label1:      TLabel;
     Panel1:      TPanel;
-    StringGrid1: TStringGrid;
+    DataGrid: TStringGrid;
 
     procedure MnuCopyClick(Sender: TObject);
-    procedure StringGrid1Click(Sender: TObject);
-    procedure StringGrid1CompareCells(Sender: TObject; ACol, ARow, BCol,
+    procedure DataGridClick(Sender: TObject);
+    procedure DataGridCompareCells(Sender: TObject; ACol, ARow, BCol,
       BRow: Integer; var Result: integer);
-    procedure StringGrid1PrepareCanvas(sender: TObject; aCol, aRow: Integer;
+    procedure DataGridPrepareCanvas(sender: TObject; aCol, aRow: Integer;
       aState: TGridDrawState);
 
   private
@@ -48,6 +48,7 @@ type
     procedure ClearReport;
     procedure RefreshReport;
     procedure RefreshGrid;
+    procedure SetColors;
     procedure ShowPopupMenu;
 
   end;
@@ -63,19 +64,19 @@ const
   ColHeading: array[0..6] of string =
     (rsPump, rsPcntUtilized, rsEfficiency, '', rsAvgKw, rsPeakKw, rsCostPerDay);
 
-procedure TPumpingRptFrame.StringGrid1CompareCells(Sender: TObject; ACol, ARow,
+procedure TPumpingRptFrame.DataGridCompareCells(Sender: TObject; ACol, ARow,
   BCol, BRow: Integer; var Result: integer);
 var
   F1: Extended;
   F2: Extended;
 begin
   Result := 0;
-  with StringGrid1 do
+  with DataGrid do
   begin
     if Acol = 0 then Result := CompareText(Cells[ACol, ARow], Cells[BCol, BRow])
     else
-      if TryStrToFloat(StringGrid1.Cells[ACol, ARow], F1)
-      and TryStrToFloat(StringGrid1.Cells[BCol, BRow], F2) then
+      if TryStrToFloat(DataGrid.Cells[ACol, ARow], F1)
+      and TryStrToFloat(DataGrid.Cells[BCol, BRow], F2) then
         Result := Math.CompareValue(F1, F2);
     if SortOrder = soDescending then Result := -Result;
   end;
@@ -87,6 +88,12 @@ var
 begin
   P := Self.ClientToScreen(Point(0, 0));
   ExportMenu.PopUp(P.x,P.y);
+end;
+
+procedure TPumpingRptFrame.SetColors;
+begin
+  Color := config.ThemeColor;
+  DataGrid.FixedColor := config.ThemeColor;
 end;
 
 procedure TPumpingRptFrame.MnuCopyClick(Sender: TObject);
@@ -102,11 +109,11 @@ begin
   end;
 end;
 
-procedure TPumpingRptFrame.StringGrid1Click(Sender: TObject);
+procedure TPumpingRptFrame.DataGridClick(Sender: TObject);
 var
   ItemIndex: Integer;
 begin
-  with StringGrid1 do
+  with DataGrid do
   begin
     if Row > 0 then
     begin
@@ -116,21 +123,22 @@ begin
   end;
 end;
 
-procedure TPumpingRptFrame.StringGrid1PrepareCanvas(sender: TObject; aCol,
+procedure TPumpingRptFrame.DataGridPrepareCanvas(sender: TObject; aCol,
   aRow: Integer; aState: TGridDrawState);
 var
   MyTextStyle: TTextStyle;
 begin
-  MyTextStyle := StringGrid1.Canvas.TextStyle;
+  MyTextStyle := DataGrid.Canvas.TextStyle;
   if aCol > 0 then MyTextStyle.Alignment := taCenter;
-  StringGrid1.Canvas.TextStyle := MyTextStyle;
+  DataGrid.Canvas.TextStyle := MyTextStyle;
 end;
 
 procedure TPumpingRptFrame.InitReport;
 var
   I: Integer;
 begin
-  with StringGrid1 do
+  SetColors;
+  with DataGrid do
   begin
     TitleFont := Font;
     ColWidths[0] := 128;
@@ -141,7 +149,7 @@ end;
 
 procedure TPumpingRptFrame.ClearReport;
 begin
-  StringGrid1.Clear;
+  DataGrid.Clear;
 end;
 
 procedure TPumpingRptFrame.CloseReport;
@@ -158,14 +166,13 @@ procedure TPumpingRptFrame.RefreshReport;
 var
   KwHrsPerFlow: string;
 begin
-////  StringGrid1.FixedColor := config.ThemeColor;
   if project.GetUnitsSystem = 0 then
     KwHrsPerFlow := rsKwHrsPerMgal
   else
      KwHrsPerFlow := rsKwHrsPerM3;
-  StringGrid1.Cells[3, 0] := KwHrsPerFlow;
+  DataGrid.Cells[3, 0] := KwHrsPerFlow;
   RefreshTable;
-  if StringGrid1.RowCount = 1 then
+  if DataGrid.RowCount = 1 then
     Panel1.Caption := rsNoPumps;;
 end;
 
@@ -182,7 +189,7 @@ begin
   DmndCharge := 0;
   J := 0;
   N := project.GetPumpResultsCount;
-  StringGrid1.RowCount := N + 1;
+  DataGrid.RowCount := N + 1;
   for I := 0 to 5 do X[I] := 0;
   if N = 0 then exit;
 
@@ -192,7 +199,7 @@ begin
 
     // Column 0 contains pump ID
     Inc(J);
-    StringGrid1.Cells[0, J] := project.GetID(ctLinks, I);
+    DataGrid.Cells[0, J] := project.GetID(ctLinks, I);
 
     // Place energy usage results into columns 1 to 6
     L := project.GetResultIndex(ctLinks, I);
@@ -200,11 +207,11 @@ begin
     begin
       TotalCost := TotalCost + X[5];
       for K := 1 to 6 do
-        StringGrid1.Cells[K, J] := Utils.Float2Str(X[K-1], 2);
+        DataGrid.Cells[K, J] := Utils.Float2Str(X[K-1], 2);
     end
     else for K := 1 to 6 do
     begin
-      StringGrid1.Cells[K, J] := 'N/A';
+      DataGrid.Cells[K, J] := 'N/A';
     end;
   end;
   DmndCharge := results.GetPumpDemandCharge;
@@ -218,7 +225,7 @@ var
   J: Integer;
   S: string;
 begin
-  with StringGrid1 do
+  with DataGrid do
   begin
     S := project.GetTitle(0);
     Slist.Add(S);
@@ -226,7 +233,7 @@ begin
     S := rsPumpingReport;
     Slist.Add(S);
     Slist.Add('');
-    for I := 0 to StringGrid1.RowCount - 1 do
+    for I := 0 to DataGrid.RowCount - 1 do
     begin
       S := Format('%-20s', [Cells[0, I]]);
       for J := 1 to ColCount - 1 do

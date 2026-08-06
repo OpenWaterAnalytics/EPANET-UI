@@ -238,7 +238,7 @@ object ProjectFrame: TProjectFrame
         ParentFont = False
         TabOrder = 1
         object EditTitleBtn: TSpeedButton
-          Left = 195
+          Left = 218
           Height = 28
           Hint = 'Edit'
           Top = 0
@@ -254,14 +254,15 @@ object ProjectFrame: TProjectFrame
         object NextItemBtn: TSpeedButton
           Tag = 1
           Left = 218
-          Height = 28
+          Height = 23
           Hint = 'Next Item'
-          Top = 0
+          Top = 3
           Width = 23
-          Align = alRight
-          Flat = True
+          Anchors = [akTop, akRight]
           Images = mainForm.WindowImageList
           ImageIndex = 16
+          Layout = blGlyphRight
+          Spacing = 0
           ShowCaption = False
           ShowHint = True
           ParentShowHint = False
@@ -270,14 +271,14 @@ object ProjectFrame: TProjectFrame
         object PrevItemBtn: TSpeedButton
           Tag = -1
           Left = 0
-          Height = 28
+          Height = 23
           Hint = 'Previous Item'
-          Top = 0
+          Top = 3
           Width = 23
-          Align = alLeft
-          Flat = True
           Images = mainForm.WindowImageList
           ImageIndex = 17
+          ImageWidth = 16
+          Spacing = 0
           ShowCaption = False
           ShowHint = True
           ParentShowHint = False

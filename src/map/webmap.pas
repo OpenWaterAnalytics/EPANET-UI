@@ -163,7 +163,7 @@ begin
   PixelPoint.X := CenterPixel.X + W div 2;
   PixelPoint.Y := CenterPixel.Y - H div 2;
   UpperRight := FromPixelToLatLon(PixelPoint);
-  Result := MapCoords.DoubleRect(LowerLeft, UpperRight);
+  Result := mapcoords.DoubleRect(LowerLeft, UpperRight);
 end;
 
 function TWebMap.FromLatLonToPixel(LatLon: TDoublePoint): TPoint;
