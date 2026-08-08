@@ -24,8 +24,7 @@ object MapFrame: TMapFrame
     OnMouseDown = MapBoxMouseDown
     OnMouseMove = MapBoxMouseMove
     OnMouseUp = MapBoxMouseUp
-    OnMouseWheelDown = MapBoxMouseWheelDown
-    OnMouseWheelUp = MapBoxMouseWheelUp
+    OnMouseWheel = MapBoxMouseWheel
     OnPaint = MapBoxPaint
     OnResize = MapBoxResize
   end
@@ -108,5 +107,12 @@ object MapFrame: TMapFrame
         OnClick = ConvertMenuItemClick
       end
     end
+  end
+  object DebounceTimer: TTimer
+    Enabled = False
+    Interval = 50
+    OnTimer = DebounceTimerTimer
+    Left = 216
+    Top = 424
   end
 end

@@ -151,7 +151,7 @@ end;
 procedure TMapLegendFrame.DrawLegend(Colors: array of TColor;
   Intervals: array of string; ThemeName: string; ThemeUnits: string);
 //
-// Called from maptheme.UpdateLegend when a legend needs to be redrawn.
+// Called from mapthemes.UpdateLegend when a legend needs to be redrawn.
 //
 var
   I: Integer;

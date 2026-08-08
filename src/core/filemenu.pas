@@ -128,7 +128,6 @@ begin
     7:
       MainForm.FileQuit;
   end;
-//  HideFrame;
 end;
 
 procedure TFileMenuFrame.FilesListBoxClick(Sender: TObject);

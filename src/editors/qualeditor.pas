@@ -103,6 +103,7 @@ begin
   DS := DefaultFormatSettings.DecimalSeparator;
   QualTolEdit.DecimalSeparator := DS;
   BulkOrderEdit.DecimalSeparator := DS;
+  TankOrderEdit.DecimalSeparator := DS;
   ConcenLimitEdit.DecimalSeparator := DS;
   DiffusEdit.DecimalSeparator := DS;
 end;

@@ -277,7 +277,7 @@ object MainMenuFrame: TMainMenuFrame
       Height = 65
       Top = 35
       Width = 1140
-      PageIndex = 3
+      PageIndex = 0
       Align = alClient
       TabOrder = 1
       TabStop = True
@@ -507,7 +507,7 @@ object MainMenuFrame: TMainMenuFrame
           end
           object ProjectSep2: TToolButton
             Left = 616
-            Height = 62
+            Height = 5
             Top = 0
             Style = tbsDivider
           end
@@ -554,7 +554,7 @@ object MainMenuFrame: TMainMenuFrame
           end
           object ProjectSep1: TToolButton
             Left = 411
-            Height = 62
+            Height = 5
             Top = 0
             Style = tbsDivider
           end

@@ -15,7 +15,7 @@ unit mapthemes;
 interface
 
 uses
-  Classes, SysUtils, ComCtrls, Graphics, Dialogs, Controls, Math;
+  Classes, SysUtils, StrUtils, ComCtrls, Graphics, Dialogs, Controls, Math;
 
 const
 
@@ -373,9 +373,11 @@ var
   I:        Integer;
   J:        Integer;
   S:        string;
+  DS:       Char;
 begin
   QualThemeCount := 0;
   TimePeriod := 0;
+  DS := DefaultFormatSettings.DecimalSeparator;
 
   // Load base node themes
   NodeThemeCount := ntPressure + 1;
@@ -390,6 +392,7 @@ begin
     for J := 1 to MAXLEVELS do
     begin
       S := NodeThemes[I].DefIntervals[J];
+      S := StringReplace(S, '.', DS, []);
       NodeIntervals[I].Labels[J] := S;
       utils.Str2Float(S, NodeIntervals[I].Values[J]);
     end;
@@ -408,6 +411,7 @@ begin
     for J := 1 to MAXLEVELS do
     begin
       S := LinkThemes[I].DefIntervals[J];
+      S := StringReplace(S, '.', DS, []);
       LinkIntervals[I].Labels[J] := S;
       utils.Str2Float(S, LinkIntervals[I].Values[J]);
     end;

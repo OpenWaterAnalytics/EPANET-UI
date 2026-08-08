@@ -15,11 +15,12 @@ interface
 
 uses
   Classes, SysUtils, IniFiles, Dialogs, StrUtils, Graphics, Forms,
-  FileUtil;
+  FileUtil, Types;
 
 procedure ReadAppDefaults(FileName: string);
 procedure WriteAppDefaults(FileName: string);
 procedure ReadProjectDefaults(FileName: string; var WebMapSource: Integer);
+procedure ReadProjectMapOptions(Ini: TIniFile; DS: Char);
 procedure WriteProjectDefaults(FileName: string; WebMapSource: Integer);
 procedure WriteProjectMapOptions(FileName: string; WebMapSource:Integer);
 
@@ -42,7 +43,6 @@ procedure ReadAppDefaults(FileName: string);
 var
   I:           Integer;
   Ini:         TIniFile;
-  Props:       TDefProps;
   BaseProps:   TDefProps;
   Options:     TDefOptions;
   BaseOptions: TDefOptions;
@@ -133,9 +133,8 @@ end;
 
 procedure ReadProjectDefaults(FileName: string; var WebMapSource: Integer);
 var
-  I:   Integer;
-  P:   TPoint;
   Ini: TIniFile;
+  I:   Integer;
   S:   string;
   DS:  Char;
 begin
@@ -167,52 +166,119 @@ begin
     if not FileExists(project.MsxInpFile) then
       project.MsxInpFile := '';
 
-    // Map display options
-    with MainForm.MapFrame.Map.Options do
-    begin
-      NodeSize := Ini.ReadInteger('MAP', 'NODESIZE', DefaultOptions.NodeSize);
-      ShowNodesBySize := Ini.ReadBool('MAP', 'SHOWNODESBYSIZE', DefaultOptions.ShowNodesBySize);
-      ShowNodeBorder := Ini.ReadBool('MAP', 'SHOWNODEBORDER', DefaultOptions.ShowNodeBorder);
-      LinkSize := Ini.ReadInteger('MAP', 'LINKSIZE', DefaultOptions.LinkSize);
-      ShowLinksBySize := Ini.ReadBool('MAP', 'SHOWLINKSBYSIZE', DefaultOptions.ShowLinksBySize);
-      ShowLinkBorder := Ini.ReadBool('MAP', 'SHOWLINKBORDER', DefaultOptions.ShowLinkBorder);
-      S := ColorToString(DefaultOptions.BackColor);
-      BackColor := StringToColor(Ini.ReadString('MAP', 'BACKCOLOR', S));
-    end;
+    // Web basemap provider code
     WebMapSource := Ini.ReadInteger('MAP', 'WEBMAPSOURCE', 0);
 
-    for I := Low(mapthemes.NodeColors) to High(mapthemes.NodeColors) do
-    begin
-      S := ColorToString(mapthemes.DefLegendColors[I]);
-      mapthemes.NodeColors[I] := StringToColor(
-        Ini.ReadString('LEGENDS', 'NODE' + IntToStr(I), S));
-    end;
-    for I := Low(mapthemes.LinkColors) to High(mapthemes.LinkColors) do
-    begin
-      S := ColorToString(mapthemes.DefLegendColors[I]);
-      mapthemes.LinkColors[I] := StringToColor(
-        Ini.ReadString('LEGENDS', 'LINK' + IntToStr(I), S));
-    end;
-
-    P.X := Ini.ReadInteger('LEGENDS', 'NODE_LEFT', 0);
-    P.Y := Ini.ReadInteger('LEGENDS', 'NODE_TOP', 0);
-    MainForm.MapFrame.NodeLegend.SetLocation(P);
-    MainForm.MapViewerFrame.NodeLegendBox.Checked :=
-      Ini.ReadBool('LEGENDS', 'NODE_VISIBLE', false);
-    MainForm.MapFrame.NodeLegend.Framed :=
-      Ini.ReadBool('LEGENDS', 'NODE_FRAMED', true);
-
-    P.X := Ini.ReadInteger('LEGENDS', 'LINK_LEFT', 0);
-    P.Y := Ini.ReadInteger('LEGENDS', 'LINK_TOP', 10);
-    MainForm.MapFrame.LinkLegend.SetLocation(P);
-    MainForm.MapViewerFrame.LinkLegendBox.Checked :=
-      Ini.ReadBool('LEGENDS', 'LINK_VISIBLE', false);
-    MainForm.MapFrame.LinkLegend.Framed :=
-      Ini.ReadBool('LEGENDS', 'LINK_FRAMED', true);
-
+    // Map display options
+    ReadProjectMapOptions(Ini, DS);
   finally
     Ini.Free;
   end;
+end;
+
+procedure ReadMapThemeIntervals(Ini: TIniFile; DS: Char);
+var
+  I,
+  J,
+  Code:   Integer;
+  S:      string;
+  V:      Single;
+  Tokens: TStringArray;
+begin
+  // For each node theme (excluding quality themes)
+  for I := 1 to mapthemes.FirstNodeQualTheme-1 do
+  begin
+    // Read concatenated list of intervals for theme I
+    S := Ini.ReadString('THEMES', 'NODE' + IntToStr(I), '');
+    if Length(S) = 0 then continue;
+
+    // Split the intervals string into individual interval string values
+    Tokens := SplitString(S, '-');
+
+    // For each interval string value
+    for J := 0 to Length(Tokens) - 1 do
+    begin
+      // Replace the string's decimal separator if necessary
+      Tokens[J] := StringReplace(Tokens[J], '.', DS, []);
+
+      // Convert the string value to a numerical value
+      Val(Tokens[J], V, Code);
+      if Code <> 0 then continue;
+
+      // Replace the theme's NodeIntervals entries
+      mapthemes.NodeIntervals[I].Labels[J+1] := Tokens[J];
+      mapthemes.NodeIntervals[I].Values[J+1] := V;
+    end;
+  end;
+
+  // Repeat the above process for Link themes
+  for I := 1 to mapthemes.FirstLinkQualTheme-1 do
+  begin
+    S := Ini.ReadString('THEMES', 'LINK' + IntToStr(I), '');
+    if Length(S) = 0 then continue;
+    Tokens := SplitString(S, '-');
+    for J := 0 to Length(Tokens) - 1 do
+    begin
+      Tokens[J] := StringReplace(Tokens[J], '.', DS, []);
+      Val(Tokens[J], V, Code);
+      if Code <> 0 then continue;
+      mapthemes.LinkIntervals[I].Labels[J+1] := Tokens[J];
+      mapthemes.LinkIntervals[I].Values[J+1] := V;
+    end;
+  end;
+end;
+
+procedure ReadProjectMapOptions(Ini: TIniFile; DS: Char);
+var
+  I:   Integer;
+  P:   TPoint;
+  S: string;
+begin
+  // Map drawing options
+  with MainForm.MapFrame.Map.Options do
+  begin
+    NodeSize := Ini.ReadInteger('MAP', 'NODESIZE', DefaultOptions.NodeSize);
+    ShowNodesBySize := Ini.ReadBool('MAP', 'SHOWNODESBYSIZE', DefaultOptions.ShowNodesBySize);
+    ShowNodeBorder := Ini.ReadBool('MAP', 'SHOWNODEBORDER', DefaultOptions.ShowNodeBorder);
+    LinkSize := Ini.ReadInteger('MAP', 'LINKSIZE', DefaultOptions.LinkSize);
+    ShowLinksBySize := Ini.ReadBool('MAP', 'SHOWLINKSBYSIZE', DefaultOptions.ShowLinksBySize);
+    ShowLinkBorder := Ini.ReadBool('MAP', 'SHOWLINKBORDER', DefaultOptions.ShowLinkBorder);
+    S := ColorToString(DefaultOptions.BackColor);
+    BackColor := StringToColor(Ini.ReadString('MAP', 'BACKCOLOR', S));
+  end;
+
+  // Map theme colors
+  for I := Low(mapthemes.NodeColors) to High(mapthemes.NodeColors) do
+  begin
+    S := ColorToString(mapthemes.DefLegendColors[I]);
+    mapthemes.NodeColors[I] := StringToColor(
+      Ini.ReadString('LEGENDS', 'NODE' + IntToStr(I), S));
+  end;
+  for I := Low(mapthemes.LinkColors) to High(mapthemes.LinkColors) do
+  begin
+    S := ColorToString(mapthemes.DefLegendColors[I]);
+    mapthemes.LinkColors[I] := StringToColor(
+      Ini.ReadString('LEGENDS', 'LINK' + IntToStr(I), S));
+  end;
+
+  // Map legend positions
+  P.X := Ini.ReadInteger('LEGENDS', 'NODE_LEFT', 0);
+  P.Y := Ini.ReadInteger('LEGENDS', 'NODE_TOP', 0);
+  MainForm.MapFrame.NodeLegend.SetLocation(P);
+  MainForm.MapViewerFrame.NodeLegendBox.Checked :=
+    Ini.ReadBool('LEGENDS', 'NODE_VISIBLE', false);
+  MainForm.MapFrame.NodeLegend.Framed :=
+    Ini.ReadBool('LEGENDS', 'NODE_FRAMED', true);
+  P.X := Ini.ReadInteger('LEGENDS', 'LINK_LEFT', 0);
+  P.Y := Ini.ReadInteger('LEGENDS', 'LINK_TOP', 10);
+  MainForm.MapFrame.LinkLegend.SetLocation(P);
+  MainForm.MapViewerFrame.LinkLegendBox.Checked :=
+    Ini.ReadBool('LEGENDS', 'LINK_VISIBLE', false);
+  MainForm.MapFrame.LinkLegend.Framed :=
+    Ini.ReadBool('LEGENDS', 'LINK_FRAMED', true);
+
+  // Map theme intervals
+  ReadMapThemeIntervals(Ini, DS);
 end;
 
 procedure WriteProjectDefaults(FileName: string; WebMapSource: Integer);
@@ -262,7 +328,11 @@ end;
 procedure WriteProjectMapOptions(FileName: string; WebMapSource:Integer);
 var
   I:   Integer;
+  J:   Integer;
   P:   TPoint;
+  S:   string;
+  Lbl: string;
+  DS:  char;
   Ini: TIniFile;
 begin
   Ini := TIniFile.Create(FileName);
@@ -303,6 +373,31 @@ begin
         MainForm.MapViewerFrame.LinkLegendBox.Checked);
       Ini.WriteBool('LEGENDS', 'LINK_FRAMED',
         MainForm.MapFrame.LinkLegend.Framed);
+
+      DS := DefaultFormatSettings.DecimalSeparator;
+      for I := 1 to mapthemes.FirstNodeQualTheme-1 do
+      begin
+        Lbl := mapthemes.NodeIntervals[I].Labels[1];
+        S := StringReplace(Lbl, DS, '.', []);
+        for J := 2 to mapthemes.MAXLEVELS do
+        begin
+          Lbl := mapthemes.NodeIntervals[I].Labels[J];
+          S := S + '-' + StringReplace(Lbl, DS, '.', []);
+        end;
+        Ini.WriteString('THEMES', 'NODE' + IntToStr(I), S);
+      end;
+
+      for I := 1 to mapthemes.FirstLinkQualTheme-1 do
+      begin
+        Lbl := mapthemes.LinkIntervals[I].Labels[1];
+        S := StringReplace(Lbl, DS, '.', []);
+        for J := 2 to mapthemes.MAXLEVELS do
+        begin
+          Lbl := mapthemes.LinkIntervals[I].Labels[J];
+          S := S + '-' + StringReplace(Lbl, DS, '.', []);
+        end;
+        Ini.WriteString('THEMES', 'LINK' + IntToStr(I), S);
+      end;
 
     except
     end;

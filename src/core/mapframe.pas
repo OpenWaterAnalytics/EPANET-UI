@@ -70,6 +70,7 @@ type
     MapBox:             TPaintBox;
     HiliteTimer:        TTimer;
     ResizeTimer:        TTimer;
+    DebounceTimer:      TTimer;
     MapPopupMenu:       TPopupMenu;
     CopyMenuItem:       TMenuItem;
     DeleteMenuItem:     TMenuItem;
@@ -84,7 +85,10 @@ type
     OpenPictureDialog1: TOpenPictureDialog;
 
     procedure ConvertMenuItemClick(Sender: TObject);
+    procedure DebounceTimerTimer(Sender: TObject);
     procedure MapBoxDblClick(Sender: TObject);
+    procedure MapBoxMouseWheel(Sender: TObject; Shift: TShiftState;
+      WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
     procedure MapMenuItemClick(Sender: TObject);
     procedure HiliteTimerTimer(Sender: TObject);
     procedure MapBoxChangeBounds(Sender: TObject);
@@ -94,10 +98,6 @@ type
     procedure MapBoxMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
     procedure MapBoxMouseUp(Sender: TObject; Button: TMouseButton;
               Shift: TShiftState; X, Y: Integer);
-    procedure MapBoxMouseWheelDown(Sender: TObject; Shift: TShiftState;
-              MousePos: TPoint; var Handled: Boolean);
-    procedure MapBoxMouseWheelUp(Sender: TObject; Shift: TShiftState;
-      MousePos: TPoint; var Handled: Boolean);
     procedure MapBoxPaint(Sender: TObject);
     procedure MapBoxResize(Sender: TObject);
     procedure ResizeTimerTimer(Sender: TObject);
@@ -116,6 +116,7 @@ type
     Point2:           TPoint;
     Points:           array of TPoint;
     CurrentPoint:     TPoint;
+    ZoomToPoint:      TPoint;
 
     HiliteRect:       TRect;
     HiliteState:      Integer;
@@ -126,7 +127,9 @@ type
     SelectedObjIndex: Integer;
     NumVertices:      Integer;
     SelectedVertex:   Integer;
+
     OldTickCount:     QWORD;          // Measures a small time delay
+    DeltaZoom:        Integer;        // Number of mouse wheel zooms
 
     function  StartLinking(const X: Integer; const Y: Integer): Boolean;
     procedure EndLinking(const X: Integer; const Y: Integer);
@@ -247,6 +250,8 @@ begin
   PaintAction := paNone;
   Linking := false;
   Aligning := false;
+  DeltaZoom := 0;
+  DebounceTimer.Enabled := false;
 
   // Create the markers used when georeferencing a basemap image
   for I := 1 to 3 do
@@ -1008,6 +1013,18 @@ begin
     MainForm.ProjectFrame.ConvertItem(Tag);
 end;
 
+procedure TMapFrame.DebounceTimerTimer(Sender: TObject);
+begin
+  DebounceTimer.Enabled := false;
+  if DeltaZoom > 0 then
+    ZoomIn(ZoomToPoint.X - (MapBox.ClientWidth div 2),
+      ZoomToPoint.Y - (MapBox.ClientHeight div 2))
+  else if DeltaZoom < 0 then
+    ZoomOut(ZoomToPoint.X - (MapBox.ClientWidth div 2),
+      ZoomToPoint.Y - (MapBox.ClientHeight div 2));
+  DeltaZoom := 0;
+end;
+
 //------------------------------------------------------------------------------
 //  MapBox Procedures
 //------------------------------------------------------------------------------
@@ -1403,20 +1420,15 @@ begin
   end;
 end;
 
-procedure TMapFrame.MapBoxMouseWheelDown(Sender: TObject; Shift: TShiftState;
-  MousePos: TPoint; var Handled: Boolean);
+procedure TMapFrame.MapBoxMouseWheel(Sender: TObject; Shift: TShiftState;
+  WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
 begin
   if FenceLining then exit;
-  ZoomOut(MousePos.x - (MapBox.ClientWidth div 2),
-    MousePos.y - (MapBox.ClientHeight div 2));
-end;
-
-procedure TMapFrame.MapBoxMouseWheelUp(Sender: TObject; Shift: TShiftState;
-  MousePos: TPoint; var Handled: Boolean);
-begin
-  if FenceLining then exit;
-  ZoomIn(MousePos.x - (MapBox.ClientWidth div 2),
-    MousePos.y - (MapBox.ClientHeight div 2));
+  ZoomToPoint := MousePos;
+  DeltaZoom := DeltaZoom + WheelDelta;
+  DebounceTimer.Enabled := false;
+  DebounceTimer.Enabled := true;
+  Handled := true;
 end;
 
 //------------------------------------------------------------------------------
@@ -1824,6 +1836,7 @@ begin
   begin
     Map.Basemap.WebMap.SetSource(MapSource);
     Map.Basemap.NeedsRedraw := true;
+    RedrawMap;
     exit;
   end;
 

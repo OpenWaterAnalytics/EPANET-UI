@@ -61,8 +61,8 @@ object QualEditorForm: TQualEditorForm
     Width = 323
     BevelOuter = bvNone
     BorderStyle = bsSingle
-    ClientHeight = 380
-    ClientWidth = 323
+    ClientHeight = 376
+    ClientWidth = 319
     Color = clWindow
     ParentBackground = False
     ParentColor = False
