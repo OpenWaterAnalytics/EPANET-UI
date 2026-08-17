@@ -26,7 +26,7 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, ExtCtrls, Menus, Buttons, Dialogs,
   TAGraph, TASeries, TASources, TAStyles, TAGUIConnectorBGRA,
-  Graphics, fgl, TACustomSeries, TATransformations, TAIntervalSources,
+  Graphics, ComCtrls, fgl, TACustomSeries, TATransformations, TAIntervalSources,
   TAChartUtils;
 
 type
@@ -48,6 +48,7 @@ type
     ExportMenu:                   TPopupMenu;
     MnuCopy:                      TMenuItem;
     MnuSave:                      TMenuItem;
+    ProgressBar1: TProgressBar;
 
     procedure MnuCopyClick(Sender: TObject);
     procedure MnuSaveClick(Sender: TObject);
@@ -207,18 +208,28 @@ begin
   end;
 
   // Clear each data series
-  MainForm.Cursor:= crHourglass;
   ClearReport;
   Chart1LineSeries1.LinePen.Style := psDash;
 
+  // Initialize progress bar
+  ProgressBar1.Visible := true;
+  ProgressBar1.Position := 0;
+  ProgressBar1.Max := results.Nperiods;
+  Repaint;
+  Application.ProcessMessages;
+
   // Create a list of doubles
   Vlist := TDoubleList.Create;
+  ListChartSource1.BeginUpdate;
+  Chart1LineSeries1.BeginUpdate;
+  Chart1LineSeries2.BeginUpdate;
   try
 
     // Populate the chart with PlotParam's range for each hour
     T := 0;
     while T < results.Nperiods do
     begin
+      ProgressBar1.Position := T;
       Vlist.Clear;
       GetPlotParamRange(T);
       X := Xstart + (T * Xstep);
@@ -228,9 +239,12 @@ begin
       T := T + Dt;
     end;
   finally
-    MainForm.Cursor := crDefault;
     Vlist.Free;
+    ListChartSource1.EndUpdate;
+    Chart1LineSeries1.EndUpdate;
+    Chart1LineSeries2.EndUpdate;
   end;
+  ProgressBar1.Visible := false;
 end;
 
 procedure TPcntileRptFrame.SetupChartAxes;

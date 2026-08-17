@@ -112,13 +112,13 @@ begin
   Pmid := SpinEdit2.Value;
   Pmax := SpinEdit3.Value;
   PlotTimeOfDay := TimeOfDayBox.Checked;
+  MainForm.ReportFrame.Show;
+  MainForm.ShowPage(MainForm.ReportPage);
   with MainForm.ReportFrame.Report as TPcntileRptFrame do
   begin
     SetPlotParams(ParamType, PlotParam, Pmin, Pmid, Pmax, PlotTimeOfDay);
     RefreshReport;
   end;
-  MainForm.ReportFrame.Show;
-  MainForm.ShowPage(MainForm.ReportPage);
 end;
 
 procedure TPcntileSelectorFrame.Init(ParamType, PlotParam, Pmin, Pmid, Pmax: Integer;

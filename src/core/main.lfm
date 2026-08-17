@@ -190,25 +190,25 @@ object mainForm: TmainForm
     Align = alClient
     BevelOuter = bvNone
     BorderStyle = bsSingle
-    ClientHeight = 569
-    ClientWidth = 587
+    ClientHeight = 567
+    ClientWidth = 585
     ParentBackground = False
     ParentColor = False
     TabOrder = 4
     object Notebook1: TNotebook
       Left = 0
-      Height = 565
+      Height = 567
       Top = 0
-      Width = 583
+      Width = 585
       PageIndex = 0
       Align = alClient
       TabOrder = 0
       object MapPage: TPage
         object MapPanel: TPanel
           Left = 0
-          Height = 565
+          Height = 567
           Top = 0
-          Width = 583
+          Width = 585
           Align = alClient
           BevelOuter = bvNone
           BorderWidth = 1
@@ -297,12 +297,12 @@ object mainForm: TmainForm
     TabOrder = 1
     object HintPanel: TPanel
       Left = 1
-      Height = 225
+      Height = 255
       Top = 1
       Width = 237
       Align = alTop
       BevelOuter = bvNone
-      ClientHeight = 225
+      ClientHeight = 255
       ClientWidth = 237
       Color = 14745599
       ParentBackground = False
@@ -311,15 +311,15 @@ object mainForm: TmainForm
       Visible = False
       object HintTitleLabel: TLabel
         Left = 4
-        Height = 15
+        Height = 17
         Top = 4
-        Width = 23
+        Width = 24
         Caption = 'Title'
         ParentColor = False
       end
       object HintTextLabel: TLabel
         Left = 12
-        Height = 184
+        Height = 216
         Top = 32
         Width = 204
         AutoSize = False
@@ -339,12 +339,12 @@ object mainForm: TmainForm
     end
     object ViewPanel: TPanel
       Left = 1
-      Height = 102
-      Top = 226
+      Height = 72
+      Top = 256
       Width = 237
       Align = alClient
       BevelOuter = bvNone
-      ClientHeight = 102
+      ClientHeight = 72
       ClientWidth = 237
       TabOrder = 2
       object TopPanel: TPanel

@@ -406,10 +406,16 @@ begin
 end;
 
 procedure TMainMenuFrame.EditVertexBtnClick(Sender: TObject);
+var
+  HintStr: string;
 begin
   EditVertexBtn.Down := True;
-  if config.ShowNotifiers then
-    MainForm.ShowHintPanel(rsShapingLink, rsToShapeLink);
+  {$IFDEF Unix}
+  HintStr := rsToShowVertices + rsToShapeLink;
+  {$ELSE}
+  HintStr := rsToShapeLink;
+  {$ENDIF}
+  MainForm.ShowHintPanel(rsShapingLink, HintStr);
   MainForm.MapFrame.EnterVertexingMode;
 end;
 

@@ -77,6 +77,7 @@ begin
   begin
     // Check for internet connection
     Panel1.Caption := rsLoadBasemap;
+    Application.ProcessMessages;
     if (not utils.HasInternetConnection()) then
       WebMapSource := 0
 

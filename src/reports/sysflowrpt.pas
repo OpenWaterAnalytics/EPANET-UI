@@ -39,6 +39,7 @@ type
     MnuChart:               TMenuItem;
     MnuData:                TMenuItem;
     MnuTimeOfDay:           TMenuItem;
+    ProgressBar1: TProgressBar;
     Separator1:             TMenuItem;
     MnuCopy:                TMenuItem;
     MnuSave:                TMenuItem;
@@ -138,24 +139,39 @@ begin
   Stored := results.InitStorage;
 
   // Populate the chart with flow volumes in each reporting period
+  Notebook1.PageIndex := 0;
   ListChartSource1.Clear;
-  for T := 0 to results.Nperiods - 1 do
-  begin
-    GetSystemFlowVolumes(T);
-    if (T*results.Rstep) mod 3600 < 1 then
+  ProgressBar1.Visible := true;
+  ProgressBar1.Position := 0;
+  ProgressBar1.Max := results.Nperiods;
+  Repaint;
+  Application.ProcessMessages;
+  ListChartSource1.BeginUpdate;
+  try
+
+    for T := 0 to results.Nperiods - 1 do
     begin
-      X := Xstart + (T * Xstep);
-      with ListChartSource1 do begin
-        AddXYList(X, [Stored*Vcf, Produced*Vcf, Consumed*Vcf]);
+      ProgressBar1.Position := T;
+      GetSystemFlowVolumes(T);
+      if (T*results.Rstep) mod 3600 < 1 then
+      begin
+        X := Xstart + (T * Xstep);
+        with ListChartSource1 do begin
+          AddXYList(X, [Stored*Vcf, Produced*Vcf, Consumed*Vcf]);
+        end;
       end;
     end;
+
+  finally
+    ListChartSource1.EndUpdate;
   end;
+  ProgressBar1.Visible := false;
 
   // Adjustment for single period run
   if results.Nperiods = 1 then with ListChartSource1 do
       AddXYList(1, [Stored*Vcf, Produced*Vcf, Consumed*Vcf]);
   RefreshGrid;
-  Notebook1.PageIndex := 0;
+////  Notebook1.PageIndex := 0;
 end;
 
 procedure TSysFlowFrame.RefreshGrid;

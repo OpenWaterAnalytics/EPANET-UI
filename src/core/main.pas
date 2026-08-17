@@ -18,14 +18,18 @@ unit main;
  |____________________________________________________________|
  |               |                             |              |
  |  HintPanel    |                             |              |
- |_______________|         MapPanel            | ProjectPanel |
+ |_______________|    MapPanel/ReportPanel     | ProjectPanel |
  |               |                             |              |
  |               |                             |              |
  |  ViewPanel    |                             |              |
  |               |                             |              |
  |               |                             |              |
+ |_______________|                             |              |
+ |               |                             |              |
+ | OverviewPanel |                             |              |
  |_______________|_____________________________|______________|
- |_________________________StatusPanel _______________________|
+ |                         StatusPanel                        |
+ |____________________________________________________________|
 
  MenuPanel - contains the MainMenuFrame used to select various program actions.
 
@@ -35,11 +39,20 @@ unit main;
  MapPanel - contains a MapFrame that displays a map of the EPANET pipe
  network being analyzed and handles user interaction with it.
 
+ ReportPanel - contains a ReportFrame that displays different types of
+ user selected output reports.
+
+ Both the MapPanel and ReportPanel are contained in seperate pages of
+ a TNotebook control (Notebook1).
+
  HintPanel - shares space with several other pop-up panels that are normally
  hidden and are used to display progam instructions or implement map operations.
 
  ViewPanel - contains a MapViewerFrame used to select node & link themes
  and time periods to view on the network map.
+
+ OverviewPanel - displays a small, normally hidden overview map of the
+ pipe network outlining the area where the main map has been zoomed to.
 
  StatusPanel - contains a StatusBarFrame that displays key project properties.
 }
@@ -58,6 +71,9 @@ uses
   overviewmapframe, statusframe, mapgeoref, mapalign, maplocater, mapquery,
   tseriesselector, profileselector, pcntileselector, fireflowselector,
   groupselector, groupeditor, reportframe;
+
+const
+  crPen  = 101; // Custom pen shaped cursor
 
 type
 
@@ -404,17 +420,27 @@ begin
 end;
 
 procedure TMainForm.FormActivate(Sender: TObject);
+//
+// Actions taken after program is first activated.
+//
 var
   Filename: string;
 begin
+  // Begin a new project
   if IsActivated then exit;
   IsActivated := true;
   StartNewProject;
-  FileName := GetCmndLineFile;
+
+  // Open any EPANET input file appearing on command line
+  Filename := GetCmndLineFile;
   if (Length(Filename) > 0) and FileExists(Filename) then
     OpenFile(Filename)
+
+  // Display a Welcome Page if called for
   else if config.ShowWelcomePage then
     ShowWelcomePage
+
+  // Open the last EPANET project file worked on if called for
   else if config.OpenLastFile then
   begin
     if MRUMenuMgr.Recent.Count > 0 then
@@ -443,11 +469,11 @@ begin
   ReportFrame.CloseReport;
   GroupSelectorFrame.Close;
 
-  // Close map display
+  // Close the network map display
   MapFrame.Close;
   OverviewMapFrame.Close;
 
-  // Close project
+  // Close the project
   project.Close;
 
   // Save program preference to ini file
@@ -471,6 +497,9 @@ end;
 
 procedure TMainForm.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
+//
+//  Actions taken when a keyboard key is pressed.
+//
 begin
   // Key applies to Property Editor
   if ProjectFrame.PropEditor.Focused then
@@ -516,7 +545,7 @@ end;
 procedure TMainForm.MRUMenuMgrRecentFile(Sender: TObject;
   const AFileName: String);
 //
-// Open an input file from the Most Recentlu Used list.
+//  Open an input file from the Most Recently Used list.
 //
 begin
   if SaveFileDlg = mrCancel then exit;
@@ -569,6 +598,9 @@ begin
 end;
 
 procedure TMainForm.ShowPage(aPage: TPage);
+//
+//  Switch between showing the network Map page and the output Report page.
+//
 begin
   if aPage = MapPage then
   begin
@@ -586,6 +618,9 @@ begin
 end;
 
 procedure TMainForm.CheckBounds;
+//
+//  Check that this form's area fits within the screen's area.
+//
 var
   WorkArea: TRect;
 begin
@@ -615,8 +650,8 @@ end;
 
 procedure TMainForm.SizeReportPanel;
 //
-// Size report panel (inside the ReportPage of Notebook1) to 600 x 480, if
-// possible, by resizing the left, right, and bottom panels that surround it.
+//  Size report panel (inside the ReportPage of Notebook1) to 600 x 480, if
+//  possible, by resizing the left, right, and bottom panels that surround it.
 //
 var
   Vspace, Hspace, PPI: Integer;
@@ -657,6 +692,7 @@ end;
 {------------------------------------------------------------------------------
   File Menu Procedures
 ------------------------------------------------------------------------------}
+
 procedure TMainForm.FileImport(FileType: String);
 begin
   if SameText(FileType, 'shp') then
@@ -905,6 +941,10 @@ begin
 end;
 
 procedure TMainForm.ProjectSetup;
+//
+//  Changes default project options, including choice of flow units,
+//  pressure units, and head loss formula.
+//
 var
   SetupForm: TProjectSetupForm;
 begin
@@ -938,10 +978,12 @@ var
   Result:     Integer;
   LoaderForm: TProjectLoaderForm;
 begin
+  // Start a new project
   StartNewProject;
   if config.BackupFile then
     CopyFile(FileName, FileName + '.bak');
 
+  // Read contents of FileName input file
   LoaderForm := TProjectLoaderForm.Create(self);
   try
     LoaderForm.InpFileName := FileName;
@@ -969,6 +1011,10 @@ begin
 end;
 
 procedure TMainForm.InitFormContents(FileName: String; WebMapSource: Integer);
+//
+//  Called from projectloader.pas when a new input file is opened to
+//  initialize the UI display.
+//
 begin
   MapPanel.Color := MapFrame.Map.Options.BackColor;
   ProjectFrame.Init;
@@ -1020,5 +1066,8 @@ begin
   Application.HelpKeyword('html/manual.html' + Topic);
   HelpKeyword := '';
 end;
+
+initialization
+Screen.Cursors[crPen] := LoadCursor(HInstance, 'PEN');
 
 end.

@@ -23,10 +23,10 @@ type
   { TFireFlowSelectorFrame }
 
   TFireFlowSelectorFrame = class(TFrame)
+    HelpBtn: TButton;
     TopPanel:           TPanel;
     SelectNodesBtn:     TButton;
     ComputeBtn:         TButton;
-    HelpBtn:            TSpeedButton;
     CloseBtn:           TSpeedButton;
     TimeOfDayCombo:     TComboBox;
     PressureZoneGroup:  TRadioGroup;
@@ -191,7 +191,7 @@ begin
   NodeCount := MainForm.GroupSelectorFrame.GetSelectedCount;
   if (ReturnCode = 1) and (NodeCount > 0) then
   begin
-    SelectedLabel.Caption:= IntToStr(NodeCount) + ' nodes selected';
+    SelectedLabel.Caption:= IntToStr(NodeCount) + ' selected';
   end;
   MainForm.ShowPage(MainForm.ReportPage);
   MainForm.GroupSelectorFrame.Hide;

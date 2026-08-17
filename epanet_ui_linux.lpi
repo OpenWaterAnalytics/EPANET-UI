@@ -12,6 +12,7 @@
       <XPManifest>
         <DpiAware Value="True/PM_V2"/>
       </XPManifest>
+      <Icon Value="0"/>
     </General>
     <MacroValues Count="1">
       <Macro1 Name="LCLWidgetType" Value="qt5"/>
@@ -617,7 +618,7 @@
     <Version Value="11"/>
     <PathDelim Value="\"/>
     <Target>
-      <Filename Value="bin\linux\epanet_ui"/>
+      <Filename Value="bin\linux\epanet-ui"/>
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>

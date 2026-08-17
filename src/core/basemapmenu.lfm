@@ -53,7 +53,7 @@ object BasemapMenuForm: TBasemapMenuForm
       Height = 60
       Top = 0
       Width = 288
-      PageIndex = 0
+      PageIndex = 1
       Align = alTop
       TabOrder = 0
       object Page1: TPage
@@ -148,11 +148,13 @@ object BasemapMenuForm: TBasemapMenuForm
       end
       object Page2: TPage
         object InternetLabel: TLabel
-          Left = 16
+          Left = 7
           Height = 15
-          Top = 12
+          Top = 22
           Width = 168
           Caption = 'There is no internet connection.'
+          Font.Color = clMaroon
+          ParentFont = False
         end
       end
     end

@@ -24,8 +24,8 @@ object MapLegendFrame: TMapLegendFrame
     Align = alClient
     BevelOuter = bvNone
     BorderStyle = bsSingle
-    ClientHeight = 141
-    ClientWidth = 151
+    ClientHeight = 137
+    ClientWidth = 147
     ParentBackground = False
     ParentShowHint = False
     ShowHint = True

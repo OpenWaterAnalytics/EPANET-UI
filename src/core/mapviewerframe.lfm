@@ -18,9 +18,6 @@ object MapViewerFrame: TMapViewerFrame
     BevelOuter = bvNone
     ClientHeight = 700
     ClientWidth = 237
-    Color = clWindow
-    ParentBackground = False
-    ParentColor = False
     TabOrder = 0
     object MapViewerScrollBox: TScrollBox
       Left = 0
@@ -36,7 +33,6 @@ object MapViewerFrame: TMapViewerFrame
       Align = alClient
       ClientHeight = 696
       ClientWidth = 233
-      ParentBackground = False
       TabOrder = 0
       object FlowPanel1: TFlowPanel
         Left = 16

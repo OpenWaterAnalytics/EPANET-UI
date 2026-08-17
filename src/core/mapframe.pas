@@ -27,10 +27,10 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, ComCtrls, ExtCtrls, LCLtype,
-  Graphics, Clipbrd, ExtDlgs, Types, Math, Dialogs, Menus,
+  Graphics, Clipbrd, ExtDlgs, Types, Math, Dialogs, Menus, StdCtrls,
 
   // EPANET-UI units
-  project, map, mapcoords, mapoptions, maplegend, projtransform;
+  project, map, mapcoords, mapoptions, maplegend;
 
 const
   TICKDELAY    = 200;        // Delay before object can be moved
@@ -133,6 +133,7 @@ type
 
     function  StartLinking(const X: Integer; const Y: Integer): Boolean;
     procedure EndLinking(const X: Integer; const Y: Integer);
+    procedure CancelLinking;
 
     procedure GoFenceLining(X: Integer; Y: Integer);
     procedure LeaveFenceLiningMode;
@@ -310,7 +311,7 @@ end;
 
 procedure TMapFrame.Close;
 //
-// Free allocated memory when EPANET-UI is closed.
+// Free allocated memory when application is closed.
 //
 var
   I: Integer;
@@ -380,7 +381,11 @@ begin
 end;
 
 procedure TMapFrame.SetMapCenter(X, Y: Double);
+//
+// Set the map's center to world coordinates X, Y.
+//
 begin
+  // If a web basemap is being used then convert X,Y to lat, lon
   if Map.Basemap.WebMap <> nil then Map.NativeToWGS84(X, Y);
   Map.SetCenter(X, Y);
   RedrawMap;
@@ -388,7 +393,7 @@ end;
 
 procedure TMapFrame.ShowLayer(LayerType: Integer; ShowIt: Boolean);
 //
-// Toggles the display of map objects.
+// Toggle the display of map objects.
 //
 begin
   case LayerType of
@@ -563,8 +568,8 @@ begin
   end;
   HideHiliter;
   ShowJunctions;
-  MapBox.Cursor := crCross;
   MainForm.EnableMainForm(false);
+  MapBox.Cursor := crCross;
   SetFocus;
 end;
 
@@ -581,10 +586,9 @@ begin
     ltValve:
       MapAction := maAddingValve;
   end;
-  HideHiliter;
   ShowJunctions;
-  MapBox.Cursor := crCross;
   MainForm.EnableMainForm(false);
+  MapBox.Cursor := crCross;
   SetFocus;
 end;
 
@@ -595,8 +599,8 @@ procedure TMapFrame.AddLabel;
 begin
   MapAction := maAddingLabel;
   HideHiliter;
-  MapBox.Cursor := crCross;
   MainForm.EnableMainForm(false);
+  MapBox.Cursor := crCross;
   SetFocus;
 end;
 
@@ -656,8 +660,10 @@ var
   I: Integer;
 begin
   I := Map.FindNodeHit(X, Y);
+  HideHiliter;
   if I > 0 then
   begin
+    MapBox.Cursor := crPen;
     StartNode := I;
     SetLength(Points, 1);
     Points[0] := Point(X, Y);
@@ -696,8 +702,17 @@ begin
       // Quit Linking
       SetLength(Points, 0);
       Linking := false;
+      HideHiliter;
+      MapBox.Cursor := crCross;
     end;
   end;
+end;
+
+procedure TMapFrame.CancelLinking;
+begin
+  Linking := false;
+  MapBox.Refresh;
+  MapBox.Cursor := crCross;
 end;
 
 procedure TMapFrame.EnterFenceLiningMode(aMenuAction: string);
@@ -712,7 +727,7 @@ begin
   SetLength(Points, 0);
   NumVertices := -1;
   MainForm.EnableMainForm(false);
-  MapBox.Cursor := crCross;
+  MapBox.Cursor := crPen;
 end;
 
 procedure TMapFrame.GoFenceLining(X: Integer; Y: Integer);
@@ -758,6 +773,7 @@ begin
   else if NumVertices = -1 then N := -1;
 
   // Pass the polygon to the menu action that requested it
+  MapBox.Cursor := crDefault;
   FenceLining := false;
   SetLength(Points, 0);
   if MenuAction = 'GroupSelection' then
@@ -778,16 +794,13 @@ procedure TMapFrame.EnterVertexingMode;
 // Prepare for editing a link's vertices.
 //
 begin
+  if SelectedObjType <> ctLinks then exit;
   HideHiliter;
+  MainForm.EnableMainForm(false);
+  SelectedVertex := 1;
   MapAction := maVertexing;
-  if SelectedObjType = ctLinks then
-  begin
-    MainForm.EnableMainForm(false);
-    SelectedVertex := 1;
-    PaintAction := paVertices;
-    MapBox.Refresh;
-  end;
-//  MapBox.Cursor := crHandPoint;
+  PaintAction := paVertices;
+  MapBox.Refresh;
 end;
 
 procedure TMapFrame.LeaveVertexingMode;
@@ -881,8 +894,11 @@ begin
     else if Key = VK_ESCAPE then
       LeaveVertexingMode
 
-    else
-      ShowVertices(SelectedObjIndex);
+    else if Key = VK_SPACE then
+      begin
+        PaintAction := paVertices;
+        MapBox.Refresh;
+      end;
   end
 
   else if MapAction = maFenceLining then
@@ -900,6 +916,9 @@ begin
       LeaveFenceLiningMode;
     end;
   end
+
+  else if Linking and (Key = VK_ESCAPE) then
+    CancelLinking
 
   else if MapAction in [maAddingJunc .. maAddingLabel] then
   begin
@@ -1014,6 +1033,10 @@ begin
 end;
 
 procedure TMapFrame.DebounceTimerTimer(Sender: TObject);
+//
+// This timer prevents excessive map redraws when the mouse wheel is
+// used for zooming.
+//
 begin
   DebounceTimer.Enabled := false;
   if DeltaZoom > 0 then
@@ -1038,7 +1061,8 @@ var
 begin
   if not Assigned(Map) then exit;
 
-  // Fill the entire MapBox area with the network map's bitmap
+  // When panning, draw the network map's bitmap on the MapBox at the
+  // panned offset, filling any empty space with the map's background color
   if MapAction = maPanning then
   begin
     MapBox.Canvas.Brush.Color := Map.GetBackColor;
@@ -1097,7 +1121,10 @@ begin
   end;
 
   // Used to display a link's vertices
-  if (PaintAction = paVertices) then ShowVertices(SelectedObjIndex);
+  if (PaintAction = paVertices) then
+  begin
+    ShowVertices(SelectedObjIndex);
+  end;
   MapBox.Canvas.Pen.Color := clBlack;
   PaintAction := paNone;
 end;
@@ -1132,16 +1159,21 @@ var
   I: Integer;
   W: TDoublePoint;
 begin
-  if MainForm.GeoRefFrame.Visible then
+  // Check that user is georeferencing the basemap
+  if not MainForm.GeoRefFrame.Visible then exit;
+
+  // Determine the world coords. where map was clicked on
+  W := Map.ScreenToWorld(Point1.X, Point1.Y);
+
+  // Find out which control point (index I) should be displayed
+  I := MainForm.GeoRefFrame.GetCtrlPointIndex(W);
+
+  // Display the I-th control point at coords. W
+  if I > 0 then
   begin
-    W := Map.ScreenToWorld(Point1.X, Point1.Y);
-    I := MainForm.GeoRefFrame.GetCtrlPointIndex(W);
-    if I > 0 then
-    begin
-      CtrlPoint[I].Position := W;
-      CtrlPoint[I].Visible := true;
-      RedrawMap;
-    end;
+    CtrlPoint[I].Position := W;
+    CtrlPoint[I].Visible := true;
+    RedrawMap;
   end;
 end;
 
@@ -1156,7 +1188,9 @@ begin
   Moving := false;
   if MapAction = maVertexing then
   begin
-    if SelectVertex(X, Y)
+    if Shift = [ssRight] then
+      LeaveVertexingMode
+    else if SelectVertex(X, Y)
     and (Shift = [ssLeft, ssCtrl]) then
     begin
       Moving := true;
@@ -1167,6 +1201,11 @@ begin
     begin
       Point1 := Point(X, Y);
     end;
+  end
+
+  else if Linking and (Shift = [ssRight]) then
+  begin
+    CancelLinking;
   end
 
   else if MapAction = maFenceLining then
@@ -1352,7 +1391,6 @@ begin
 
   else if MapAction in [maAddingJunc .. maAddingTank] then
   begin
-    MapBox.Cursor := crDefault;
     W := Map.ScreenToWorld(X, Y);
     I := ord(MapAction) - ord(maAddingJunc);
     projectbuilder.AddNode(I, W.X, W.Y);
@@ -1422,6 +1460,10 @@ end;
 
 procedure TMapFrame.MapBoxMouseWheel(Sender: TObject; Shift: TShiftState;
   WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
+//
+// Collects zooms to the network map using the mouse wheel and delays
+// acting on them until the DebounceTimer delay is complete.
+//
 begin
   if FenceLining then exit;
   ZoomToPoint := MousePos;
@@ -1478,7 +1520,7 @@ end;
 
 procedure TMapFrame.ShowVertex(I: Integer; J: Integer; C: TColor);
 //
-// Draws the J-th vertex point for Link I with color C on the map.
+// Draws the J-th vertex point for Link I with color C on the MapBox canvas.
 //
 var
   X: Double = 0;

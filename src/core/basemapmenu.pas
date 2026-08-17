@@ -63,10 +63,10 @@ type
 
   private
     procedure EnableUnitsComboBox;
+    function  HasInternet: Boolean;
 
   public
     MapSelection:      Integer;
-    HasInternet:       Boolean;
     procedure Setup;
     function  GetEpsg:  Integer;
     function  GetUnits: Integer;
@@ -112,7 +112,6 @@ begin
   EpsgHelpViewer.DefBackground := $00E0FFFF;
   EpsgHelpViewer.LoadFromString(EpsgHelp);
   EpsgHelpClosePanel.Color := $00E0FFFF;
-  HasInternet := False;
 end;
 
 procedure TBasemapMenuForm.Setup;
@@ -120,13 +119,7 @@ begin
   // Check for internet connection
   if not MainForm.MapFrame.HasWebBasemap then
   begin
-    HasInternet := utils.HasInternetConnection;
-    if not HasInternet then
-    begin
-      Notebook1.PageIndex := 1;
-      InternetLabel.Caption := rsNoInternet;
-      exit;
-    end;
+    if not HasInternet then exit;
   end;
 
   // Project is empty - EPSG & units are fixed
@@ -158,6 +151,17 @@ begin
     UnitsComboBox.Enabled := True;
   end;
   EnableUnitsComboBox;
+end;
+
+function TBasemapMenuForm.HasInternet: Boolean;
+begin
+  Result := false;
+  Notebook1.PageIndex := 1;
+  InternetLabel.Caption := rsCheckInternet;
+  Application.ProcessMessages;
+  Result := utils.HasInternetConnection;
+  if Result = false then
+    InternetLabel.Caption := rsNoInternet;
 end;
 
 procedure TBasemapMenuForm.FormKeyDown(Sender: TObject; var Key: Word;

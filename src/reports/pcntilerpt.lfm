@@ -13,7 +13,7 @@ object PcntileRptFrame: TPcntileRptFrame
   DesignTop = 192
   object Chart1: TChart
     Left = 0
-    Height = 349
+    Height = 339
     Top = 0
     Width = 634
     AntialiasingMode = amOn
@@ -93,6 +93,15 @@ object PcntileRptFrame: TPcntileRptFrame
       LinePen.Style = psDash
       LinePen.Width = 2
     end
+  end
+  object ProgressBar1: TProgressBar
+    Left = 0
+    Height = 10
+    Top = 339
+    Width = 634
+    Align = alBottom
+    TabOrder = 1
+    Visible = False
   end
   object ExportMenu: TPopupMenu
     Images = mainForm.PopupImageList

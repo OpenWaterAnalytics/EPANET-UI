@@ -139,7 +139,7 @@ object MsxEditorForm: TMsxEditorForm
       Height = 370
       Top = 45
       Width = 598
-      PageIndex = 4
+      PageIndex = 2
       Align = alClient
       TabOrder = 0
       object Overview: TPage
@@ -165,8 +165,8 @@ object MsxEditorForm: TMsxEditorForm
           Align = alTop
           BevelOuter = bvNone
           BorderStyle = bsSingle
-          ClientHeight = 164
-          ClientWidth = 594
+          ClientHeight = 166
+          ClientWidth = 596
           Color = clWindow
           ParentBackground = False
           ParentColor = False
@@ -175,7 +175,7 @@ object MsxEditorForm: TMsxEditorForm
             Left = 0
             Height = 168
             Top = 0
-            Width = 594
+            Width = 596
             Align = alTop
             Center = True
             Picture.Data = {
@@ -1116,10 +1116,6 @@ object MsxEditorForm: TMsxEditorForm
             end          
             item
               Title.Alignment = taCenter
-              Title.Font.CharSet = ANSI_CHARSET
-              Title.Font.Name = 'Segoe UI'
-              Title.Font.Pitch = fpFixed
-              Title.Font.Quality = fqDraft
               Title.Caption = 'Diffus'
               Width = 64
             end          
@@ -1524,17 +1520,17 @@ object MsxEditorForm: TMsxEditorForm
       Align = alBottom
       Alignment = taLeftJustify
       BorderStyle = bsSingle
-      ClientHeight = 42
-      ClientWidth = 594
+      ClientHeight = 44
+      ClientWidth = 596
       Color = 14745599
       ParentBackground = False
       ParentColor = False
       TabOrder = 1
       object InstructTextPanel: TPanel
         Left = 9
-        Height = 40
+        Height = 42
         Top = 1
-        Width = 584
+        Width = 586
         Align = alClient
         Alignment = taLeftJustify
         BorderSpacing.Left = 8

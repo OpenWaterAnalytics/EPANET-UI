@@ -45,8 +45,9 @@ resourcestring
                     'Check the Status Report for details.';
   rsNoLoadProject = 'Could not load project file.';
 
-  // menuframe.pas
+  // mainmenu.pas
   rsShapingLink   = 'Reshaping a Link';
+  rsToShowVertices= 'Press Space bar to show vertices.' + LineEnding;
   rsToShapeLink   = 'Left-click on a vertex to select it.' +
                     LineEnding + ' ' + LineEnding +
                     'With the Ctrl key pressed, drag' + LineEnding +
@@ -56,7 +57,7 @@ resourcestring
                     'Press Insert to add a new vertex.' + LineEnding +
                     'Press Delete to delete a vertex.' + LineEnding +
                     'Shift-Delete deletes all vertices.' + LineEnding + LineEnding +
-                    'Press Escape to quit editing.';
+                    'Press Escape or right-click to quit editing.';
   rsGroupSelect   = 'Group Selection';
   rsToGroupSelect = 'Press Enter to select the entire' + LineEnding +
                     'network or draw a polygon' + LineEnding +
@@ -69,21 +70,22 @@ resourcestring
   rsToAddNode     = 'Move the pointer to the location of the new node ' +
                     'and left-click. ' + LineEnding + ' ' + LineEnding +
                     'Repeat to add more nodes.' + LineEnding + ' ' +LineEnding +
-                    'Press Escape or right-click to exit.';
+                    'Press Escape or right-click to quit adding nodes.';
   rsAddLink       = 'To Add a Link:';
   rsToAddLink     = 'Left-click on the start node of the link, move the ' +
                     'pointer to the end node and left-click again.' +
                     LineEnding + ' ' + LineEnding + 'Left-click at ' +
-                    'intermediate points to shape the link. ' + LineEnding +
-                    ' ' + LineEnding +
+                    'intermediate points to shape the link. Right-click or ' +
+                    'press Escape to cancel drawing the link.' +
+                     LineEnding + ' ' + LineEnding +
                     'Repeat to add more links.' + LineEnding + ' ' + LineEnding +
-                    'Press Escape or right-click to exit.';
+                    'Press Escape or right-click to quit adding links.';
   rsAddLabel      = 'To Add a Label:';
   rsToAddLabel    = 'Left-click at the label''s location.' + LineEnding + ' ' +
                     LineEnding + 'Type in the label''s text and press Enter.' +
                     LineEnding + ' ' + LineEnding +
-                    'Repeat to add more labels.' + LineEnding + ' ' +LineEnding +
-                    'Press Escape to exit.';
+                    'Repeat to add more labels.' + LineEnding + ' ' + LineEnding +
+                    'Press Escape or right-click to quit adding labels.';
   rsResultsCurrent= 'Results are Current';
   rsNoPumps       = 'There are no pumps with results to report on.';
   rsTime          = 'Time: ';
@@ -103,8 +105,8 @@ resourcestring
   rsImportFrom    = ' Import Network Data From';
 
   // basemapmenu.pas
-  rsCheckInternet = 'Checking internet connection ...';
-  rsNoInternet    = 'There is no internet connection.';
+  rsCheckInternet = 'Checking your internet connection ...';
+  rsNoInternet    = 'You are not connected to the internet.';
   rsEpsgHelp      = '<p><b>CRS EPSG</b></p>' +
                     '<p>New projects that utilize an internet basemap will '+
                     'be assigned geographic coordinates (latitude, longitude; '+

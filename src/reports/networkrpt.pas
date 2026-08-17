@@ -44,21 +44,23 @@ end;
 
   TNetworkRptFrame = class(TFrame)
     DataGrid: TDrawGrid;
+    FiltersAcceptBtn: TButton;
+    FiltersAddBtn: TButton;
+    FiltersCancelBtn: TButton;
+    FiltersDeleteBtn: TButton;
+    FiltersListBox: TListBox;
+    GroupBox1: TGroupBox;
     Notebook1:         TNotebook;
+    Panel1: TPanel;
+    ParamCheckGroup: TCheckGroup;
+    ParamComboBox: TComboBox;
+    ParamValueEdit: TEdit;
+    RelationComboBox: TComboBox;
+    ScrollBox1: TScrollBox;
     TablePage:         TPage;
     FilterPage:        TPage;
     Label1:            TLabel;
     BottomPanel:       TPanel;
-    GroupBox1:         TGroupBox;
-    ParamCheckGroup:   TCheckGroup;
-    ParamComboBox:     TComboBox;
-    RelationComboBox:  TComboBox;
-    ParamValueEdit:    TEdit;
-    FiltersListBox:    TListBox;
-    FiltersAcceptBtn:  TButton;
-    FiltersAddBtn:     TButton;
-    FiltersCancelBtn:  TButton;
-    FiltersDeleteBtn:  TButton;
     PopupMenu1:        TPopupMenu;
     MenuSave:          TMenuItem;
     MnuFilters:        TMenuItem;
@@ -78,6 +80,7 @@ end;
     procedure FiltersCancelBtnClick(Sender: TObject);
     procedure FiltersDeleteBtnClick(Sender: TObject);
     procedure FiltersListBoxSelectionChange(Sender: TObject; User: boolean);
+    procedure FrameResize(Sender: TObject);
     procedure MenuCopyClick(Sender: TObject);
     procedure MenuSaveClick(Sender: TObject);
     procedure MnuFiltersClick(Sender: TObject);
@@ -478,6 +481,11 @@ begin
   ParamComboBox.ItemIndex := TmpFilters[I].Param ;
   RelationComboBox.ItemIndex := TmpFilters[I].Relation;
   ParamValueEdit.Text := TmpFilters[I].ValueStr;
+end;
+
+procedure TNetworkRptFrame.FrameResize(Sender: TObject);
+begin
+  ScrollBox1.Left := (ClientWidth - ScrollBox1.Width) div 2;
 end;
 
 procedure TNetworkRptFrame.ShowPopupMenu;

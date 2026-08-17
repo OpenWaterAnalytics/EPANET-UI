@@ -137,6 +137,7 @@ begin
       begin
         Report := TPcntileRptFrame.Create(self);
         TPcntileRptFrame(Report).InitReport;
+        HideReport := true;
       end;
     rtProfile:
       begin
@@ -145,7 +146,9 @@ begin
         HideReport := true;
       end;
     rtSysFlow:
-      Report := TSysFlowFrame.Create(self);
+      begin
+        Report := TSysFlowFrame.Create(self);
+      end;
     rtPumping:
       begin
         Report := TPumpingRptFrame.Create(self);
@@ -183,9 +186,9 @@ begin
   end
   else
   begin
-    RefreshReport;
     MainForm.MapViewerFrame.ReportRadioButton.Enabled := true;
     MainForm.ShowPage(MainForm.ReportPage);
+    RefreshReport;
   end;
 end;
 
@@ -278,7 +281,10 @@ begin
     rtCalib:
       TCalibRptFrame(Report).Refreshreport;
     rtSysFlow:
-      TSysFlowFrame(Report).RefreshReport;
+      begin
+        Show;
+        TSysFlowFrame(Report).RefreshReport;
+      end;
     rtPumping:
       TPumpingRptFrame(Report).RefreshReport;
     rtTimeSeries:

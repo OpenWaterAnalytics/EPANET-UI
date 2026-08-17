@@ -248,7 +248,6 @@ procedure TMapViewerFrame.Init;
 var
   I: Integer;
 begin
-  Color := config.ThemeColor;
   mapthemes.InitThemes;
   ViewNodeCombo.Clear;
   for I := 0 to High(mapthemes.NodeThemes) do

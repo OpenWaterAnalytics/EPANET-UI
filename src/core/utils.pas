@@ -267,6 +267,7 @@ begin
   try
     Client.ConnectTimeout := 2000;
     try
+      Client.IOTimeout := 2000;
       Client.Get('http://www.example.com');
       Result := true;
     except
@@ -398,7 +399,7 @@ function PointInPolygon(const P: TDoublePoint; const Bounds: TDoubleRect;
 //
 // Adapted from https://wrfranklin.org/Research/Short_Notes/pnpoly.html.
 //
-// TDoublePoint, TDoubleRect, and TPolygon are defined in mapcoods.pas.
+// TDoublePoint, TDoubleRect, and TPolygon are defined in mapcoords.pas.
 
 var
   I: Integer;

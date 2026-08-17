@@ -184,7 +184,10 @@ begin
 
   // Title/Notes chosen
   if aCategory = ctTitle then
+  begin
+    ItemPanel.Visible := true;
     aItem := 0
+  end
 
   // Sub-category of Analysis Options selected
   else if (aCategory >= 10)
@@ -207,7 +210,6 @@ begin
   // Time patterns or curves selected
   else if aCategory = ctPatterns then
   begin
-//    ItemPanel.Caption := '';
     ItemPanel.Visible := false;
     SelectItem(ctPatterns, -1);
     editor.Edit(ctPatterns, -1);
@@ -215,7 +217,6 @@ begin
   end
   else if aCategory = ctCurves then
   begin
-//    ItemPanel.Caption := '';
     ItemPanel.Visible := false;
     SelectItem(ctCurves, -1);
     editor.Edit(ctCurves, -1);
@@ -232,7 +233,6 @@ begin
   // Sub-category of Control Actions selected
   else if aCategory > 20 then
   begin
-//    ItemPanel.Caption := '';
     ItemPanel.Visible := false;
     SelectItem(ctControls, -1);
     editor.Edit(ctControls, aCategory - 21);
