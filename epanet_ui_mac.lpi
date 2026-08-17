@@ -12,6 +12,9 @@
       <XPManifest>
         <DpiAware Value="True/PM_V2"/>
       </XPManifest>
+      <Resources Count="1">
+        <Resource_0 FileName="src/pen.cur" Type="CURSOR" ResourceName="PEN"/>
+      </Resources>
     </General>
     <BuildModes>
       <Item Name="Default" Default="True"/>

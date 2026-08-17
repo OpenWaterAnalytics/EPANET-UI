@@ -218,7 +218,7 @@ The ***Multi-Species Quality Editor*** is used to describe a multi-species water
 <imgl images/LegendEditor.png>
 The Legend Editor is used to set numerical ranges to which different colors are assigned for viewing the currently selected node or link theme on the Network Map. It is invoked by clicking the <imgt images/pencil.png> buttons in the Themes group box on the Map Viewer panel.
 <p>
-Numerical values, in increasing order, are entered in the edit boxes to define the color ranges. Not all four boxes need to have values.<br><br>
+Numerical values, in increasing order, are entered in the edit boxes to define the color ranges. 
 To change a color, click on its color band and then select a new color from the ***Color Dialog*** box that will appear.<br><br>
 Click the ***Interval Scale*** button to assign ranges based on dividing the range of the current theme at the current time period into equal intervals.<br><br>
 Click the ***Color Palette*** button to select from a list of built-in color schemes.<br><br>

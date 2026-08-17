@@ -6,13 +6,13 @@ The EPANET-UI workspace is shown in the picture below. It is divided into severa
 
 The **Menu Bar** panel across the top of the workspace contains a collection of toolbars used to perform various program actions.
 
-The **Speed Bar** panel along the top right of the workspace contains a toolbar for the most commonly used commands.
+The **Speed Bar** panel at the top right of the workspace contains a toolbar for the most commonly used commands.
 
-The upper portion of the **Project Explorer** panel is used to select a category of project data while its lower portion contains a **Property Editor** used to set the properties of an object belonging to the selected category.
+The right hand side of the workspace contains the **Project Explorer** panel. Its upper portion is used to select a category of project data while its lower portion contains a **Property Editor** used to set the properties of an object belonging to the selected category.
 
 The **Network Map** panel occupies the middle portion of the workspace. It displays the layout of the pipe network being analyzed and can include a basemap backdrop to show the network's physical location. Selecting an object on the map will load its current data values into the Property Editor.
 
-The **Map Viewer** panel controls what themes, legends and layers are displayed on the network map.
+On the left hand side of the workspace is the **Map Viewer** panel. It controls what themes, legends and layers are displayed on the network map.
 
 The **Status Bar** panel along the bottom of the workspace displays several key project options as well as the coordinates of the mouse pointer as it is moved across the Network Map.
 
