@@ -34,13 +34,11 @@ Binaries for each of these libraries have been placed in the *bin* folder of thi
 
 ### Linux 64-bit
 1. Open a terminal window and navigate to the directory where this project resides.
-2. Issue the following commands to setup the environment for building **epanet-ui** (this only needs to be done once):
+2. Issue the following command to setup the environment for building **epanet-ui** (this only needs to be done once):
 ```
 sudo apt install openssl libqt5pas-dev
-cd ./bin/linux
-ln -s libproj.so libproj.so.12
 ```
-If your package manager is <b>dnf</b>, replace the first line with
+If your package manager is <b>dnf</b> then type the following instead:
 ```
 sudo dnf install openssl libqt5pas-devel
 ```
