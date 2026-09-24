@@ -1,10 +1,10 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.3
+ Version:      1.0.4
  Module:       about
  Description:  'About EPANET' form
  License:      see LICENSE
- Last Updated: 06/19/2026
+ Last Updated: 09/22/2026
 =====================================================================}
 
 unit about;
@@ -84,6 +84,7 @@ type
     procedure HtmlViewer2HotSpotClick(Sender: TObject; const SRC: ThtString;
       var Handled: Boolean);
     procedure PageControl1Change(Sender: TObject);
+    procedure Panel4Click(Sender: TObject);
   private
 
   public
@@ -106,8 +107,8 @@ procedure TAboutForm.FormCreate(Sender: TObject);
 begin
   Color := Config.ThemeColor;
   Font.Size := config.FontSize;
-  Panel3.Caption := rsAbout;
-  Panel4.Caption := rsVersions;
+  Panel3.Caption := rsVersions;
+  Panel4.Caption := rsAbout;
   HtmlViewer1.DefFontSize := config.FontSize;
   HtmlViewer1.LoadFromString(rsLicense);
   HtmlViewer2.DefFontSize := config.FontSize;
@@ -131,6 +132,11 @@ procedure TAboutForm.PageControl1Change(Sender: TObject);
 begin
   if PageControl1.ActivePage = TabSheet3 then
     HtmlViewer2.SetFocus;
+end;
+
+procedure TAboutForm.Panel4Click(Sender: TObject);
+begin
+
 end;
 
 end.

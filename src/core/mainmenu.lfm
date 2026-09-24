@@ -277,7 +277,7 @@ object MainMenuFrame: TMainMenuFrame
       Height = 65
       Top = 35
       Width = 1140
-      PageIndex = 0
+      PageIndex = 4
       Align = alClient
       TabOrder = 1
       TabStop = True
@@ -607,12 +607,6 @@ object MainMenuFrame: TMainMenuFrame
             Caption = ' Units '
             ImageIndex = 24
             OnClick = HelpUnitsBtnClick
-          end
-          object HelpSep1: TToolButton
-            Left = 501
-            Height = 5
-            Top = 0
-            Style = tbsDivider
           end
           object HelpAboutBtn: TToolButton
             Left = 401

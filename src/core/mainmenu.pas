@@ -1,10 +1,10 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.3
+ Version:      1.0.4
  Module:       mainmenu
  Description:  a frame containing the program's main menu
  License:      see LICENSE
- Last Updated: 06/19/2026
+ Last Updated: 09/22/2026
 =====================================================================}
 
 unit mainmenu;
@@ -79,7 +79,6 @@ type
     GroupEditBtn:         TToolButton;
     HelpAboutBtn:         TToolButton;
     HelpErrorsBtn:        TToolButton;
-    HelpSep1:             TToolButton;
     HelpToolBar:          TToolBar;
     HelpTopicsBtn:        TToolButton;
     HelpTutorialBtn:      TToolButton;

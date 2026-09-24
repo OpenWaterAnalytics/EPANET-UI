@@ -1,6 +1,6 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.3
+ Version:      1.0.4
  Module:       resourcestrings
  Description:  contains text for internationalizing all project strings
  License:      see LICENSE
@@ -893,7 +893,7 @@ resourcestring
   rsMsxSave        = 'Save Msx Data';
 
   // about.pas
-  rsVersions       = 'EPANET-UI Version 1.0.3' + LineEnding + LineEnding +
+  rsVersions       = 'EPANET-UI Version 1.0.4' + LineEnding + LineEnding +
                      'OWA-EPANET Version 2.3.6' + LineEnding + LineEnding +
                      'EPANET-MSX Version 2.0-dev';
   rsAbout          = 'A graphical user interface for the Open Water Analytics' +

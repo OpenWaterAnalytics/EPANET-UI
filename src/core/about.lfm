@@ -18,25 +18,25 @@ object AboutForm: TAboutForm
     Height = 270
     Top = 26
     Width = 424
-    ActivePage = TabSheet3
+    ActivePage = TabSheet1
     Style = tsFlatButtons
-    TabIndex = 2
+    TabIndex = 0
     TabOrder = 0
     OnChange = PageControl1Change
     object TabSheet1: TTabSheet
       Caption = 'About'
-      ClientHeight = 239
-      ClientWidth = 416
+      ClientHeight = 241
+      ClientWidth = 420
       object Panel1: TPanel
         Left = 0
-        Height = 239
+        Height = 241
         Top = 0
-        Width = 416
+        Width = 420
         Align = alClient
         BevelOuter = bvNone
         BorderStyle = bsSingle
         ClientHeight = 239
-        ClientWidth = 416
+        ClientWidth = 418
         Color = clWindow
         ParentBackground = False
         ParentColor = False
@@ -45,18 +45,18 @@ object AboutForm: TAboutForm
           Left = 0
           Height = 68
           Top = 0
-          Width = 412
+          Width = 418
           Align = alTop
           BevelOuter = bvNone
           ClientHeight = 68
-          ClientWidth = 412
+          ClientWidth = 418
           ParentBackground = False
           TabOrder = 0
           object Label2: TLabel
             Left = 122
-            Height = 37
+            Height = 33
             Top = 18
-            Width = 198
+            Width = 237
             Caption = 'E P A N E T - U I'
             Font.CharSet = ANSI_CHARSET
             Font.Color = clBlue
@@ -214,10 +214,10 @@ object AboutForm: TAboutForm
         end
         object Panel3: TPanel
           Left = 0
-          Height = 70
-          Top = 165
-          Width = 412
-          Align = alBottom
+          Height = 78
+          Top = 68
+          Width = 418
+          Align = alClient
           BevelOuter = bvNone
           ParentBackground = False
           TabOrder = 1
@@ -226,25 +226,26 @@ object AboutForm: TAboutForm
         object Panel4: TPanel
           Left = 0
           Height = 93
-          Top = 72
-          Width = 412
+          Top = 146
+          Width = 418
           Align = alBottom
           BevelOuter = bvNone
           ParentBackground = False
           TabOrder = 2
           Wordwrap = True
+          OnClick = Panel4Click
         end
       end
     end
     object TabSheet2: TTabSheet
       Caption = 'Terms of Use'
-      ClientHeight = 239
-      ClientWidth = 416
+      ClientHeight = 241
+      ClientWidth = 420
       object HtmlViewer1: THtmlViewer
         Left = 0
-        Height = 239
+        Height = 241
         Top = 0
-        Width = 416
+        Width = 420
         BorderStyle = htSingle
         DefBackground = clWindow
         DefFontName = 'Segoe UI'
@@ -261,13 +262,13 @@ object AboutForm: TAboutForm
     end
     object TabSheet3: TTabSheet
       Caption = 'Acknowledgements'
-      ClientHeight = 239
-      ClientWidth = 416
+      ClientHeight = 241
+      ClientWidth = 420
       object HtmlViewer2: THtmlViewer
         Left = 0
-        Height = 239
+        Height = 241
         Top = 0
-        Width = 416
+        Width = 420
         BorderStyle = htFocused
         DefBackground = clWindow
         DefFontName = 'Segoe UI'
