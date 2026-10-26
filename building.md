@@ -19,12 +19,14 @@ The following packages must be installed into your Lazarus setup to build the EP
 The following third-party libraries are required to build the EPANET UI:
 | Name | Version | Source Code Location | Windows Name | Linux Name |
 | ---- | ------- | -------------------- | ---------------- | ---------------- |
-| epanet | 2.3.5 | https://github.com/openwateranalytics/epanet | epanet2.dll | libepanet2.so |
+| epanet | 2.3.6 | https://github.com/openwateranalytics/epanet | epanet2.dll | libepanet2.so |
 | epanet-MSX | 2.0 | https://github.com/USEPA/EPANETMSX | epanetmsx.dll | libepanetmsx.so |
 | ShapeLib | 1.5.0 | http://shapelib.maptools.org | shplib.dll | libshp.so |
 | Proj4 | 4.3 | https://github.com/OrdnanceSurvey/proj.4 | proj.dll | libproj.so |
 
 Binaries for each of these libraries have been placed in the *bin* folder of this repository.
+
+<b>IMPORTANT:</B> The epanet library must be compiled with <i>#define EN_API_FLOAT_TYPE</i> statement at the top of the epanet2.h header file set to <b>double</b>.
 
 ## Build Instructions
 ### Windows 64-bit
