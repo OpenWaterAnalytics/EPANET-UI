@@ -26,7 +26,7 @@ The following third-party libraries are required to build the EPANET UI:
 
 Binaries for each of these libraries have been placed in the *bin* folder of this repository.
 
-<b>IMPORTANT:</B> The epanet library must be compiled with <i>#define EN_API_FLOAT_TYPE</i> statement at the top of the epanet2.h header file set to <b>double</b>.
+<b>IMPORTANT:</B> The epanet library must be compiled with the <i>#define EN_API_FLOAT_TYPE</i> statement at the top of the epanet2.h header file set to <b>double</b>.
 
 ## Build Instructions
 ### Windows 64-bit
