@@ -1,11 +1,11 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.3
+ Version:      1.0.5
  Module:       csvloader
  Description:  a wizard dialog form used to import a pipe network
                from a CSV text file
  License:      see LICENSE
- Last Updated: 06/19/2026
+ Last Updated: 10/17/2026
 =====================================================================}
 
 unit csvimporter;
@@ -84,6 +84,7 @@ type
     function  ShowSummary: Boolean;
     function  LoadCsvFields(Fname: string; aGrid: TStringGrid): Boolean;
     function  HasCoordData: Boolean;
+    function  IsValidCsvFile(Fname: string): Boolean;
   public
 
   end;
@@ -96,7 +97,7 @@ implementation
 {$R *.lfm}
 
 uses
-  main, config, csvviewer, csvloader, resourcestrings;
+  main, config, csvviewer, csvloader, utils, resourcestrings;
 
 const
 
@@ -265,7 +266,16 @@ begin
     Filter := rsCsvFiles;
     Filename := '*.csv';
     if Execute then Fname := Filename else exit;
-   end;
+  end;
+
+  if not IsValidCsvFile(Fname) then
+  begin
+    utils.MsgDlg(rsFileError, ExtractFileName(Fname) + rsCsvInvalid,
+      mtError, [mbOK], Self);
+    if PageControl1.ActivePage = PipesTabSheet then PipesFileEdit.Clear
+    else if PageControl1.ActivePage = NodesTabSheet then NodesFileEdit.Clear;
+    exit;
+  end;
 
   if PageControl1.ActivePage = PipesTabSheet then
   begin
@@ -377,6 +387,35 @@ begin
   NoDataLabel.Visible := not Result;
 end;
 
+function TCsvImporterForm.IsValidCsvFile(Fname: string): Boolean;
+var
+  F: TextFile;
+  S: string = '';
+  Fields: TStringList;
+  FieldCount: Integer = 0;
+begin
+  Result := false;
+  Fields := TStringList.Create;
+  AssignFile(F, Fname);
+  try
+    Fields.Delimiter := ',';
+    Fields.StrictDelimiter := True;
+    Reset(F);
+    if Eof(F) then exit;
+    Readln(F, S);
+    Fields.DelimitedText := S;
+    FieldCount := Fields.Count;
+    if FieldCount <= 1 then exit;
+    if Eof(F) then exit;
+    Readln(F, S);
+    Fields.DelimitedText := S;
+    if Fields.Count = FieldCount then Result := true;
+  finally
+    CloseFile(F);
+    Fields.Free;
+  end;
+end;
+
 function TCsvImporterForm.LoadCsvFields(Fname: string; aGrid: TStringGrid): Boolean;
 var
   F: TextFile;
@@ -393,8 +432,8 @@ begin
     Reset(F);
     Readln(F, S);
     Fields.Delimiter := ',';
+    Fields.StrictDelimiter := True;
     Fields.DelimitedText := S;
-    if Fields.Count > 0 then
     begin
       for J := 0 to Fields.Count - 1 do
           aGrid.Columns[0].PickList.Add(Fields[J]);

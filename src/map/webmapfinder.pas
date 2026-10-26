@@ -1,10 +1,10 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.3
+ Version:      1.0.5
  Module:       webmapfinder
  Description:  a form that finds the geographic coords of an address
  License:      see LICENSE
- Last Updated: 06/19/2026
+ Last Updated: 10/13/2026
 =====================================================================}
 
 unit webmapfinder;
@@ -116,26 +116,36 @@ begin
   Location := MidStr(Str, I1, I2-I1-1);
   I1 := Pos('"lon":"', Str) + Length('"lon":"');
   I2 := PosEx('"', Str, I1+1);
-  Location := Location + ',' + MidStr(Str, I1, I2-I1-1);
+  Location := Location + ' ' + MidStr(Str, I1, I2-I1-1);
 end;
 
 function TWebMapFinderForm.ParseLatLon(Location: string): Boolean;
 //
-// Extract latitude, longitude values from a string with format 'lat,lon'.
+// Extract latitude, longitude values from a string with format 'lat lon'.
 //
 var
-  Tokens: TStringList;
+  FSettings: TFormatSettings;
+  Tokens:    TStringList;
+  S:         string;
 begin
   Result := true;
   Tokens := TStringList.Create;
   try
-    Tokens.Delimiter := ',';
+    // Force use of '.' decimal separator (as returned from Rest service)
+    FSettings := DefaultFormatSettings;
+    FSettings.DecimalSeparator := '.';
+
+    // Break Location string into latitude & longitude sub-strings
+    Tokens.Delimiter := ' ';
     Tokens.DelimitedText := Location;
     if Tokens.Count < 2 then Result := false
     else
     try
-      Lat := StrToFloat(Tokens[0]);
-      Lon := StrToFloat(Tokens[1]);
+      // Replace ',' decimal separator with '.' & convert to float
+      S := StringReplace(Tokens[0], ',', '.', []);
+      Lat := StrToFloat(S, FSettings);
+      S := StringReplace(Tokens[1], ',', '.', []);
+      Lon := StrToFloat(S, FSettings);
     except
       on E: Exception do Result := false;
     end;

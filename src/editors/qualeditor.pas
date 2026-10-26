@@ -111,7 +111,7 @@ end;
 procedure TQualEditorForm.FormShow(Sender: TObject);
 var
   I: Integer;
-  X: Single = 0;
+  X: Double = 0;
 begin
   epanet2.ENgetqualinfo(QualType, ChemName, QualUnits, TraceNodeIndex);
   QualTypeCombo.ItemIndex := QualType;

@@ -1,10 +1,10 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.3
+ Version:      1.0.5
  Module:       shploader
  Description:  loads the contents of a shapefile into a project
  License:      see LICENSE
- Last Updated: 06/19/2026
+ Last Updated: 10/16/2026
 =====================================================================}
 
 unit shploader;
@@ -405,7 +405,7 @@ begin
 
       // Check that this vertex doesn't lay on top of the previous one
       if (X1 = X0)
-      or (Y1 = Y0) then
+      and (Y1 = Y0) then
         continue;
 
       // Store the vertex's coordinates in the local arrays
@@ -439,7 +439,7 @@ function LinkUcf(Attrib: Integer): Double;
 // Compute a units conversion factor for an imported link attribute.
 //
 var
-  V: Single = 0;
+  V: Double = 0;
   S: string;
 begin
   Result := 1;
@@ -490,10 +490,10 @@ procedure SetLinkProps(Dbf: DBFHandle; I: Integer; LinkType: Integer; LinkIndex:
 // corresponding attributes stored in the I-th record of the dBase file.
 //
 var
-  V:         Single;
-  Len:       Single = 10;
-  Diameter:  Single = 10;
-  Roughness: Single = 0;
+  V:         Double;
+  Len:       Double = 10;
+  Diameter:  Double = 10;
+  Roughness: Double = 0;
   S:         string = '';
 begin
   // Only pipe links have assigned properties

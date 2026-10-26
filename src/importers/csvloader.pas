@@ -1,10 +1,10 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.3
+ Version:      1.0.5
  Module:       csvloader
  Description:  loads the contents of a CSV text file into a project
  License:      see LICENSE
- Last Updated: 06/19/2026
+ Last Updated: 10/17/2026
 =====================================================================}
 
 unit csvloader;
@@ -142,7 +142,7 @@ procedure SetPipeUcfs(CsvOptions: TCsvOptions);
 var
   Units:      string;
   I:          Integer;
-  HlossModel: Single = 0;
+  HlossModel: Double = 0;
 begin
   // Initialize all Ucfs
   for I := Low(PipeUcf) to High(PipeUcf) do PipeUcf[I] := 1.0;
@@ -416,6 +416,7 @@ var
   F: TextFile;
   Line: string;
   Fields: TStringList;
+  FieldCount: Integer;
 begin
   with CsvOptions do
   begin
@@ -426,17 +427,24 @@ begin
   AssignFile(F, Filename);
   try
     Fields.Delimiter := ',';
+    Fields.StrictDelimiter := True;
 
     // Skip 1st line containing field names
     Reset(F);
     Readln(F, Line);
+    Fields.DelimitedText := Line;
+    FieldCount := Fields.Count;
 
     // Read remaining lines
     while not eof(F) do
     begin
       Readln(F, Line);
-      Fields.DelimitedText := Line;
-      AddNode(Fields);
+      Line := Trim(Line);
+      if Length(Line) > 0 then
+      begin
+        Fields.DelimitedText := Line;
+        if Fields.Count >= FieldCount then AddNode(Fields);
+      end;
     end;
 
   finally
@@ -454,6 +462,7 @@ var
   F: TextFile;
   Line: string;
   Fields: TStringList;
+  FieldCount: Integer;
 begin
   with CsvOptions do
   begin
@@ -464,17 +473,24 @@ begin
   AssignFile(F, Filename);
   try
     Fields.Delimiter := ',';
+    Fields.StrictDelimiter := True;
 
     // Skip 1st line containing field names
     Reset(F);
     Readln(F, Line);
+    Fields.DelimitedText := Line;
+    FieldCount := Fields.Count;
 
     // Read remaining lines
     while not eof(F) do
     begin
       Readln(F, Line);
-      Fields.DelimitedText := Line;
-      AddPipe(Fields);
+      Line := Trim(Line);
+      if Length(Line) > 0 then
+      begin
+        Fields.DelimitedText := Line;
+        if Fields.Count >= FieldCount then AddPipe(Fields);
+      end;
     end;
 
   finally

@@ -1,10 +1,10 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.3
+ Version:      1.0.5
  Module:       projectframe
  Description:  displays and edits the properties of project objects
  License:      see LICENSE
- Last Updated: 06/19/2026
+ Last Updated: 10/11/2026
 =====================================================================}
 
 unit projectframe;
@@ -82,7 +82,7 @@ type
     CopiedType:        Integer;
     CurrentCategory:   Integer;
     PreviousRow:       Integer;
-    SelectedItem:      array [0..project.ctLabels] of Integer;
+    SelectedItem:      array [0..project.ctCurves] of Integer;
     ValidationNeeded:  Boolean;
 
     procedure CopyItem;
@@ -380,15 +380,19 @@ procedure TProjectFrame.ConvertItem(ToType: Integer);
 //
 var
   aItem: Integer;
+  aIndex: Integer;
+  aID: string;
 begin
   if CurrentCategory <> ctLinks then exit;
   aItem := SelectedItem[CurrentCategory];
+  aID := project.GetItemID(CurrentCategory, aItem);
   if project.ConvertLink(aItem+1, ToType) then
   begin
     project.HasChanged := true;
     project.UpdateResultsStatus;
     MainForm.MapFrame.RedrawMap;
-    SelectItem(CurrentCategory, aItem);
+    aIndex := project.GetItemIndex(CurrentCategory, aID);
+    SelectItem(CurrentCategory, aIndex - 1);
   end;
 end;
 

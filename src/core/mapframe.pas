@@ -1,11 +1,11 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.3
+ Version:      1.0.5
  Module:       mapframe
  Description:  a frame that displays the pipe network and
                handles user interaction with it.
  License:      see LICENSE
- Last Updated: 06/19/2026
+ Last Updated: 10/23/2026
 =====================================================================}
 
 unit mapframe;
@@ -160,14 +160,14 @@ type
     procedure DrawHiliter;
 
   public
-    Map:         TMap;
-    HasBasemap:  Boolean;
-    BasemapFile: string;
-    NodeLegend:  TMapLegendFrame;
-    LinkLegend:  TMapLegendFrame;
-    Offset:      TPoint;
-    Aligning:    Boolean;
-    CtrlPoint:   array[1..3] of TCtrlPoint;
+    Map:            TMap;
+    HasBasemap:     Boolean;
+    BasemapFile:    string;
+    NodeLegend:     TMapLegendFrame;
+    LinkLegend:     TMapLegendFrame;
+    Offset:         TPoint;
+    Aligning:       Boolean;
+    CtrlPoint:      array[1..3] of TCtrlPoint;
 
     procedure AddNode(NodeType: Integer);
     procedure AddLink(LinkType: Integer);
@@ -204,6 +204,7 @@ type
     procedure RedrawMap;
     procedure RedrawMapLabels;
     procedure ResizeMap;
+    function  RetrievingWebMap: Boolean;
 
     procedure SetBasemapBrightness(Brightness: Integer);
     procedure SetExtent(E: TDoubleRect);
@@ -320,6 +321,15 @@ begin
     CtrlPoint[I].Bitmap.Free;
   Map.Free;
   SetLength(Points, 0);
+end;
+
+function TMapFrame.RetrievingWebMap: Boolean;
+//
+//  Check if a basemap is being retrieved from the web.
+//
+begin
+  if not Assigned(Map.Basemap.WebMap) then Result := false
+  else Result := Map.Basemap.WebMap.Retrieving;
 end;
 
 procedure TMapFrame.DrawFullExtent;

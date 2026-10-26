@@ -132,7 +132,7 @@ var
   T: Integer;
   LinkIndex: Integer;
   X: Double;
-  D: Single;
+  D: Double;
   Xstart: Double;
   Xend: Double;
 

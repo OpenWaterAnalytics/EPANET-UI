@@ -15,7 +15,7 @@ object TimeSeriesFrame: TTimeSeriesFrame
     Height = 382
     Top = 0
     Width = 715
-    PageIndex = 0
+    PageIndex = 1
     Align = alClient
     TabOrder = 0
     object ChartPage: TPage

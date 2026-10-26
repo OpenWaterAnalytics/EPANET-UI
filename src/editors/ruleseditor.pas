@@ -1,10 +1,10 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.3
+ Version:      1.0.5
  Module:       ruleseditor
  Description:  a form that edits a project's rule-based controls
  License:      see LICENSE
- Last Updated: 06/19/2026
+ Last Updated: 10/24/2026
 =====================================================================}
 
 unit ruleseditor;
@@ -48,6 +48,7 @@ type
     procedure DeleteBtnClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure FormHide(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure HelpBtnClick(Sender: TObject);
     procedure InsertBtnClick(Sender: TObject);
@@ -142,6 +143,11 @@ begin
   NewRules.Free;
   OldRules.Free;
   OldRulesEnabled.Free;
+end;
+
+procedure TRulesEditorForm.FormHide(Sender: TObject);
+begin
+  ClearAll;
 end;
 
 procedure TRulesEditorForm.FormShow(Sender: TObject);
@@ -489,7 +495,7 @@ var
   nPremises: Integer = 0;
   nThenActions: Integer = 0;
   nElseActions: Integer = 0;
-  priority: Single = 0;
+  priority: Double = 0;
   id: array[0..EN_MAXID+1] of AnsiChar = '';
   Rule: string;
 begin
@@ -533,7 +539,7 @@ var
   varCode: Integer = 0;  // object variable
   relop: Integer = 0;    // relational operand
   status: Integer = 0;   // link status
-  setting: Single = 0;   // link setting
+  setting: Double = 0;   // link setting
 begin
   objID := '';
   for p := 1 to N do
@@ -549,10 +555,16 @@ begin
       line := line + StatusWord[status]
     else
     begin
-      if varCode =  EN_R_CLOCKTIME then
+      if varCode = EN_R_TIME then
+      begin
+        if setting >= 24 * 3600 then
+          line := line + utils.Float2StrG(setting/3600)
+        else line := line + utils.Time2Str(Round(setting));
+      end
+      else if varCode =  EN_R_CLOCKTIME then
         line := line + utils.TimeOfDayStr(Round(setting))
       else
-        line := line + Format('%0.4f', [setting]);
+        line := line + utils.Float2StrG(setting);
     end;
     Rule := Rule + sLineBreak + line;
   end;
@@ -564,7 +576,7 @@ var
   i: Integer;
   linkIndex: Integer = 0;
   status: Integer = 0;
-  setting: Single = 0;
+  setting: Double = 0;
   line: string;
 begin
   for i := 1 to nThenActions do
@@ -604,7 +616,7 @@ begin
   if setting <= EN_MISSING then
     Result := Result + ' STATUS = ' + StatusWord[status]
   else
-    Result := Result + Format(' SETTING = %0.4f', [setting]);
+    Result := Result + ' SETTING = ' + utils.Float2StrG(setting);
 end;
 
 procedure TRulesEditorForm.DeleteRules;

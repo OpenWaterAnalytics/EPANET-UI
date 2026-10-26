@@ -1,11 +1,11 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.3
+ Version:      1.0.5
  Module:       legendeditor
  Description:  a dialog form that edits the legend used to
                display a theme on the pipe network map
  License:      see LICENSE
- Last Updated: 06/19/2026
+ Last Updated: 10/23/2026
 =====================================================================}
 
 unit legendeditor;
@@ -120,7 +120,7 @@ begin
   for I := 1 to 4 do
   begin
     with FindComponent('Edit' + IntToStr(I)) as TEdit do S := Text;
-    if not Utils.Str2Float(S, X2) then
+    if not TryStrToFloat(S, X2) then
     begin
       utils.MsgDlg(rsInvalidData, '"' + S + '"' + rsInvalidNumber, mtError, [mbOk], self);
       exit;
@@ -271,7 +271,7 @@ begin
     begin
       S := Trim(Text);
       Intervals.Labels[I] := S;
-      utils.Str2Float(S, Intervals.Values[I]);
+      TryStrToFloat(S, Intervals.Values[I]);
     end;
   end;
   IsFramed := FramedCheckBox.Checked;

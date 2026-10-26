@@ -3,7 +3,7 @@ unit epanet2;
 { Declarations of imported procedures from the EPANET PROGRAMMERs TOOLKIT }
 { (EPANET2.DLL) }
 
-{Last updated on 04/23/2025}
+{Last updated on 03/05/2026}
 
 interface
 
@@ -306,6 +306,8 @@ const
 {$else}
   {$DEFINE TimeType:=Integer}
 {$endif}
+
+{$DEFINE FloatType:=Double}
   
 {Project Functions}  
  function  ENepanet(F1: PAnsiChar; F2: PAnsiChar; F3: PAnsiChar; F4: Pointer): Integer; cdecl; external EpanetLib;
@@ -352,13 +354,13 @@ const
  function  ENsetstatusreport(Code: Integer): Integer; cdecl; external EpanetLib;
  function  ENgetversion(var Version: Integer): Integer; cdecl; external EpanetLib;
  function  ENgeterror(Errcode: Integer; Errmsg: PAnsiChar; MaxLen: Integer): Integer; cdecl; external EpanetLib;
- function  ENgetstatistic(StatType: Integer; var Value: Single): Integer; cdecl; external EpanetLib;
+ function  ENgetstatistic(StatType: Integer; var Value: FloatType): Integer; cdecl; external EpanetLib;
  function  ENgetresultindex(Code: Integer; Index: Integer; var Value: Integer): Integer; cdecl; external EpanetLib;
  function  ENtimetonextevent(var EventType: Integer; var Duration: TimeType; var ElementIndex: Integer): Integer; cdecl; external EpanetLib;
 
 {Analysis Options Functions}
- function  ENgetoption(Code: Integer; var Value: Single): Integer; cdecl; external EpanetLib;
- function  ENsetoption(Code: Integer; Value: Single): Integer; cdecl; external EpanetLib;
+ function  ENgetoption(Code: Integer; var Value: FloatType): Integer; cdecl; external EpanetLib;
+ function  ENsetoption(Code: Integer; Value: FloatType): Integer; cdecl; external EpanetLib;
  function  ENgetflowunits(var Code: Integer): Integer; cdecl; external EpanetLib;
  function  ENsetflowunits(Code: Integer): Integer; cdecl; external EpanetLib;
  function  ENgettimeparam(Code: Integer; var Value: TimeType): Integer; cdecl; external EpanetLib;
@@ -374,23 +376,24 @@ const
  function  ENgetnodeid(Index: Integer; ID: PAnsiChar): Integer; cdecl; external EpanetLib;
  function  ENsetnodeid(Index: Integer; NewID: PAnsiChar): Integer; cdecl; external EpanetLib;
  function  ENgetnodetype(Index: Integer; var Code: Integer): Integer; cdecl; external EpanetLib;
- function  ENgetnodevalue(Index: Integer; Code: Integer; var Value: Single): Integer; cdecl; external EpanetLib;
- function  ENsetnodevalue(Index: Integer; Code: Integer; Value: Single): Integer; cdecl; external EpanetLib;
- function  ENsetjuncdata(Index: Integer; Elev: Single; Dmnd: Single; DmndPat: PAnsiChar): Integer; cdecl; external EpanetLib;
- function  ENsettankdata(Index: Integer; Elev, InitLvl, MinLvl, MaxLvl, Diam, MinVol: Single; VolCurve: PAnsiChar): Integer; cdecl; external EpanetLib;
+ function  ENgetnodevalue(Index: Integer; Code: Integer; var Value: FloatType): Integer; cdecl; external EpanetLib;
+ function  ENsetnodevalue(Index: Integer; Code: Integer; Value: FloatType): Integer; cdecl; external EpanetLib;
+ function  ENsetjuncdata(Index: Integer; Elev: FloatType; Dmnd: FloatType; DmndPat: PAnsiChar): Integer; cdecl; external EpanetLib;
+ function  ENsettankdata(Index: Integer; Elev, InitLvl, MinLvl, MaxLvl, Diam, MinVol: FloatType; VolCurve: PAnsiChar): Integer; cdecl; external EpanetLib;
  function  ENgetcoord(Index: Integer; var X: Double; var Y: Double): Integer; cdecl; external EpanetLib;
  function  ENsetcoord(Index: Integer; X: Double; Y: Double): Integer; cdecl; external EpanetLib;
- function  ENgetnodevalues(Code: Integer; var X: array of Single): Integer; cdecl; external EpanetLib;
+ function  ENgetnodevalues(Code: Integer; var X: array of FloatType): Integer; cdecl; external EpanetLib;
+ function  ENsetnodevalues(Code: Integer; var X: array of Double; var badIndex: Integer): Integer; cdecl; external EpanetLib;
 
 {Demand Functions}
- function  ENgetdemandmodel(var Model: Integer; var Pmin: Single; var Preq: Single; var Pexp: Single): Integer; cdecl; external EpanetLib;
- function  ENsetdemandmodel(Model: Integer; Pmin: Single; Preq: Single; Pexp: Single): Integer; cdecl; external EpanetLib;
+ function  ENgetdemandmodel(var Model: Integer; var Pmin: FloatType; var Preq: FloatType; var Pexp: FloatType): Integer; cdecl; external EpanetLib;
+ function  ENsetdemandmodel(Model: Integer; Pmin: FloatType; Preq: FloatType; Pexp: FloatType): Integer; cdecl; external EpanetLib;
  function  ENgetnumdemands(NodeIndex: Integer; var NumDemands: Integer): Integer; cdecl; external EpanetLib;
- function  ENadddemand(NodeIndex: Integer; BaseDemand: Single; PatName: PAnsiChar; DemandName: PAnsiChar): Integer; cdecl; external EpanetLib;
+ function  ENadddemand(NodeIndex: Integer; BaseDemand: FloatType; PatName: PAnsiChar; DemandName: PAnsiChar): Integer; cdecl; external EpanetLib;
  function  ENdeletedemand(NodeIndex: Integer; DemandIndex: Integer): Integer; cdecl; external EpanetLib;
  function  ENgetdemandindex(NodeIndex: Integer; DemandName: PAnsiChar; var DemandIndex: Integer): Integer; cdecl; external EpanetLib;
- function  ENgetbasedemand(NodeIndex: Integer; DemandIndex: Integer; var BaseDemand: Single): Integer; cdecl; external EpanetLib;
- function  ENsetbasedemand(NodeIndex: Integer; DemandIndex: Integer; BaseDemand: Single): Integer; cdecl; external EpanetLib;
+ function  ENgetbasedemand(NodeIndex: Integer; DemandIndex: Integer; var BaseDemand: FloatType): Integer; cdecl; external EpanetLib;
+ function  ENsetbasedemand(NodeIndex: Integer; DemandIndex: Integer; BaseDemand: FloatType): Integer; cdecl; external EpanetLib;
  function  ENgetdemandpattern(NodeIndex: Integer; DemandIndex: Integer; var PatIndex: Integer): Integer; cdecl; external EpanetLib;
  function  ENsetdemandpattern(NodeIndex: Integer; DemandIndex: Integer; PatIndex: Integer): Integer; cdecl; external EpanetLib;
  function  ENgetdemandname(NodeIndex: Integer; DemandIndex: Integer; DemandName: PAnsiChar): Integer; cdecl; external EpanetLib;
@@ -406,10 +409,11 @@ const
  function  ENsetlinktype(var Index: Integer; LinkType: Integer; ActionCode: Integer): Integer; cdecl; external EpanetLib;
  function  ENgetlinknodes(Index: Integer; var Node1: Integer; var Node2: Integer): Integer; cdecl; external EpanetLib;
  function  ENsetlinknodes(Index: Integer; Node1: Integer; Node2: Integer): Integer; cdecl; external EpanetLib;
- function  ENgetlinkvalue(Index: Integer; Code: Integer; var Value: Single): Integer; cdecl; external EpanetLib;
- function  ENsetlinkvalue(Index: Integer; Code: Integer; Value: Single): Integer; cdecl; external EpanetLib;
- function  ENsetpipedata(Index: Integer; Length: Single; Diam: Single; Rough: Single; Mloss:Single): Integer; cdecl; external EpanetLib;
- function  ENgetlinkvalues(Code: Integer; var X: array of Single): Integer; cdecl; external EpanetLib;
+ function  ENgetlinkvalue(Index: Integer; Code: Integer; var Value: FloatType): Integer; cdecl; external EpanetLib;
+ function  ENsetlinkvalue(Index: Integer; Code: Integer; Value: FloatType): Integer; cdecl; external EpanetLib;
+ function  ENsetpipedata(Index: Integer; Length: FloatType; Diam: FloatType; Rough: FloatType; Mloss:FloatType): Integer; cdecl; external EpanetLib;
+ function  ENgetlinkvalues(Code: Integer; var X: array of FloatType): Integer; cdecl; external EpanetLib;
+ function  ENsetlinkvalues(Code: Integer; var X: array of Double; var badIndex: Integer): Integer; cdecl; external EpanetLib;
 
  function  ENgetvertexcount(Index: Integer; var Count: Integer): Integer; cdecl; external EpanetLib;
  function  ENgetvertex(Index: Integer; Vertex: Integer; var X: Double; var Y: Double): Integer; cdecl; external EpanetLib;
@@ -428,10 +432,10 @@ const
  function  ENgetpatternid(Index: Integer; ID: PAnsiChar): Integer; cdecl; external EpanetLib;
  function  ENsetpatternid(Index: Integer; ID: PAnsiChar): Integer; cdecl; external EpanetLib;
  function  ENgetpatternlen(Index: Integer; var Len: Integer): Integer; cdecl; external EpanetLib;
- function  ENgetpatternvalue(Index: Integer; Period: Integer; var Value: Single): Integer; cdecl; external EpanetLib;
- function  ENsetpatternvalue(Index: Integer; Period: Integer; Value: Single): Integer; cdecl; external EpanetLib;
- function  ENgetaveragepatternvalue(Index: Integer; var Value: Single): Integer; cdecl; external EpanetLib;
- function  ENsetpattern(Index: Integer; var F: array of Single; N: Integer): Integer; cdecl; external EpanetLib;
+ function  ENgetpatternvalue(Index: Integer; Period: Integer; var Value: FloatType): Integer; cdecl; external EpanetLib;
+ function  ENsetpatternvalue(Index: Integer; Period: Integer; Value: FloatType): Integer; cdecl; external EpanetLib;
+ function  ENgetaveragepatternvalue(Index: Integer; var Value: FloatType): Integer; cdecl; external EpanetLib;
+ function  ENsetpattern(Index: Integer; var F: FloatType; N: Integer): Integer; cdecl; external EpanetLib;
            
 {Curve Functions}
  function  ENaddcurve(ID: PAnsiChar): Integer; cdecl; external EpanetLib;
@@ -442,16 +446,16 @@ const
  function  ENgetcurvelen(Index: Integer; var Len: Integer): Integer; cdecl; external EpanetLib;
  function  ENgetcurvetype(Index: Integer; var CurveType: Integer): Integer; cdecl; external EpanetLib;
  function  ENsetcurvetype(Index: Integer; CurveType: Integer): Integer; cdecl; external EpanetLib;
- function  ENgetcurvevalue(CurveIndex: Integer; PointIndex: Integer; var X: Single; var Y: Single): Integer; cdecl; external EpanetLib;
- function  ENsetcurvevalue(CurveIndex: Integer; PointIndex: Integer; X: Single; Y: Single): Integer; cdecl; external EpanetLib;
- function  ENgetcurve(Index: Integer; ID: PAnsiChar; var N: Integer; var X: Single; var Y: Single): Integer; cdecl; external EpanetLib;
- function  ENsetcurve(Index: Integer; var X: Single; var Y: Single; N: Integer): Integer; cdecl; external EpanetLib;
+ function  ENgetcurvevalue(CurveIndex: Integer; PointIndex: Integer; var X: FloatType; var Y: FloatType): Integer; cdecl; external EpanetLib;
+ function  ENsetcurvevalue(CurveIndex: Integer; PointIndex: Integer; X: FloatType; Y: FloatType): Integer; cdecl; external EpanetLib;
+ function  ENgetcurve(Index: Integer; ID: PAnsiChar; var N: Integer; var X: FloatType; var Y: FloatType): Integer; cdecl; external EpanetLib;
+ function  ENsetcurve(Index: Integer; var X: FloatType; var Y: FloatType; N: Integer): Integer; cdecl; external EpanetLib;
 
 {Control Functions}
- function  ENaddcontrol(Ctype: Integer; Link: Integer; Setting: Single; Node: Integer; Level: Single; var Index: Integer): Integer; cdecl; external EpanetLib;
+ function  ENaddcontrol(Ctype: Integer; Link: Integer; Setting: FloatType; Node: Integer; Level: FloatType; var Index: Integer): Integer; cdecl; external EpanetLib;
  function  ENdeletecontrol(Index: Integer): Integer; cdecl; external EpanetLib;
- function  ENgetcontrol(Index: Integer; var Ctype: Integer; var Link: Integer; var Setting: Single; var Node: Integer; var Level: Single): Integer; cdecl; external EpanetLib;
- function  ENsetcontrol(Index: Integer; Ctype: Integer; Link: Integer; Setting: Single; Node: Integer; Level: Single): Integer; cdecl; external EpanetLib;
+ function  ENgetcontrol(Index: Integer; var Ctype: Integer; var Link: Integer; var Setting: FloatType; var Node: Integer; var Level: FloatType): Integer; cdecl; external EpanetLib;
+ function  ENsetcontrol(Index: Integer; Ctype: Integer; Link: Integer; Setting: FloatType; Node: Integer; Level: FloatType): Integer; cdecl; external EpanetLib;
  function  ENgetcontrolenabled(Index: Integer; var out_enabled: Integer): Integer; cdecl; external EpanetLib;
  function  ENsetcontrolenabled(Index: Integer; enabled: Integer): Integer; cdecl; external EpanetLib;
 
@@ -459,25 +463,25 @@ const
  function ENaddrule(Rule: PAnsiChar): Integer; cdecl; external EpanetLib;
  function ENdeleterule(Index: Integer): Integer; cdecl; external EpanetLib;
  function ENgetrule(Index: Integer; var Npremises: Integer; var NthenActions: Integer;
-                    var NelseActions: Integer; var Priority: Single): Integer; cdecl; external EpanetLib;
+                    var NelseActions: Integer; var Priority: FloatType): Integer; cdecl; external EpanetLib;
  function ENgetruleID(Index: Integer; ID: PAnsiChar): Integer; cdecl; external EpanetLib;
- function ENsetrulepriority(Index: Integer; Priority: Single): Integer; cdecl; external EpanetLib;
+ function ENsetrulepriority(Index: Integer; Priority: FloatType): Integer; cdecl; external EpanetLib;
  function ENgetpremise(RuleIndex: Integer; PremiseIndex: Integer; var LogOp: Integer;
           var ObjType: Integer; var ObjIndex: Integer; var Param: Integer; var RelOp: Integer;
-          var Status: Integer; var Value: Single): Integer; cdecl; external EpanetLib;
+          var Status: Integer; var Value: FloatType): Integer; cdecl; external EpanetLib;
  function ENsetpremise(RuleIndex: Integer; PremiseIndex: Integer; LogOp: Integer; ObjType: Integer;
-          ObjIndex: Integer; Param: Integer; RelOp: Integer; Status: Integer; Value: Single): Integer; cdecl; external EpanetLib;
+          ObjIndex: Integer; Param: Integer; RelOp: Integer; Status: Integer; Value: FloatType): Integer; cdecl; external EpanetLib;
  function ENsetpremiseindex(RuleIndex: Integer; PremiseIndex: Integer; ObjIndex: Integer): Integer; cdecl; external EpanetLib;
  function ENsetpremisestatus(RuleIndex: Integer; PremiseIndex: Integer; Status: Integer): Integer; cdecl; external EpanetLib;
- function ENsetpremisevalue(RuleIndex: Integer; PremiseIndex: Integer; Value: Single): Integer; cdecl; external EpanetLib;
+ function ENsetpremisevalue(RuleIndex: Integer; PremiseIndex: Integer; Value: FloatType): Integer; cdecl; external EpanetLib;
  function ENgetthenaction(RuleIndex: Integer; ActionIndex: Integer; var LinkIndex: Integer;
-          var Status: Integer; var Setting: Single): Integer; cdecl; external EpanetLib;
+          var Status: Integer; var Setting: FloatType): Integer; cdecl; external EpanetLib;
  function ENsetthenaction(RuleIndex: Integer; ActionIndex: Integer; LinkIndex: Integer;
-          Status: Integer; Setting: Single): Integer; cdecl; external EpanetLib;
+          Status: Integer; Setting: FloatType): Integer; cdecl; external EpanetLib;
  function ENgetelseaction(RuleIndex: Integer; ActionIndex: Integer; var LinkIndex: Integer;
-          var Status: Integer; var Setting: Single): Integer; cdecl; external EpanetLib;
+          var Status: Integer; var Setting: FloatType): Integer; cdecl; external EpanetLib;
  function ENsetelseaction(RuleIndex: Integer; ActionIndex: Integer; LinkIndex: Integer;
-          Status: Integer; Setting: Single): Integer; cdecl; external EpanetLib;
+          Status: Integer; Setting: FloatType): Integer; cdecl; external EpanetLib;
  function  ENgetruleenabled(Index: Integer; var out_enabled: Integer): Integer; cdecl; external EpanetLib;
  function  ENsetruleenabled(Index: Integer; enabled: Integer): Integer; cdecl; external EpanetLib;
 

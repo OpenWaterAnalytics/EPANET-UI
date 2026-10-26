@@ -2,11 +2,11 @@ object WebMapFinderForm: TWebMapFinderForm
   Left = 595
   Height = 93
   Top = 419
-  Width = 392
+  Width = 431
   BorderStyle = bsDialog
   Caption = 'Location Finder'
   ClientHeight = 93
-  ClientWidth = 392
+  ClientWidth = 431
   KeyPreview = True
   Position = poMainFormCenter
   LCLVersion = '4.4.0.0'
@@ -16,7 +16,7 @@ object WebMapFinderForm: TWebMapFinderForm
     Height = 23
     Hint = 'Enter a place name, address, or lat,lng values'
     Top = 49
-    Width = 359
+    Width = 399
     ParentShowHint = False
     ShowHint = True
     TabOrder = 0
@@ -26,7 +26,7 @@ object WebMapFinderForm: TWebMapFinderForm
     Left = 17
     Height = 15
     Top = 19
-    Width = 269
-    Caption = 'Enter a place name, address, or  latitude, longitude:'
+    Width = 361
+    Caption = 'Enter a place name, address, or  latitude longitude (space separated):'
   end
 end

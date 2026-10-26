@@ -1,10 +1,10 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.3
+ Version:      1.0.5
  Module:       demandseditor
  Description:  a dialog form that edits multiple demands at a node
  License:      see LICENSE
- Last Updated: 06/19/2026
+ Last Updated: 10/23/2026
 =====================================================================}
 
 unit demandseditor;
@@ -133,7 +133,7 @@ procedure TDemandsEditorForm.LoadDemands(const Index: Integer);
 var
   I: Integer;
   N: Integer;
-  D: Single = 0;
+  D: Double = 0;
   P: Integer = 0;
   C: array[0..EN_MAXID+1] of AnsiChar = '';
 begin
@@ -144,7 +144,7 @@ begin
   for I := 1 to N do
   begin
     epanet2.ENgetbasedemand(NodeIndex, I, D);
-    DemandsGrid.Cells[1,I] := utils.Float2Str(D, 4);
+    DemandsGrid.Cells[1,I] := utils.Float2StrG(D);
     epanet2.ENgetdemandpattern(NodeIndex, I, P);
     DemandsGrid.Cells[2,I] := project.GetID(ctPatterns, P);
     epanet2.ENgetdemandname(NodeIndex, I, C);
@@ -179,7 +179,7 @@ begin
       // Retrieve base demand value
       if S1.Length = 0 then
         D := 0
-      else if not Utils.Str2Float(S1, D) then
+      else if not TryStrToFloat(S1, D) then
       begin
         ShowError(rsInvalidDemand + IntToStr(I), I, 1);
         Exit;
@@ -233,11 +233,11 @@ procedure TDemandsEditorForm.GetPrimaryDemandInfo(var PrimaryDemand: String;
           var PrimaryPattern: string; var DemandCount: string);
 var
   N: Integer = 0;
-  D1: Single = 0;
+  D1: Double = 0;
   P1: Integer = 0;
 begin
   epanet2.ENgetbasedemand(NodeIndex, 1, D1);
-  PrimaryDemand := utils.Float2Str(D1, 4);
+  PrimaryDemand := utils.Float2StrG(D1);
   epanet2.ENgetdemandpattern(NodeIndex, 1, P1);
   PrimaryPattern := project.GetID(ctPatterns, P1);
   epanet2.ENgetnumdemands(NodeIndex, N);

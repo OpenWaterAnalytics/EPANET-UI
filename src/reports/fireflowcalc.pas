@@ -1,10 +1,10 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.3
+ Version:      1.0.5
  Module:       fireflow.pas
  Description:  computes fire flows for designated set of project nodes
  License:      see LICENSE
- Last Updated: 06/19/2026
+ Last Updated: 10/19/2026
 =====================================================================}
 
 unit fireflowcalc;
@@ -19,17 +19,17 @@ uses
 type
   TFireFlowResult = record
     FireNode:        Integer;
-    StaticPress:     Single;
-    DesignFlowPress: Single;
-    AvailableFlow:   Single;
-    CriticalPress:   Single;
+    StaticPress:     Double;
+    DesignFlowPress: Double;
+    AvailableFlow:   Double;
+    CriticalPress:   Double;
     CriticalNode:    Integer;
   end;
 
 var
   FireFlowResults: array of TFireFlowResult;
 
-procedure Open(DesignQ, DesignP: Single; Duration: Integer;
+procedure Open(DesignQ, DesignP: Double; Duration: Integer;
   FireNodes: array of Integer; PressZoneType: Integer);
 
 procedure Close;
@@ -50,7 +50,7 @@ uses
 {$I ..\timetype.txt}
 
 const
-  PressUcf: array[0..4] of Single =
+  PressUcf: array[0..4] of Double =
     (1.0,
      6.894745,     // KPAperPSI
      0.70325,      // MperPSI
@@ -60,19 +60,19 @@ const
 var
   FireTime:         Integer;
   FireNodeIndex:    Integer;
-  DesignFlow:       Single;
-  DesignPressure:   Single;
-  ResidualPressure: Single;
-  CriticalPressure: Single;
+  DesignFlow:       Double;
+  DesignPressure:   Double;
+  ResidualPressure: Double;
+  CriticalPressure: Double;
   CriticalNode:     Integer;
   NumFireNodes:     Integer;
   PressZone:        Integer;
-  StaticPressures:  array of Single;
+  StaticPressures:  array of Double;
   SavedDuration:    TimeType;
-  SavedReporting:   TimeType;
-  UcfFlow:          Single;
-  UcfPressure:      Single;
-  PatternFactor:    Single;
+  SavedReporting:   Integer;
+  UcfFlow:          Double;
+  UcfPressure:      Double;
+  PatternFactor:    Double;
 
 procedure SetPatternFactor;
 //
@@ -85,7 +85,7 @@ var
   PatternStart:  TimeType = 0;
   PatternLength: Integer = 1;
   PatternPeriod: Integer;
-  P:             Single = 0;
+  P:             Double = 0;
 begin
   // Get index of primary demand pattern for fire flow node
   PatternFactor := 1.0;
@@ -115,7 +115,7 @@ begin
   end;
 end;
 
-function RunSolver(Q: Single): Integer;
+function RunSolver(Q: Double): Integer;
 //
 // Run EPANET hydraulic solver up to time at which fire flow occurs
 // at which point fire flow Q is added to fire node's base demand.
@@ -124,7 +124,7 @@ var
   T:           TimeType;         // Elapsed solution time
   Tstep:       TimeType;         // Next time step taken
   ErrorCode:   Integer = 0;
-  SavedDemand: Single = 0;
+  SavedDemand: Double = 0;
 
 begin
   // Save base demand for fire node
@@ -158,7 +158,7 @@ begin
 
         // Haven't reached fire time yet; solve hydraulics for next time period
         ErrorCode := epanet2.ENrunH(T);
-        if ErrorCode = 0 then
+        if ErrorCode <= 100 then
           ErrorCode := epanet2.ENnextH(Tstep);
       until (Tstep = 0)     // normal termination
       or (ErrorCode > 100); // fatal error occurred
@@ -190,7 +190,7 @@ var
   I:         Integer;
   N:         Integer;
   NodeIndex: Integer;
-  Pressure:  Single = 0;
+  Pressure:  Double = 0;
 begin
   if PressZone = fireflowrpt.FireFlowSet then
     N := NumFireNodes
@@ -216,12 +216,12 @@ begin
   end;
 end;
 
-function FindCriticalPressure(Q: Single): Integer;
+function FindCriticalPressure(Q: Double): Integer;
 //
 // Find the critcial pressure under fire flow Q.
 //
 var
-  Pressure: Single = 0;
+  Pressure: Double = 0;
 begin
   // Solve network hydraulics with fire flow Q
   Result := RunSolver(Q);
@@ -277,14 +277,14 @@ begin
   end;
 end;
 
-function Search(Q1, Q2, P1, P2: Single; var Qavail: Single): Integer;
+function Search(Q1, Q2, P1, P2: Double; var Qavail: Double): Integer;
 //
 // For the current fire node, find its available fire flow Qavail between Q1
 // and Q2 with residual pressures P1 and P2 that meet a minimum pressure limit
 // using Ridder's method.
 //
 var
-  Phi, Pmid, Plow, Pnew, S, Qhi, Qmid, Qlow, Qnew, Dq: Single;
+  Phi, Pmid, Plow, Pnew, S, Qhi, Qmid, Qlow, Qnew, Dq: Double;
   J: Integer;
 begin
   Qlow := Q1;
@@ -348,10 +348,10 @@ function RunStaticAnalysis: Integer;
 var
   I: Integer;
   J: Integer;
-  P: Single = 0;
+  P: Double = 0;
 begin
   Result := RunSolver(0);
-  if Result <> 0 then
+  if Result > 100 then
     exit;
 
   for I := 0 to NumFireNodes - 1 do
@@ -375,7 +375,7 @@ begin
   end;
 end;
 
-function GetUcfFlow: Single;
+function GetUcfFlow: Double;
 //
 // Find project flow units per fire flow units (either GPM or LPM).
 //
@@ -386,7 +386,7 @@ begin
     Result := project.FlowUcf[project.FlowUnits] / project.FlowUcf[EN_LPM];
 end;
 
-function GetUcfPressure: Single;
+function GetUcfPressure: Double;
 //
 // Find project pressure units per fire flow pressure (either psi or kPa).
 //
@@ -396,14 +396,14 @@ begin
     Result := Result / PressUcf[EN_KPA];     // Pressure units per kPa
 end;
 
-procedure Open(DesignQ, DesignP: Single; Duration: Integer;
+procedure Open(DesignQ, DesignP: Double; Duration: Integer;
   FireNodes: array of Integer; PressZoneType: Integer);
 //
 // Save the design parameters selected for the fire flow analysis.
 //
 var
   I: Integer;
-  Xrpt: Single = 0;
+  Xrpt: Double;
 begin
   // Find unit conversion factors
   UcfFlow := GetUcfFlow;
@@ -435,7 +435,7 @@ begin
 
   // Disable any status reporting
   ENgetoption(EN_STATUS_REPORT, Xrpt);
-  SavedReporting := Integer(Xrpt);
+  SavedReporting := Round(Xrpt);
   ENsetstatusreport(EN_NO_REPORT);
 end;
 
@@ -453,8 +453,8 @@ procedure FindFireFlow(I: Integer);
 // Perform a fire flow analysis for node I.
 //
 var
-  Pstatic: Single;
-  AvailableFlow: Single = 0;
+  Pstatic: Double;
+  AvailableFlow: Double = 0;
   ErrCode: Integer;
 begin
   // Initialize results
@@ -525,7 +525,7 @@ begin
 
   // Run a static analysis (with no fire flow)
   ErrCode := RunStaticAnalysis;
-  if ErrCode <> 0 then
+  if ErrCode > 100 then
     TFireFlowFrame(MainForm.ReportFrame.Report).WriteToLog(
       Format(rsStaticFailure, [ErrCode]))
 

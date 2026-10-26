@@ -1,11 +1,11 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.3
+ Version:      1.0.5
  Module:       main
  Description:  main form of a graphical user interface for the
                EPANET water distribution system analysis engine
  License:      see LICENSE
- Last Updated: 06/19/2026
+ Last Updated: 10/11/2026
 =====================================================================}
 
 unit main;
@@ -211,7 +211,8 @@ implementation
 
 uses
   project, projectloader, projectbuilder, projectsetup, welcome,
-  config, inifile, utils, mapthemes, resourcestrings;
+  config, inifile, utils, mapthemes, controlseditor, ruleseditor,
+  resourcestrings;
 
 { TmainForm }
 
@@ -465,6 +466,8 @@ end;
 
 procedure TMainForm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
+  if MapFrame.RetrievingWebMap then exit;
+
   // Close any open report
   ReportFrame.CloseReport;
   GroupSelectorFrame.Close;
@@ -515,7 +518,8 @@ begin
 
   // Delete key pressed
   else if (Key = VK_DELETE) and MainMenuFrame.Enabled and
-  MainMenuFrame.ProjectDeleteBtn.Enabled then
+  MainMenuFrame.ProjectDeleteBtn.Enabled and
+  (not (ActiveControl is TEdit)) then
     MainMenuFrame.ProjectDeleteBtnClick(Sender)
 
   // Key applies to a map operation
@@ -705,6 +709,7 @@ end;
 
 procedure TMainForm.FileNew(ShowSetupForm: Boolean);
 begin
+  if MapFrame.RetrievingWebMap then exit;
   if SaveFileDlg = mrCancel then exit;
   StartNewProject;
   if ShowSetupForm then ProjectSetup;
@@ -756,14 +761,11 @@ end;
 
 procedure TMainForm.FileSave;
 begin
-  if project.InpFile.Length > 0 then
-  begin
-    if project.Save(project.InpFile) then
-      inifile.WriteProjectDefaults(ChangeFileExt(Project.InpFile, '.ini'),
-        MapFrame.GetWebBasemapSource);
-  end
-  else
-    FileSaveAs;
+  if (project.InpFile.Length = 0)
+  or (utils.IsFileReadOnly(project.InpFile)) then FileSaveAs
+  else if project.Save(project.InpFile) then
+    inifile.WriteProjectDefaults(ChangeFileExt(Project.InpFile, '.ini'),
+      MapFrame.GetWebBasemapSource)
 end;
 
 function TMainForm.SaveFileDlg: Integer;
@@ -922,6 +924,8 @@ end;
 procedure TMainForm.StartNewProject;
 begin
   ReportFrame.CloseReport;
+  ControlsEditorForm.Hide;
+  RulesEditorForm.Hide;
   HideHintPanelFrames;
   project.Clear;
   MapFrame.InitMapOptions;

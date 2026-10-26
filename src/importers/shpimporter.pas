@@ -1,11 +1,11 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.3
+ Version:      1.0.4
  Module:       shpimporter
  Description:  a wizard dialog form used to import a pipe network
                from a shapefile
  License:      see LICENSE
- Last Updated: 06/19/2026
+ Last Updated: 09/20/2026
 =====================================================================}
 
 unit shpimporter;
@@ -191,6 +191,7 @@ begin
   LinksFileEdit.Text := '';
   ClearDataGrid(LinksDataGrid);
   ViewLinkAttribLabel.Visible := false;
+  HasChanged := true;
 end;
 
 procedure TShpImporterForm.ClearNodesBtnClick(Sender: TObject);
@@ -199,6 +200,7 @@ begin
   NodesFileEdit.Text := '';
   ClearDataGrid(NodesDataGrid);
   ViewNodeAttribLabel.Visible := false;
+  HasChanged := true;
 end;
 
 procedure TShpImporterForm.BackBtnClick(Sender: TObject);

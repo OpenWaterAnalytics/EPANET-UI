@@ -1,11 +1,11 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.3
+ Version:      1.0.5
  Module:       networkrpt
  Description:  A frame to display a table of computed results
                for all network nodes or links
  License:      see LICENSE
- Last Updated: 06/19/2026
+ Last Updated: 10/23/2026
 =====================================================================}
 
 unit networkrpt;
@@ -27,7 +27,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls,
-  Buttons, Grids, ComCtrls, Menus, Types, LCLtype, Clipbrd, Fgl;
+  Buttons, Grids, ComCtrls, Menus, Types, LCLtype, Clipbrd, CheckLst, Fgl;
 
 type
 TFilter = record
@@ -43,6 +43,7 @@ end;
   { TNetworkRptFrame }
 
   TNetworkRptFrame = class(TFrame)
+    ParamCheckList: TCheckListBox;
     DataGrid: TDrawGrid;
     FiltersAcceptBtn: TButton;
     FiltersAddBtn: TButton;
@@ -50,9 +51,9 @@ end;
     FiltersDeleteBtn: TButton;
     FiltersListBox: TListBox;
     GroupBox1: TGroupBox;
+    GroupBox2: TGroupBox;
     Notebook1:         TNotebook;
     Panel1: TPanel;
-    ParamCheckGroup: TCheckGroup;
     ParamComboBox: TComboBox;
     ParamValueEdit: TEdit;
     RelationComboBox: TComboBox;
@@ -232,7 +233,7 @@ end;
 procedure TNetworkRptFrame.ClearReport;
 begin
   DataGrid.Clear;
-  ParamCheckGroup.Items.Clear;
+  ParamCheckList.Items.Clear;
   ParamComboBox.Items.Clear;
   FiltersListBox.Items.Clear;
   IndexList.Clear;
@@ -272,7 +273,7 @@ var
 begin
   // Set visibility of grid columns
   for I := 0 to DataGrid.Columns.Count - 1 do
-    DataGrid.Columns[I].Visible := ParamCheckGroup.Checked[I];
+    DataGrid.Columns[I].Visible := ParamCheckList.Checked[I];
 
   // Add filtered results to the grid
   IndexList.Clear;
@@ -313,7 +314,7 @@ begin
   DataGrid.Columns.Add;
   DataGrid.Columns[0].Title.Caption := rsType;
   ParamComboBox.Items.Add(rsType);
-  ParamCheckGroup.Items.Add(rsType);
+  ParamCheckList.Items.Add(rsType);
 
   // Add a column for each theme viewable on the network map
   if TableType = ctNodes then
@@ -353,7 +354,7 @@ begin
       end;
     end;
     ParamComboBox.Items.Add(ParamName);
-    ParamCheckGroup.Items.Add(ParamName);
+    ParamCheckList.Items.Add(ParamName);
     DataGrid.Columns[I].Title.Caption := ParamStr;
   end;
   ParamComboBox.ItemIndex := 0;
@@ -361,20 +362,20 @@ begin
   // Select which parameters (i.e., columns) to display initially
   for I := 0 to ThemeCount do
   begin
-    ParamCheckGroup.Checked[I] := true;
+    ParamCheckList.Checked[I] := true;
     // Don't show node design and pressure dependent demand parameters
     if (TableType = ctNodes)
     and (I in [ntElevation, ntBaseDemand, ntDmndDfct, ntEmittance, ntLeakage]) then
     begin
-      ParamCheckGroup.Checked[I] := false
+      ParamCheckList.Checked[I] := false
     end
 
     // Don't show design and setting parameters
     else if (TableType = ctLinks) then
     begin
       if (I in [ltDiameter, ltLength, ltRoughness]) then
-        ParamCheckGroup.Checked[I] := false;
-      if I = ThemeCount then ParamCheckGroup.Checked[I] := false;
+        ParamCheckList.Checked[I] := false;
+      if I = ThemeCount then ParamCheckList.Checked[I] := false;
     end;
   end;
 end;
@@ -424,16 +425,16 @@ var
   Filter:    string;
   ParamStr:  string;
   S:         string = '';
-  X:         Single = 0;
+  X:         Double = 0;
 begin
   S := Trim(ParamValueEdit.Text);
   ParamStr := ParamComboBox.Text;
   if (not SameText(ParamStr, 'Type')) and
      (not SameText(ParamStr, 'Status')) then
   begin
-    if not utils.Str2Float(S, X) then
+    if not TryStrToFloat(S, X) then
     begin
-      Utils.MsgDlg(rsInvalidData, ParamValueEdit.Text + rsInvalidNumber,
+      utils.MsgDlg(rsInvalidData, ParamValueEdit.Text + rsInvalidNumber,
         mtError, [mbOk]);
       exit;
     end;
@@ -573,7 +574,7 @@ begin
     ParamValueEdit.Text := '';
   end;
   Notebook1.PageIndex := 1;
-  ParamCheckGroup.SetFocus;
+  ParamCheckList.SetFocus;
 end;
 
 function TNetworkRptFrame.GetParamIndex(ColIndex: Integer): Integer;
@@ -737,7 +738,7 @@ begin
   for I := 0 to NumFilters - 1 do
   begin
     Param := GetParamIndex(Filters[I].Param);
-    Comp := FilterCompare(ObjIndex, Param, Filters[I].Value, Filters[I].ValueStr);
+    Comp := FilterCompare(Index, Param, Filters[I].Value, Filters[I].ValueStr);
     case Filters[I].Relation of
       rtBelow:
         if Comp >= 0 then exit;

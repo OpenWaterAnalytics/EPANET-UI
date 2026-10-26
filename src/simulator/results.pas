@@ -36,15 +36,15 @@ function  OpenMsxOutFile(const Fname: string): TSimStatus;
 
 function  GetNodeID(const I: Integer): string;
 function  GetNodeValue(const I: Integer; const V: Integer; const T: Integer): Single;
-function  GetDmndDfctValue(const I: Integer; const T: Integer): Single;
-function  GetEmitterFlowValue(const I: Integer; const T: Integer): Single;
-function  GetNodeLeakageValue(const I: Integer; const T: Integer): Single;
+function  GetDmndDfctValue(const I: Integer; const T: Integer): Double;
+function  GetEmitterFlowValue(const I: Integer; const T: Integer): Double;
+function  GetNodeLeakageValue(const I: Integer; const T: Integer): Double;
 function  GetNodeMsxValue(const I: Integer; const V: Integer; const T: Integer): Single;
 
 function  GetLinkID(const I: Integer): string;
 function  GetLinkValue(const I: Integer; const V: Integer; const T: Integer): Single;
-function  GetLinkLeakageValue(const I: Integer; const T: Integer): Single;
-function  GetLinkEnergyValue(const I: Integer; const T: Integer): Single;
+function  GetLinkLeakageValue(const I: Integer; const T: Integer): Double;
+function  GetLinkEnergyValue(const I: Integer; const T: Integer): Double;
 function  GetLinkMsxValue(const I: Integer; const V: Integer; const T: Integer): Single;
 
 function  GetPumpEnergy(const I: Integer; var PumpEnergy: array of Single): Boolean;
@@ -81,6 +81,7 @@ const
 
 // These are the numbers of additional node/link variables
 // saved to the simulator's binary Demands file.
+  AUX_RECORDSIZE = 8;      // Byte size of each record
   NUM_NODE_AUX_VARS = 3;   // Auxilary node variables reported
   NUM_LINK_AUX_VARS = 2;   // Auxilary link variables reported
 //*******************************************************************
@@ -215,14 +216,14 @@ begin
 
   BlockSize1 := RECORDSIZE * (Nnodes * NUM_NODE_VARS + Nlinks * NUM_LINK_VARS);
   BlockSize2 := RECORDSIZE * Nnodes * NUM_NODE_VARS;
-  BlockSize3 := RECORDSIZE * (Nnodes * NUM_NODE_AUX_VARS + Nlinks * NUM_LINK_AUX_VARS);
-  BlockSize4 := RECORDSIZE * Nnodes * NUM_NODE_AUX_VARS;
+  BlockSize3 := AUX_RECORDSIZE * (Nnodes * NUM_NODE_AUX_VARS + Nlinks * NUM_LINK_AUX_VARS);
+  BlockSize4 := AUX_RECORDSIZE * Nnodes * NUM_NODE_AUX_VARS;
 end;
 
 procedure SetInitStorage;
 var
   I: Integer;
-  V: Single = 0;
+  V: Double = 0;
 begin
   InitStorage := 0;
   for I := 1 to project.GetItemCount(ctNodes) do
@@ -378,59 +379,59 @@ begin
   Fout.Read(Result, RECORDSIZE);
 end;
 
-function  GetDmndDfctValue(const I: Integer; const T: Integer): Single;
+function  GetDmndDfctValue(const I: Integer; const T: Integer): Double;
 var
   P: Int64;
 begin
   Result := 0;
   if Fout2 = nil then exit;
-  P := (T * BlockSize3) + ((I - 1) * RECORDSIZE);
+  P := (T * BlockSize3) + ((I - 1) * AUX_RECORDSIZE);
   Fout2.Seek(P, soBeginning);
-  Fout2.Read(Result, RECORDSIZE);
+  Fout2.Read(Result, AUX_RECORDSIZE);
 end;
 
-function  GetEmitterFlowValue(const I: Integer; const T: Integer): Single;
+function  GetEmitterFlowValue(const I: Integer; const T: Integer): Double;
 var
   P: Int64;
 begin
   Result := 0;
   if Fout2 = nil then exit;
-  P := (T * BlockSize3) + ((Nnodes + I - 1) * RECORDSIZE);
+  P := (T * BlockSize3) + ((Nnodes + I - 1) * AUX_RECORDSIZE);
   Fout2.Seek(P, soBeginning);
-  Fout2.Read(Result, RECORDSIZE);
+  Fout2.Read(Result, AUX_RECORDSIZE);
 end;
 
-function  GetNodeLeakageValue(const I: Integer; const T: Integer): Single;
+function  GetNodeLeakageValue(const I: Integer; const T: Integer): Double;
 var
   P: Int64;
 begin
   Result := 0;
   if Fout2 = nil then exit;
-  P := (T * BlockSize3) + ((2*Nnodes + I - 1) * RECORDSIZE);
+  P := (T * BlockSize3) + ((2*Nnodes + I - 1) * AUX_RECORDSIZE);
   Fout2.Seek(P, soBeginning);
-  Fout2.Read(Result, RECORDSIZE);
+  Fout2.Read(Result, AUX_RECORDSIZE);
 end;
 
-function  GetLinkLeakageValue(const I: Integer; const T: Integer): Single;
+function  GetLinkLeakageValue(const I: Integer; const T: Integer): Double;
 var
   P: Int64;
 begin
   Result := 0;
   if Fout2 = nil then exit;
-  P := (T * BlockSize3) + BlockSize4 + ((I - 1) * RECORDSIZE);
+  P := (T * BlockSize3) + BlockSize4 + ((I - 1) * AUX_RECORDSIZE);
   Fout2.Seek(P, soBeginning);
-  Fout2.Read(Result, RECORDSIZE);
+  Fout2.Read(Result, AUX_RECORDSIZE);
 end;
 
-function  GetLinkEnergyValue(const I: Integer; const T: Integer): Single;
+function  GetLinkEnergyValue(const I: Integer; const T: Integer): Double;
 var
   P: Int64;
 begin
   Result := 0;
   if Fout2 = nil then exit;
-  P := (T * BlockSize3) + BlockSize4 + ((Nlinks + I - 1) * RECORDSIZE);
+  P := (T * BlockSize3) + BlockSize4 + ((Nlinks + I - 1) * AUX_RECORDSIZE);
   Fout2.Seek(P, soBeginning);
-  Fout2.Read(Result, RECORDSIZE);
+  Fout2.Read(Result, AUX_RECORDSIZE);
 end;
 
 function  GetNodeMsxValue(const I: Integer; const V: Integer; const T: Integer): Single;
@@ -454,7 +455,7 @@ end;
 function  GetLinkValue(const I: Integer; const V: Integer; const T: Integer): Single;
 //
 // I = link index (1 to Nlinks)
-// V = variable index (0 to NUM_LINK_VARS -1)
+// V = variable index (0 to NUM_LINK_VARS - 1)
 // T = time period (0 to Nperiods - 1)
 //
 var
@@ -487,7 +488,7 @@ end;
 
 function GetPumpEnergy(const I: Integer; var PumpEnergy: array of Single): Boolean;
 //
-// Called by fireflowrpt.RefreshTable with I == link index and PumpEnergy =
+// Called by pumpingrpt.RefreshTable with I == link index and PumpEnergy =
 // array of 6 energy usage statistics
 //
 var

@@ -1,10 +1,10 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.3
+ Version:      1.0.5
  Module:       webmap
  Description:  class that retrieves an image from a web map service
  License:      see LICENSE
- Last Updated: 06/19/2026
+ Last Updated: 10/23/2026
 =====================================================================}
 
 {
@@ -48,6 +48,7 @@ type
       BoundsRect:   TDoubleRect;
       CenterLatLon: TDoublePoint;
       CenterPixel:  TPoint;
+      Retrieving:   Boolean;
 
       constructor Create(aBitmap: TBitmap);
       destructor  Destroy; override;
@@ -80,6 +81,7 @@ begin
   inherited Create;
   Bitmap := aBitmap;
   MapServer := TMapServer.Create(MainForm.MapFrame);
+  Retrieving := false;
 end;
 
 destructor TWebMap.Destroy;
@@ -96,10 +98,13 @@ begin
     exit;
   if MapServer = nil then exit;
   try
+    Retrieving := true;
     MapServer.GetMapImage(CenterLatLon.X, CenterLatLon.Y, W, H, ZoomLevel, Bitmap);
+    Retrieving := false;
     Result := true;
   except
-    utils.MsgDlg(rsWmsFailure, rsNoMapImage, mtInformation, [mbOK], MainForm)
+    utils.MsgDlg(rsWmsFailure, rsNoMapImage, mtInformation, [mbOK], MainForm);
+    Retrieving := false;
   end;
 end;
 

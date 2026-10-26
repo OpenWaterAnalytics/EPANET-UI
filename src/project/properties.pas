@@ -1,10 +1,10 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.3
+ Version:      1.0.5
  Module:       properties
  Description:  retrieves property values of a project's objects
  License:      see LICENSE
- Last Updated: 06/19/2026
+ Last Updated: 10/23/2026
 =====================================================================}
 
 unit properties;
@@ -116,11 +116,11 @@ procedure AddPipeResults(Index: Integer);
 implementation
 
 uses
-  project, config, maplabel, mapthemes, results, utils, epanet2;
+  project, config, maplabel, mapthemes, results, epanet2, utils;
 
 procedure GetHydProps;
 var
-  X: Single = 0;
+  X: Double = 0;
 begin
   with project.Properties do
   begin
@@ -131,13 +131,13 @@ begin
     Add(IntToStr(Round(X)));
 
     epanet2.ENgetoption(EN_ACCURACY, X);
-    Add(Float2Str(X, 8));
+    Add(utils.Float2StrG(X));
 
     epanet2.ENgetoption(EN_HEADERROR, X);
-    Add(Float2Str(X, 8));
+    Add(utils.Float2StrG(X));
 
     epanet2.ENgetoption(EN_FLOWCHANGE, X);
-    Add(Float2Str(X, 8));
+    Add(utils.Float2StrG(X));
 
     epanet2.ENgetoption(EN_EXTRA_ITER, X);
     if (X < 0) then Add(rsStop) else Add(rsContinue);
@@ -152,7 +152,7 @@ begin
     Add(IntToStr(Round(X)));
 
     epanet2.ENgetoption(EN_DAMPLIMIT, X);
-    Add(Float2Str(X, 8));
+    Add(utils.Float2StrG(X));
   end;
 end;
 
@@ -188,11 +188,11 @@ end;
 
 procedure GetDemandProps;
 var
-  X: Single = 0;
+  X: Double = 0;
   DemandModel: Integer = 0;
-  Pmin: Single = 0;
-  Pmax: Single = 0;
-  Pexp: Single = 0;
+  Pmin: Double = 0;
+  Pmax: Double = 0;
+  Pexp: Double = 0;
 begin
   with project.Properties do
   begin
@@ -206,13 +206,13 @@ begin
     Add(project.GetID(ctPatterns, Round(X)));
 
     epanet2.ENgetoption(EN_DEMANDMULT, X);
-    Add(Float2Str(X, 4));
-    Add(Float2Str(Pmax, 4));
-    Add(Float2Str(Pmin, 4));
-    Add(Float2Str(Pexp, 4));
+    Add(utils.Float2StrG(X));
+    Add(utils.Float2StrG(Pmax));
+    Add(utils.Float2StrG(Pmin));
+    Add(utils.Float2StrG(Pexp));
 
     epanet2.ENgetoption(EN_EMITEXPON, X);
-    Add(Float2Str(X, 4));
+    Add(utils.Float2StrG(X));
 
     epanet2.ENgetoption(EN_EMITBACKFLOW, X);
     if Round(X) = 0 then Add(rsNo) else Add(rsYes);
@@ -242,7 +242,7 @@ end;
 
 procedure GetEnergyProps;
 var
-  X: Single = 0;
+  X: Double = 0;
 begin
   with project.Properties do
   begin
@@ -250,23 +250,23 @@ begin
     Add('');
 
     epanet2.ENgetoption(EN_GLOBALEFFIC, X);
-    Add(Float2Str(X, 2));
+    Add(utils.Float2StrG(X));
 
     epanet2.ENgetoption(EN_GLOBALPRICE, X);
-    Add(Float2Str(X, 4));
+    Add(utils.Float2StrG(X));
 
     epanet2.ENgetoption(EN_GLOBALPATTERN, X);
     Add(project.GetID(ctPatterns, Round(X)));
 
     epanet2.ENgetoption(EN_DEMANDCHARGE, X);
-    Add(Float2Str(X, 4));
+    Add(utils.Float2StrG(X));
   end;
 end;
 
 procedure GetJuncProps(Index: Integer);
 var
   I: Integer = 0;
-  X: Single = 0;
+  X: Double = 0;
 begin
   with project.Properties do
   begin
@@ -278,10 +278,10 @@ begin
     Add(project.GetTag(ctNodes, Index));
 
     epanet2.ENgetnodevalue(Index, EN_ELEVATION, X);
-    Add(Float2Str(X, 4));
+    Add(utils.Float2StrG(X));
 
     epanet2.ENgetnodevalue(Index, EN_BASEDEMAND, X);
-    Add(Float2Str(X, 4));
+    Add(utils.Float2StrG(X));
 
     epanet2.ENgetnodevalue(Index, EN_PATTERN, X);
     Add(project.GetID(ctPatterns, Round(X)));
@@ -290,13 +290,13 @@ begin
     Add(IntToStr(I));
 
     epanet2.ENgetnodevalue(Index, EN_EMITTER, X);
-    Add(Float2Str(X, 4));
+    Add(utils.Float2StrG(X));
 
     epanet2.ENgetnodevalue(Index, EN_INITQUAL, X);
-    Add(Float2Str(X, 4));
+    Add(utils.Float2StrG(X));
 
     epanet2.ENgetnodevalue(Index, EN_SOURCEQUAL, X);
-    Add(Float2Str(X, 4));
+    Add(utils.Float2StrG(X));
 
     AddNodeResults(Index);
   end;
@@ -304,7 +304,7 @@ end;
 
 procedure GetResvProps(Index: Integer);
 var
-  X: Single = 0;
+  X: Double = 0;
 begin
   with project.Properties do
   begin
@@ -316,16 +316,16 @@ begin
     Add(project.GetTag(ctNodes, Index));
 
     epanet2.ENgetnodevalue(Index, EN_ELEVATION, X);
-    Add(Float2Str(X, 4));
+    Add(utils.Float2StrG(X));
 
     epanet2.ENgetnodevalue(Index, EN_PATTERN, X);
     Add(project.GetID(ctPatterns, Round(X)));
 
     epanet2.ENgetnodevalue(Index, EN_INITQUAL, X);
-    Add(Float2Str(X, 4));
+    Add(utils.Float2StrG(X));
 
     epanet2.ENgetnodevalue(Index, EN_SOURCEQUAL, X);
-    Add(Float2Str(X, 4));
+    Add(utils.Float2StrG(X));
 
     AddNodeResults(Index);
   end;
@@ -333,7 +333,7 @@ end;
 
 procedure GetTankProps(Index: Integer);
 var
-  X: Single = 0;
+  X: Double = 0;
 begin
   with project.Properties do
   begin
@@ -344,22 +344,22 @@ begin
     Add(project.GetTag(ctNodes, Index));
 
     epanet2.ENgetnodevalue(Index, EN_ELEVATION, X);
-    Add(Float2Str(X, 4));
+    Add(utils.Float2StrG(X));
 
     epanet2.ENgetnodevalue(Index, EN_TANKLEVEL, X);
-    Add(Float2Str(X, 4));
+    Add(utils.Float2StrG(X));
 
     epanet2.ENgetnodevalue(Index, EN_MINLEVEL, X);
-    Add(Float2Str(X, 4));
+    Add(utils.Float2StrG(X));
 
     epanet2.ENgetnodevalue(Index, EN_MAXLEVEL, X);
-    Add(Float2Str(X, 4));
+    Add(utils.Float2StrG(X));
 
     epanet2.ENgetnodevalue(Index, EN_TANKDIAM, X);
-    Add(Float2Str(X, 4));
+    Add(utils.Float2StrG(X));
 
     epanet2.ENgetnodevalue(Index, EN_MINVOLUME, X);
-    Add(Float2Str(X, 4));
+    Add(utils.Float2StrG(X));
 
     epanet2.ENgetnodevalue(Index, EN_VOLCURVE, X);
     Add(project.getID(ctCurves, Round(X)));
@@ -376,16 +376,16 @@ begin
     epanet2.ENgetnodevalue(Index, EN_MIXFRACTION, X);
     if X < 0 then X := 0;
     if X > 1 then X := 1;
-    Add(Float2Str(X, 4));
+    Add(utils.Float2StrG(X));
 
     epanet2.ENgetnodevalue(Index, EN_TANK_KBULK, X);
-    Add(Float2Str(X, 4));
+    Add(utils.Float2StrG(X));
 
     epanet2.ENgetnodevalue(Index, EN_INITQUAL, X);
-    Add(Float2Str(X, 4));
+    Add(utils.Float2StrG(X));
 
     epanet2.ENgetnodevalue(Index, EN_SOURCEQUAL, X);
-    Add(Float2Str(X, 4));
+    Add(utils.Float2StrG(X));
 
     AddNodeResults(Index);
   end;
@@ -447,7 +447,7 @@ var
   I: Integer = 0;
   J: Integer = 0;
   K: Integer;
-  X: Single = 0;
+  X: Double = 0;
 begin
   with project.Properties do
   begin
@@ -462,16 +462,16 @@ begin
     Add(project.GetTag(ctLinks, Index));
 
     epanet2.ENgetlinkvalue(Index, EN_LENGTH, X);
-    Add(Float2Str(X, 4));
+    Add(utils.Float2StrG(X));
 
     epanet2.ENgetlinkvalue(Index, EN_DIAMETER, X);
-    Add(Float2Str(X, 4));
+    Add(utils.Float2StrG(X));
 
     epanet2.ENgetlinkvalue(Index, EN_ROUGHNESS, X);
-    Add(Float2Str(X, 4));
+    Add(utils.Float2StrG(X));
 
     epanet2.ENgetlinkvalue(Index, EN_MINORLOSS, X);
-    Add(Float2Str(X, 4));
+    Add(utils.Float2StrG(X));
 
     epanet2.ENgetlinktype(Index, K);
     if K = EN_CVPIPE then
@@ -484,16 +484,16 @@ begin
     Add(project.StatusStr[K]);
 
     epanet2.ENgetlinkvalue(Index, EN_KBULK, X);
-    Add(Float2Str(X, 4));
+    Add(utils.Float2StrG(X));
 
     epanet2.ENgetlinkvalue(Index, EN_KWALL, X);
-    Add(Float2Str(X, 4));
+    Add(utils.Float2StrG(X));
 
     epanet2.ENgetlinkvalue(Index, EN_LEAK_AREA, X);
-    Add(Float2Str(X, 4));
+    Add(utils.Float2StrG(X));
 
     epanet2.ENgetlinkvalue(Index, EN_LEAK_EXPAN, X);
-    Add(Float2Str(X, 4));
+    Add(utils.Float2StrG(X));
 
     AddPipeResults(Index);
   end;
@@ -503,7 +503,7 @@ procedure GetPumpProps(Index: Integer);
 var
   I:    Integer = 0;
   J:    Integer = 0;
-  X:    Single = 0;
+  X:    Double = 0;
 begin
   with project.Properties do
   begin
@@ -521,10 +521,10 @@ begin
     Add(project.GetID(ctCurves, Round(X)));
 
     epanet2.ENgetlinkvalue(Index, EN_PUMP_POWER, X);
-    Add(Float2Str(X, 4));
+    Add(utils.Float2StrG(X));
 
     epanet2.ENgetlinkvalue(Index, EN_INITSETTING, X);
-    Add(Float2Str(X, 4));
+    Add(utils.Float2StrG(X));
 
     epanet2.ENgetlinkvalue(Index, EN_LINKPATTERN, X);
     Add(project.GetID(ctPatterns, Round(X)));
@@ -536,7 +536,7 @@ begin
     Add(project.GetID(ctCurves, Round(X)));
 
     epanet2.ENgetlinkvalue(Index, EN_PUMP_ECOST, X);
-    Add(Float2Str(X, 4));
+    Add(utils.Float2StrG(X));
 
     epanet2.ENgetlinkvalue(Index, EN_PUMP_EPAT, X);
     Add(project.GetID(ctPatterns, Round(X)));
@@ -573,8 +573,8 @@ var
   I:         Integer = 0;
   J:         Integer = 0;
   Status:    Integer;
-  X:         Single = 0;
-  Setting:   Single = 0;
+  X:         Double = 0;
+  Setting:   Double = 0;
 begin
   with project.Properties do
   begin
@@ -591,7 +591,7 @@ begin
 
     // Add diameter
     epanet2.ENgetlinkvalue(Index, EN_DIAMETER, X);
-    Add(Float2Str(X, 4));
+    Add(utils.Float2StrG(X));
 
     // Add valve type
     epanet2.ENgetlinktype(Index, I);
@@ -603,11 +603,11 @@ begin
     Status := Round(X);
 
     // Add setting
-    Add(Float2Str(Setting, 4));
+    Add(utils.Float2StrG(X));
 
     // Add minor loss coeff.
     epanet2.ENgetlinkvalue(Index, EN_MINORLOSS, X);
-    Add(Float2Str(X, 4));
+    Add(utils.Float2StrG(X));
 
     // Add PCV curve
     if I = EN_PCV then
@@ -702,60 +702,62 @@ end;
 procedure PasteNodeProps(const Index: Integer; const NodeType: Integer);
 var
   I: Integer;
-  X: Single;
+  X: Double;
 begin
   case NodeType of
     ntJunction:
       begin
-        if utils.Str2Float(project.CopiedProperties[4], X) then
+        if TryStrToFloat(project.CopiedProperties[4], X) then
           epanet2.ENsetnodevalue(Index, EN_ELEVATION, X);
-        if utils.Str2Float(project.CopiedProperties[5], X) then
+        if TryStrToFloat(project.CopiedProperties[5], X) then
           epanet2.ENsetnodevalue(Index, EN_BASEDEMAND, X);
         I := project.GetItemIndex(ctPatterns, project.CopiedProperties[6]);
         if I < 0 then I := 0;
         epanet2.ENsetdemandpattern(Index, 1, I);
-        if utils.Str2Float(project.CopiedProperties[8], X) then
+        if TryStrToFloat(project.CopiedProperties[8], X) then
           epanet2.ENsetnodevalue(Index, EN_EMITTER, X);
-        if utils.Str2Float(project.CopiedProperties[9], X) then
+        if TryStrToFloat(project.CopiedProperties[9], X) then
           epanet2.ENsetnodevalue(Index, EN_INITQUAL, X);
       end;
 
     ntReservoir:
       begin
-        if utils.Str2Float(project.CopiedProperties[4], X) then
+        if TryStrToFloat(project.CopiedProperties[4], X) then
           epanet2.ENsetnodevalue(Index, EN_ELEVATION, X);
         I := project.GetItemIndex(ctPatterns, project.CopiedProperties[5]);
         if I < 0 then I := 0;
         epanet2.ENsetnodevalue(Index, EN_PATTERN, I);
-        if utils.Str2Float(project.CopiedProperties[6], X) then
+        if TryStrToFloat(project.CopiedProperties[6], X) then
           epanet2.ENsetnodevalue(Index, EN_INITQUAL, X);
         end;
 
     ntTank:
       begin
-        if utils.Str2Float(project.CopiedProperties[4], X) then
+        if TryStrToFloat(project.CopiedProperties[4], X) then
           epanet2.ENsetnodevalue(Index, EN_ELEVATION, X);
-        if utils.Str2Float(project.CopiedProperties[5], X) then
+        if TryStrToFloat(project.CopiedProperties[5], X) then
           epanet2.ENsetnodevalue(Index, EN_TANKLEVEL, X);
-        if utils.Str2Float(project.CopiedProperties[6], X) then
+        if TryStrToFloat(project.CopiedProperties[6], X) then
           epanet2.ENsetnodevalue(Index, EN_MINLEVEL, X);
-        if utils.Str2Float(project.CopiedProperties[7], X) then
+        if TryStrToFloat(project.CopiedProperties[7], X) then
           epanet2.ENsetnodevalue(Index, EN_MAXLEVEL, X);
-        if utils.Str2Float(project.CopiedProperties[8], X) then
-          epanet2.ENsetnodevalue(Index, EN_DIAMETER, X);
-        if utils.Str2Float(project.CopiedProperties[9], X) then
+        if TryStrToFloat(project.CopiedProperties[8], X) then
+          epanet2.ENsetnodevalue(Index, EN_TANKDIAM, X);
+        if TryStrToFloat(project.CopiedProperties[9], X) then
           epanet2.ENsetnodevalue(Index, EN_MINVOLUME, X);
         I := project.GetItemIndex(ctCurves, project.CopiedProperties[10]);
         if I < 0 then I := 0;
-        epanet2.ENsetlinkvalue(Index, EN_VOLCURVE, I);
-        I := AnsiIndexText(project.CopiedProperties[11], project.MixingModelStr);
+        epanet2.ENsetnodevalue(Index, EN_VOLCURVE, I);
+        I := AnsiIndexText(project.CopiedProperties[11], project.NoYesStr);
+        epanet2.ENsetnodevalue(Index, EN_CANOVERFLOW, I);
+        I := AnsiIndexText(project.CopiedProperties[12], project.MixingModelStr);
         if I < 0 then I := 0;
         epanet2.ENsetnodevalue(Index, EN_MIXMODEL, I);
-        if utils.Str2Float(project.CopiedProperties[12], X) then
+        if TryStrToFloat(project.CopiedProperties[13], X) then
           epanet2.ENsetnodevalue(Index, EN_MIXFRACTION, X);
-        if utils.Str2Float(project.CopiedProperties[13], X) then
+        if TryStrToFloat(project.CopiedProperties[14], X) then
           epanet2.ENsetnodevalue(Index, EN_TANK_KBULK, X);
-        if utils.Str2Float(project.CopiedProperties[14], X) then
+        if TryStrToFloat(project.CopiedProperties[15], X) then
           epanet2.ENsetnodevalue(Index, EN_INITQUAL, X);
       end;
   end;
@@ -765,34 +767,34 @@ procedure PasteLinkProps(const Index: Integer; const LinkType: Integer);
 var
   I: Integer;
   J: Integer;
-  X: Single = 0;
+  X: Double = 0;
 begin
   case LinkType of
     ltPipe:
       begin
-        if utils.Str2Float(project.CopiedProperties[7], X) then
+        if TryStrToFloat(project.CopiedProperties[7], X) then
           epanet2.ENsetlinkvalue(Index, EN_DIAMETER, X);
-        if utils.Str2Float(project.CopiedProperties[8], X) then
+        if TryStrToFloat(project.CopiedProperties[8], X) then
           epanet2.ENsetlinkvalue(Index, EN_ROUGHNESS, X);
-        if utils.Str2Float(project.CopiedProperties[9], X) then
+        if TryStrToFloat(project.CopiedProperties[9], X) then
           epanet2.ENsetlinkvalue(Index, EN_MINORLOSS, X);
-        if utils.Str2Float(project.CopiedProperties[11], X) then
+        if TryStrToFloat(project.CopiedProperties[11], X) then
           epanet2.ENsetlinkvalue(Index, EN_KBULK, X);
-        if utils.Str2Float(project.CopiedProperties[12], X) then
+        if TryStrToFloat(project.CopiedProperties[12], X) then
           epanet2.ENsetlinkvalue(Index, EN_KWALL, X);
-        if utils.Str2Float(project.CopiedProperties[13], X) then
+        if TryStrToFloat(project.CopiedProperties[13], X) then
           epanet2.ENsetlinkvalue(Index, EN_LEAK_AREA, X);
-        if utils.Str2Float(project.CopiedProperties[14], X) then
+        if TryStrToFloat(project.CopiedProperties[14], X) then
           epanet2.ENsetlinkvalue(Index, EN_LEAK_EXPAN, X);
       end;
 
     ltPump:
       begin
-        if utils.Str2Float(project.CopiedProperties[7], X) then
+        if TryStrToFloat(project.CopiedProperties[7], X) then
           epanet2.ENsetlinkvalue(Index, EN_PUMP_POWER, X);
-        if utils.Str2Float(project.CopiedProperties[8], X) then
+        if TryStrToFloat(project.CopiedProperties[8], X) then
           epanet2.ENsetlinkvalue(Index, EN_INITSETTING, X);
-        if utils.Str2Float(project.CopiedProperties[12], X) then
+        if TryStrToFloat(project.CopiedProperties[12], X) then
           epanet2.ENsetlinkvalue(Index, EN_PUMP_ECOST, X);
         I := project.GetItemIndex(ctCurves, project.CopiedProperties[6]);
         if I < 0 then I := 0;
@@ -810,7 +812,7 @@ begin
 
     ltValve:
       begin
-        if utils.Str2Float(project.CopiedProperties[6], X) then
+        if TryStrToFloat(project.CopiedProperties[6], X) then
           epanet2.ENsetlinkvalue(Index, EN_DIAMETER, X);
         I := EN_PRV + AnsiIndexText(project.CopiedProperties[7], project.ValveTypeStr);
         if I = EN_GPV then
@@ -821,10 +823,10 @@ begin
         end
         else
         begin
-          if utils.Str2Float(project.CopiedProperties[8], X) then
+          if TryStrToFloat(project.CopiedProperties[8], X) then
             epanet2.ENsetlinkvalue(Index, EN_INITSETTING, X);
         end;
-        if utils.Str2Float(project.CopiedProperties[9], X) then
+        if TryStrToFloat(project.CopiedProperties[9], X) then
           epanet2.ENsetlinkvalue(Index, EN_MINORLOSS, X);
       end;
   end;

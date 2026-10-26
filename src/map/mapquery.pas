@@ -1,11 +1,11 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.3
+ Version:      1.0.5
  Module:       mapquery
  Description:  a frame that highlights network objects that meet a
                specific criterion.
  License:      see LICENSE
- Last Updated: 06/19/2026
+ Last Updated: 10/23/2026
 =====================================================================}
 unit mapquery;
 
@@ -139,9 +139,9 @@ begin
   ResultPanel.Caption := '';
   Target := 0;
   if Length(ValueEdit.Text) = 0 then exit;
-  if not utils.Str2Float(ValueEdit.Text, Target) then
+  if not TryStrToFloat(ValueEdit.Text, Target) then
   begin
-    MsgDlg(rsInvalidData, ValueEdit.Text + rsInvalidNumber, mtError, [mbOK], MainForm);
+    utils.MsgDlg(rsInvalidData, ValueEdit.Text + rsInvalidNumber, mtError, [mbOK], MainForm);
     exit;
   end;
 

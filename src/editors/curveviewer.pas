@@ -1,10 +1,10 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.3
+ Version:      1.0.5
  Module:       curveviewer
  Description:  displays an EPANET Data Curve in a TChart component
  License:      see LICENSE
- Last Updated: 06/19/2026
+ Last Updated: 10/23/2026
 =====================================================================}
 
 unit curveviewer;
@@ -17,7 +17,7 @@ uses
   Classes, SysUtils, Dialogs, TAGraph, TASeries, Math;
 
 procedure PlotCurve(aChart: TChart; CurveType: Integer;
-  X, Y: array of double; N: Integer);
+  X, Y: array of Double; N: Integer);
 
 implementation
 
@@ -94,7 +94,7 @@ begin
   C := 0;
   if not FindPumpCurveCoeffs(Q, H, A, B, C) then
   begin
-    Utils.MsgDlg(rsInvalidData, rsBadPumpCurve, mtInformation, [mbOK]);
+    utils.MsgDlg(rsInvalidData, rsBadPumpCurve, mtInformation, [mbOK]);
     Result := false;
   end
   else
@@ -117,7 +117,7 @@ begin
   end;
 end;
 
-function Plot1PointPumpCurve(X0, Y0: Double): Boolean;
+function Plot1PointPumpCurve(X0, Y0: Single): Boolean;
 var
   H: array[0..2] of Double;
   Q: array[0..2] of Double;
@@ -221,7 +221,7 @@ begin
 end;
 
 procedure PlotCurve(aChart: TChart; CurveType: Integer;
-  X, Y: array of double; N: Integer);
+  X, Y: array of Double; N: Integer);
 var
   I: Integer;
   FunctionPlot: Boolean;

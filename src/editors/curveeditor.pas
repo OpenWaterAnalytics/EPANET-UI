@@ -1,10 +1,10 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.3
+ Version:      1.0.5
  Module:       curveeditor
  Description:  a form that manages a project's set of Data Curves
  License:      see LICENSE
- Last Updated: 06/19/2026
+ Last Updated: 10/23/2026
 =====================================================================}
 
 unit curveeditor;
@@ -77,9 +77,9 @@ type
     procedure ShowCurveProperties(I: Integer);
 
     function  CurveNameValid(ID: string): Boolean;
-    function  CurveDataValid(X: array of Single; Y: array of Single;
+    function  CurveDataValid(X: array of Double; Y: array of Double;
               N: Integer): Boolean;
-    procedure ExtractCurveData(var X: array of Single; var Y: array of Single;
+    procedure ExtractCurveData(var X: array of Double; var Y: array of Double;
               var N: Integer);
 
   public
@@ -304,13 +304,13 @@ procedure TCurveEditorForm.DataGridValidateEntry(Sender: TObject; aCol,
   aRow: Integer; const OldValue: string; var NewValue: String);
 var
   S: string;
-  Y: Single;
+  Y: Double;
 begin
   Y := 0;
   S := Trim(NewValue);
   if Length(S) > 0 then
   begin
-    if utils.Str2Float(S, Y) then PlotCurve
+    if TryStrToFloat(S, Y) then PlotCurve
     else
     begin
       utils.MsgDlg(rsInvalidData, S + rsInvalidNumber, mtError, [mbOK]);
@@ -327,8 +327,8 @@ procedure TCurveEditorForm.EditCurveData;
 var
   I : Integer;
   N : Integer;
-  X : Single;
-  Y : Single;
+  X : Double;
+  Y : Double;
 begin
   N := 0;
   X := 0;
@@ -364,8 +364,8 @@ begin
       for I := 1 to N do
       begin
         epanet2.ENgetcurvevalue(CurveIndex, I, X, Y);
-        Cells[0,I] := Float2Str(X, 4);
-        Cells[1,I] := Float2Str(Y, 4);
+        Cells[0,I] := FloatToStrF(X, ffGeneral, 12, 10);
+        Cells[1,I] := FloatToStrF(Y, ffGeneral, 12, 10);
       end;
       EndUpdate;
     end;
@@ -379,8 +379,8 @@ end;
 
 function TCurveEditorForm.GetCurveData: Boolean;
 var
-  X : array of Single;
-  Y : array of Single;
+  X : array of Double;
+  Y : array of Double;
   N : Integer;
   ID: string;
 begin
@@ -394,6 +394,8 @@ begin
   SetLength(X, N);
   SetLength(Y, N);
   ExtractCurveData(X, Y, N);
+
+  // Validate X, Y values
   if not CurveDataValid(X, Y, N) then exit;
 
   // Create new curve if not editing an existing curve
@@ -433,11 +435,11 @@ begin
   end;
 end;
 
-procedure TCurveEditorForm.ExtractCurveData(var X: array of Single;
-  var Y: array of Single; var N: Integer);
+procedure TCurveEditorForm.ExtractCurveData(var X: array of Double;
+  var Y: array of Double; var N: Integer);
 var
-  XX: Single;
-  YY: Single;
+  XX: Double;
+  YY: Double;
   I:  Integer;
 begin
   XX := 0;
@@ -447,8 +449,8 @@ begin
   begin
     for I := 1 to RowCount-1 do
     begin
-      if utils.Str2Float(Cells[0,I], XX)
-      and utils.Str2Float(Cells[1,I], YY) then
+      if TryStrToFloat(Cells[0,I], XX)
+      and TryStrToFloat(Cells[1,I], YY) then
       begin
         X[N] := XX;
         Y[N] := YY;
@@ -458,7 +460,7 @@ begin
   end;
 end;
 
-function TCurveEditorForm.CurveDataValid(X: array of Single; Y: array of Single;
+function TCurveEditorForm.CurveDataValid(X: array of Double; Y: array of Double;
   N: Integer): Boolean;
 var
   I: Integer;
@@ -474,7 +476,7 @@ begin
   // Check for valid X-values
   for I := 1 to N-1 do
   begin
-    if X[I-1] > X[I] then
+    if X[I-1] >= X[I] then
     begin
       DataGrid.Row := I;
       utils.MsgDlg(rsInvalidData, rsInvalidCurve, mtError, [mbOK]);
@@ -488,8 +490,8 @@ procedure TCurveEditorForm.PlotCurve;
 var
   X: array of Double;
   Y: array of Double;
-  A: Single;
-  B: Single;
+  A: Double;
+  B: Double;
   I: Integer;
   N: Integer;
 begin
@@ -501,8 +503,8 @@ begin
   N := 0;
   with DataGrid do for I := 1 to RowCount - 1 do
   begin
-    if Utils.Str2Float(Cells[0,I], A)
-    and Utils.Str2Float(Cells[1,I], B) then
+    if TryStrToFloat(Cells[0,I], A)
+    and TryStrToFloat(Cells[1,I], B) then
     begin
       X[N] := A;
       Y[N] := B;

@@ -96,6 +96,7 @@ object ProjectSetupForm: TProjectSetupForm
         'Object'
         'ID Prefix'
       )
+      OnStringsChange = ValueListEditor1StringsChange
       ColWidths = (
         145
         222

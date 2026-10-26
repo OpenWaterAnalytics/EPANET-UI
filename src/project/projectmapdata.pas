@@ -1,10 +1,10 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.3
+ Version:      1.0.5
  Module:       projectmapdata
  Description:  reads/writes map data from/to an EPANET input file
  License:      see LICENSE
- Last Updated: 06/19/2026
+ Last Updated: 10/23/2026
 =====================================================================}
 
 unit projectmapdata;
@@ -27,7 +27,7 @@ procedure SaveMapData(Fname: string);
 implementation
 
 uses
-  main, project, mapframe, mapthemes, maplabel, mapcoords, utils;
+  main, project, mapframe, mapthemes, maplabel, mapcoords;
 
 const
   Labels = 1;
@@ -83,7 +83,7 @@ begin
   if Tokens.Count < 5 then exit;
   for I := 1 to 4 do
   begin
-    if not utils.Str2Float(Tokens[I], X[I]) then exit;
+    if not TryStrToFloat(Tokens[I], X[I]) then exit;
   end;
   MapBounds.LowerLeft := mapcoords.DoublePoint(X[1], X[2]);
   MapBounds.UpperRight := mapcoords.DoublePoint(X[3], X[4]);

@@ -1,10 +1,10 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.3
+ Version:      1.0.5
  Module:       utils
  Description:  contains various utility functions
  License:      see LICENSE
- Last Updated: 06/19/2026
+ Last Updated: 10/23/2026
 =====================================================================}
 
 unit utils;
@@ -18,24 +18,34 @@ uses
   GraphType, IntfGraphics, LCLType, LCLProc,  LCLIntf, DateUtils, System.UItypes,
   FPImage, fphttpclient, opensslsockets,
 
+// For IsFileReadOnly
+  {$IFDEF WINDOWS}
+  Windows,
+  {$ELSE}
+  BaseUnix,
+  {$ENDIF}
+
   // EPANET-UI unit
   mapcoords;
 
 procedure AutoScale(var Zmin: Double; var Zmax: Double; var T: Double);
-procedure BrightenBitmap(Bitmap: TBitmap; Brightness: Integer);
+procedure BrightenBitmap(Bitmap: Graphics.TBitmap; Brightness: Integer);
+function  CreateTempDir(const Prefix: string): string;
 function  CreateTempFile(Prefix: string): string;
 
 function  FindTreeNode(aTreeView: TTreeView; Text: string): TTreeNode;
 function  Float2Str(const X: Double; const N: Integer): string;
+function  Float2StrG(const X: Double): string;
 
 procedure GetTextSize(const aText: string; aFont: TFont; var H, W: Integer);
-procedure GrayscaleBitmap(Bitmap: TBitmap);
+procedure GrayscaleBitmap(Bitmap: Graphics.TBitmap);
 
 function  HasInternetConnection: Boolean;
 function  Haversine(X1, Y1, X2, Y2: Double): Double;
 function  HttpRequest(aUrl: string; var Str: string): Boolean;
 
-procedure InvertBitmap(Bitmap: TBitmap);
+procedure InvertBitmap(Bitmap: Graphics.TBitmap);
+function  IsFileReadOnly(const AFileName: string): Boolean;
 
 function  MsgDlg(const Title: string; const Msg: string; DlgType: TMsgDlgType;
           Buttons: TMsgDlgButtons): Integer; overload;
@@ -53,17 +63,12 @@ procedure ResizeControl(aControl:TControl;
           const WidthRatio, HeightRatio: Integer;
           const WidthOffset, HeightOffset: Integer);
 
-function  Str2Float(const S: string; var X: Single): Boolean; overload;
-function  Str2Float(const S: string; var X: Double): Boolean; overload;
 function  Str2Seconds(S: string): Integer;
 procedure SwapListBoxLines(aListBox: TCustomListBox; Direction: Integer);
 function  Time2Str(T: Integer): string;
 function  TimeOfDayStr(T: Integer): string;
 
 implementation
-
-var
-  ConnectedToInternet: Boolean;
 
 function TaskDlg(const Title: string; const Msg: string; DlgType: TMsgDlgType;
           DlgButtons: TMsgDlgButtons; F: TForm): Integer; forward;
@@ -117,7 +122,7 @@ begin
   end;
 end;
 
-procedure BrightenBitmap(Bitmap: TBitmap; Brightness: Integer);
+procedure BrightenBitmap(Bitmap: Graphics.TBitmap; Brightness: Integer);
 //
 // Brighten the colors used in a bitmap image.
 //
@@ -156,6 +161,31 @@ begin
   finally
     IntfImage.Free;
   end;
+end;
+
+function CreateTempDir(const Prefix: string): string;
+//
+//  Create a temporary directory on disk.
+//
+var
+  BaseTempDir: string;
+  NewDirName: string;
+  RandomNum: Integer;
+begin
+  Result := '';
+  BaseTempDir := GetTempDir(True); // Get system temporary directory
+
+  if BaseTempDir = '' then
+    Exit;
+
+  // Generate a unique folder name using random or GUID values
+  Randomize;
+  RandomNum := Random(1000000);
+  NewDirName := IncludeTrailingPathDelimiter(BaseTempDir) + Prefix + '_' +
+    IntToStr(RandomNum);
+
+  if ForceDirectories(NewDirName) then
+    Result := NewDirName;
 end;
 
 function  CreateTempFile(Prefix: string): string;
@@ -201,6 +231,15 @@ begin
   Result := Format('%*.*f', [0, N, X]);
 end;
 
+function Float2StrG(const X: Double): string;
+//
+//  Represent a number X as a string with general formatting.
+//
+begin
+  Result := FloatToStrF(X, ffGeneral, 12, 10);
+end;
+
+
 procedure GetTextSize(const aText: String; aFont: TFont; var H, W: Integer);
 //
 //  Find the width and height in pixels of a given string.
@@ -218,7 +257,7 @@ begin
   end;
 end;
 
-procedure GrayscaleBitmap(Bitmap: TBitmap);
+procedure GrayscaleBitmap(Bitmap: Graphics.TBitmap);
 //
 //  Re-color a bitmap image in grayscale.
 //
@@ -336,7 +375,7 @@ begin
   end;
 end;
 
-procedure InvertBitmap(Bitmap: TBitmap);
+procedure InvertBitmap(Bitmap: Graphics.TBitmap);
 //
 // Invert the colors used in a bitmap image.
 //
@@ -372,6 +411,30 @@ begin
   finally
     IntfImage.Free;
   end;
+end;
+
+function IsFileReadOnly(const AFileName: string): Boolean;
+//
+// Cross-platform test if a file is read-only.
+//
+var
+  Attr: LongInt;
+begin
+  Result := False;
+
+  if not FileExists(AFileName) then
+    Exit(True);
+
+  {$IFDEF WINDOWS}
+  // Windows: Check file attributes
+  Attr := FileGetAttr(AFileName);
+  if Attr <> -1 then
+    Result := (Attr and faReadOnly) = faReadOnly;
+  {$ELSE}
+  // Linux/macOS: Check POSIX write permissions for the current user
+  // fpAccess returns 0 if the permission is granted, -1 if denied
+  Result := fpAccess(AFileName, W_OK) <> 0;
+  {$ENDIF}
 end;
 
 function MsgDlg(const Title: string; const Msg: string; DlgType: TMsgDlgType;
@@ -513,28 +576,6 @@ begin
   aControl.Top := HeightOffset;
   MinHeight := ParentHeight;
   aControl.Height := Min(MinHeight, (aControl.Width * HeightRatio) div 100);
-end;
-
-function  Str2Float(const S: string; var X: Single): Boolean; overload;
-begin
-  X := 0;
-  Result := true;
-  try
-    X := StrToFloat(S);
-  except
-    On EConvertError do Result := false;
-  end;
-end;
-
-function  Str2Float(const S: string; var X: Double): Boolean; overload;
-begin
-  X := 0;
-  Result := true;
-  try
-    X := StrToFloat(S);
-  except
-    On EConvertError do Result := false;
-  end;
 end;
 
 function  Str2Seconds(S: String): Integer;

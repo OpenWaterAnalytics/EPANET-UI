@@ -1,10 +1,10 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.3
+ Version:      1.0.5
  Module:       msxfileprocs
  Description:  procedures for reading and writing a MSX data file
  License:      see LICENSE
- Last Updated: 06/19/2026
+ Last Updated: 10/12/2026
 =====================================================================}
 
 { This unit references the properties of components
@@ -128,8 +128,8 @@ var
   aComment: string;
   aIndex: Integer;
   aPattern: TStringList;
-  X: Single;
-  Multipliers: array of Single;
+  X: Double;
+  Multipliers: array of Double;
 begin
   // aPattern holds the data for a comma delimited pattern
   aPattern := TStringList.Create;
@@ -157,13 +157,21 @@ begin
 
       // Store aPattern's multiplier strings in an array of floats
       N := aPattern.Count - 2;
-      SetLength(Multipliers, N);
-      for J := 2 to aPattern.Count - 1 do
+      if N <= 0 then
       begin
-        if TryStrToFloat(aPattern[J], X) then
-          Multipliers[J - 2] := X
-        else
-          Multipliers[J - 2] := 1.0;
+        SetLength(Multipliers, 1);
+        Multipliers[0] := 1.0;
+      end
+      else
+      begin
+        SetLength(Multipliers, N);
+        for J := 2 to aPattern.Count - 1 do
+        begin
+          if TryStrToFloat(aPattern[J], X) then
+            Multipliers[J - 2] := X
+          else
+            Multipliers[J - 2] := 1.0;
+        end;
       end;
 
       // Add the multipliers to the EPANET project's pattern
@@ -402,7 +410,7 @@ var
   M: Integer;
   PatternIndex: Integer;
   PatternLength: Integer;
-  PatternValue: Single;
+  PatternValue: Double;
   PatternComment: string;
   Line: string;
 begin

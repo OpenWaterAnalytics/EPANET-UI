@@ -129,7 +129,7 @@ var
   MyTextStyle: TTextStyle;
 begin
   MyTextStyle := DataGrid.Canvas.TextStyle;
-  if aCol > 0 then MyTextStyle.Alignment := taCenter;
+  if aCol > 0 then MyTextStyle.Alignment := taRightJustify;
   DataGrid.Canvas.TextStyle := MyTextStyle;
 end;
 

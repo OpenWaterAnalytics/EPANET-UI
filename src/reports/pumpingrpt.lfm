@@ -19,8 +19,8 @@ object PumpingRptFrame: TPumpingRptFrame
     BevelOuter = bvNone
     BorderStyle = bsSingle
     Caption = '  Total Cost: 0   Demand Charge: 0'
-    ClientHeight = 31
-    ClientWidth = 475
+    ClientHeight = 35
+    ClientWidth = 479
     TabOrder = 0
     object Label1: TLabel
       Left = 279

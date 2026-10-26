@@ -190,25 +190,25 @@ object mainForm: TmainForm
     Align = alClient
     BevelOuter = bvNone
     BorderStyle = bsSingle
-    ClientHeight = 567
-    ClientWidth = 585
+    ClientHeight = 565
+    ClientWidth = 583
     ParentBackground = False
     ParentColor = False
     TabOrder = 4
     object Notebook1: TNotebook
       Left = 0
-      Height = 567
+      Height = 565
       Top = 0
-      Width = 585
+      Width = 583
       PageIndex = 0
       Align = alClient
       TabOrder = 0
       object MapPage: TPage
         object MapPanel: TPanel
           Left = 0
-          Height = 567
+          Height = 565
           Top = 0
-          Width = 585
+          Width = 583
           Align = alClient
           BevelOuter = bvNone
           BorderWidth = 1
@@ -311,9 +311,9 @@ object mainForm: TmainForm
       Visible = False
       object HintTitleLabel: TLabel
         Left = 4
-        Height = 17
+        Height = 15
         Top = 4
-        Width = 24
+        Width = 23
         Caption = 'Title'
         ParentColor = False
       end

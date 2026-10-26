@@ -1,10 +1,10 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.3
+ Version:      1.0.5
  Module:       controlseditor
  Description:  a form that edits a project's set of simple controls
  License:      see LICENSE
- Last Updated: 06/19/2026
+ Last Updated: 10/14/2026
 =====================================================================}
 
 unit controlseditor;
@@ -112,8 +112,8 @@ type
 
     function ControlToStr(const I: Integer): string;
     function StrToControl(const sControl: string; var aType: Integer;
-      var aLink: Integer; var aNode: Integer; var aSetting: Single;
-      var aLevel: Single): Boolean;
+      var aLink: Integer; var aNode: Integer; var aSetting: Double;
+      var aLevel: Double): Boolean;
     procedure SetButtonStates;
     procedure ClearEditor;
     procedure EditControl(const sControl: string);
@@ -185,8 +185,8 @@ var
   aType: Integer;
   aLink: Integer;
   aNode: Integer;
-  aSetting: Single;
-  aLevel: Single;
+  aSetting: Double;
+  aLevel: Double;
   Index: Integer = 0;
 begin
   // Remove all currrent controls from the project
@@ -492,8 +492,8 @@ var
   aType: Integer;
   aLink: Integer;
   aNode: Integer;
-  aSetting: Single;
-  aLevel: Single;
+  aSetting: Double;
+  aLevel: Double;
   sLink: string;
   sNode: string;
   sSetting: string;
@@ -520,10 +520,10 @@ begin
     else if aSetting = 1 then
       sSetting := 'OPEN'
     else
-      sSetting := utils.Float2Str(aSetting, 4); // Pump speed
+      sSetting := utils.Float2StrG(aSetting); // Pump speed
   end
   else
-    sSetting := utils.Float2Str(aSetting, 4); // Numerical valve setting
+    sSetting := utils.Float2StrG(aSetting); // Numerical valve setting
 
   // The link ID & its setting portion of the control string
   Result := 'LINK ' + sLink + ' ' + sSetting;
@@ -533,12 +533,12 @@ begin
   EN_LOWLEVEL:
     begin
       sNode := project.GetID(ctNodes, aNode);
-      Result := Result + ' IF NODE ' + sNode + ' BELOW ' + utils.Float2Str(aLevel, 4);
+      Result := Result + ' IF NODE ' + sNode + ' BELOW ' + utils.Float2StrG(aLevel);
     end;
   EN_HILEVEL:
     begin
       sNode := project.GetID(ctNodes, aNode);
-      Result := Result + ' IF NODE ' + sNode + ' ABOVE ' + utils.Float2Str(aLevel, 4);
+      Result := Result + ' IF NODE ' + sNode + ' ABOVE ' + utils.Float2StrG(aLevel);
     end;
   EN_TIMER:
     begin
@@ -555,17 +555,20 @@ end;
 
 function TControlsEditorForm.StrToControl(const sControl: string;
   var aType: Integer; var aLink: Integer; var aNode: Integer;
-  var aSetting: Single; var aLevel: Single): Boolean;
+  var aSetting: Double; var aLevel: Double): Boolean;
 //
 //  Parse the string representation of a control listed in the ControlsGrid
 //  into its set of properties prior to adding it the project.
 //
 var
   sList: TStringList;
+  FS: TFormatSettings;
 begin
   Result := true;
+  FS := DefaultFormatSettings;
   sList := TStringList.Create;
   try
+    sList.Delimiter := ' ';
     sList.DelimitedText := sControl;
     if sList.Count >= 6 then
     begin
@@ -576,7 +579,7 @@ begin
         aSetting := EN_SET_OPEN
       else if SameText(sList[2], 'CLOSED') then
         aSetting := EN_SET_CLOSED
-      else if not Str2Float(sList[2], aSetting) then
+      else if not TryStrToFloat(sList[2], aSetting, FS) then
         Result := false;
       if SameText(sList[4], 'NODE') then
       begin
@@ -587,17 +590,24 @@ begin
         else if SameText(sList[6], 'ABOVE') then
           aType := EN_HILEVEL
         else Result := false;
-        if not Str2Float(sList[7], aLevel) then Result := false;
+        if not TryStrToFloat(sList[7], aLevel) then Result := false;
       end
       else if SameText(sList[4], 'Time') then
       begin
         aType := EN_TIMER;
         aLevel := utils.Str2Seconds(sList[5]);
+        if aLevel < 0 then Result := false;
       end
       else if SameText(sList[4], 'ClockTime') then
       begin
         aType := EN_TIMEOFDAY;
         aLevel := utils.Str2Seconds(sList[5]);
+        if aLevel < 0 then Result := false;
+        if (sList.Count >= 7) then
+        begin
+          if SameText(sList[6], 'PM') then
+            aLevel := aLevel + (12 * 3600);
+        end;
       end
       else
         Result := false;
@@ -624,6 +634,7 @@ begin
   end;
   aList := TStringList.Create;
   try
+    aList.Delimiter := ' ';
     aList.DelimitedText := aControl;
     LinkEdit.Text := aList[1];
     LinkComboBox.Text := aList[2];
@@ -674,8 +685,10 @@ end;
 function TControlsEditorForm.ValidateControl: Boolean;
 var
   X: Single = 0;
+  FS: TFormatSettings;
 begin
   Result := false;
+  FS := DefaultFormatSettings;
   if project.GetItemIndex(ctLinks, LinkEdit.Text) <= 0 then
   begin
     utils.MsgDlg(rsMissingData, Format(rsNoLink, [LinkEdit.Text]), mtError, [mbOK]);
@@ -685,7 +698,7 @@ begin
   with LinkComboBox do
   begin
     if (ItemIndex = 2)
-    and (utils.Str2Float(Text, X) = false) then
+    and (TryStrToFloat(Text, X, FS) = false) then
     begin
       utils.MsgDlg(rsInvalidData, rsBadSetting, mtError, [mbOK]);
       SetFocus;
@@ -703,7 +716,7 @@ begin
     end;
     with LevelEdit do
     begin
-      if (utils.Str2Float(Text, X) = false) then
+      if (TryStrToFloat(Text, X, FS) = false) then
       begin
         utils.MsgDlg(rsInvalidData, rsBadNodeLevel, mtError, [mbOK]);
         SetFocus;
@@ -714,7 +727,7 @@ begin
 
   else with LevelEdit do
   begin
-    if (utils.Str2Float(Text, X) = false) and (utils.Str2Seconds(Text) < 0) then
+    if (TryStrToFloat(Text, X, FS) = false) and (utils.Str2Seconds(Text) < 0) then
     begin
       utils.MsgDlg(rsInvalidData, rsBadTimeValue, mtError, [mbOK]);
       SetFocus;

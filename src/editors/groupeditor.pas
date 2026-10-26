@@ -1,10 +1,10 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.3
+ Version:      1.0.5
  Module:       groupeditor
  Description:  a frame that edits properties for a group of objects
  License:      see LICENSE
- Last Updated: 06/19/2026
+ Last Updated: 10/23/2026
 =====================================================================}
 
 {
@@ -89,7 +89,7 @@ type
     function  ObjectValueChanged(I: Integer): Boolean;
     function  PassesTextFilter(I: Integer): Boolean;
     function  PassesNumericalFilter(I: Integer): Boolean;
-    function  GetNewValue(Index: Integer): Single;
+    function  GetNewValue(Index: Integer): Double;
     procedure MakeChanges;
     procedure CloseFrame;
     procedure GroupSelectorReturned(Sender: TObject);
@@ -105,8 +105,8 @@ implementation
 {$R *.lfm}
 
 uses
-  main, project, config, groupselector, reportframe, utils, resourcestrings,
-  epanet2;
+  main, project, config, groupselector, projectframe, reportframe, utils,
+  resourcestrings, epanet2;
 
 const
   EN_TAG = -999;
@@ -288,7 +288,7 @@ begin
     else
     begin
       FilterAction.Relation := FilterRelationCombo.ItemIndex;
-      if not utils.Str2Float(FilterValueEdit.Text, FilterAction.Value) then
+      if not TryStrToFloat(FilterValueEdit.Text, FilterAction.Value) then
       begin
         utils.MsgDlg(rsInvalidData, rsBadNumber, mtError, [mbOk]);
         FilterValueEdit.SetFocus;
@@ -334,7 +334,7 @@ begin
       exit;
     end;
   end
-  else if not utils.Str2Float(ValueEdit.Text, EditAction.Value) then
+  else if not TryStrToFloat(ValueEdit.Text, EditAction.Value) then
   begin
     utils.MsgDlg(rsInvalidData, rsBadNumber, mtError, [mbOk]);
     ValueEdit.SetFocus;
@@ -444,7 +444,7 @@ function TGroupEditorFrame.PassesNumericalFilter(I: Integer): Boolean;
 // Checks if a FilterAction on a node or link numerical parameter is satisfied.
 //
 var
-  X: Single;
+  X: Double;
 begin
   if ObjectType = ctNodes then
     epanet2.ENgetnodevalue(I, FilterAction.Parameter, X)
@@ -462,13 +462,13 @@ begin
   end;
 end;
 
-function TGroupEditorFrame.GetNewValue(Index: Integer): Single;
+function TGroupEditorFrame.GetNewValue(Index: Integer): Double;
 //
 // Applies the EditAction's Action and Value to a node or link parameter
 // to give it a new value.
 //
 var
-  X: Single;
+  X: Double;
 begin
   if EditAction.Action = REPLACE then
     Result := EditAction.Value
@@ -593,6 +593,7 @@ begin
     // Adjust the network map's extent
     if HasChanged then
     begin
+      MainForm.ProjectFrame.Init;
       MainForm.MapFrame.Map.Extent := MainForm.MapFrame.Map.GetBounds;
       MainForm.MapFrame.RedrawMap;
       MainForm.OverviewMapFrame.Redraw;

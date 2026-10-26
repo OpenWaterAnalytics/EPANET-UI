@@ -42,6 +42,7 @@ type
       aRow: Integer; aState: TGridDrawState);
     procedure ValueListEditor1SelectCell(Sender: TObject; aCol, aRow: Integer;
       var CanSelect: Boolean);
+    procedure ValueListEditor1StringsChange(Sender: TObject);
 
   private
     PageIndex:     Integer;
@@ -60,7 +61,7 @@ type
     procedure SetUnitSystemLabel(FlowUnits: string);
     function  ConfirmChanges(var ConversionType: Integer): Boolean;
     procedure ConvertRoughness(ConversionType: Integer; NumLinks: Integer;
-      var Roughness: array of Single);
+      var Roughness: array of Double);
 
   public
     SaveDefaults:  Boolean;
@@ -112,6 +113,16 @@ var
   TmpDefOptions: array[1..project.MAX_DEF_OPTIONS] of string;
   TmpMapExtents: array[1..High(MapExtentsName)] of string;
   MapExtentRect: TDoubleRect;
+  CheckForChange: Boolean;
+  HasChanged:    Boolean;
+
+function EqualDoubleRect(const R1, R2: TDoubleRect): Boolean;
+begin
+ Result := (R1.LowerLeft.X = R2.LowerLeft.X) and
+    (R1.LowerLeft.Y = R2.LowerLeft.Y) and
+    (R1.UpperRight.X = R2.UpperRight.X) and
+    (R1.UpperRight.Y = R2.UpperRight.Y);
+end;
 
 procedure TProjectSetupForm.FormCreate(Sender: TObject);
 begin
@@ -126,10 +137,10 @@ procedure TProjectSetupForm.FormShow(Sender: TObject);
 begin
   MapExtentRect := MainForm.MapFrame.Map.Extent;
   MainForm.MapFrame.TransformExtent(MapExtentRect);
-  TmpMapExtents[1] := Utils.Float2Str(MapExtentRect.LowerLeft.X, 6);
-  TmpMapExtents[2] := Utils.Float2Str(MapExtentRect.LowerLeft.Y, 6);
-  TmpMapExtents[3] := Utils.Float2Str(MapExtentRect.UpperRight.X, 6);
-  TmpMapExtents[4] := Utils.Float2Str(MapExtentRect.UpperRight.Y, 6);
+  TmpMapExtents[1] := utils.Float2StrG(MapExtentRect.LowerLeft.X);
+  TmpMapExtents[2] := utils.Float2StrG(MapExtentRect.LowerLeft.Y);
+  TmpMapExtents[3] := utils.Float2StrG(MapExtentRect.UpperRight.X);
+  TmpMapExtents[4] := utils.Float2StrG(MapExtentRect.UpperRight.Y);
   TmpMapExtents[5] := MapUnitsStr[project.MapUnits];
   TmpMapExtents[6] := IntToStr(project.MapEPSG);
 
@@ -145,6 +156,8 @@ begin
   HintPanel.Caption := HintLabels[0];
   RadioGroup1.ItemIndex := 0;
   PageIndex := 0;
+  CheckForChange := false;
+  HasChanged := false;
   EditHydOptions;
   ValueListEditor1.Row := 1;
 end;
@@ -166,7 +179,7 @@ var
   ConversionType: Integer = -1;
   NumLinks:       Integer = 0;
   I:              Integer;
-  Roughness:      array of Single;
+  Roughness:      array of Double;
 begin
   SetLength(Roughness, 0);
   ValueListEditor1.EditorMode := false;
@@ -193,11 +206,17 @@ begin
     project.IDprefix := TmpIDprefix;
     project.DefProps := TmpDefProps;
     project.SetDefHydOptions(TmpDefOptions);
-    project.MapUnits := AnsiIndexStr(TmpMapExtents[mxMapUnits], project.MapUnitsStr);
-    if Length(Trim(TmpMapExtents[mxEpsg])) = 0 then
-      TmpMapExtents[mxEpsg] := '0';
-    project.MapEPSG := StrToInt(TmpMapExtents[mxEpsg]);
-    MainForm.MapFrame.ChangeExtent(MapExtentRect);
+
+    // Update map extents if not using a WMS basemap
+    if not MainForm.MapFrame.HasWebBasemap then
+    begin
+      project.MapUnits := AnsiIndexStr(TmpMapExtents[mxMapUnits], project.MapUnitsStr);
+      if Length(Trim(TmpMapExtents[mxEpsg])) = 0 then
+        TmpMapExtents[mxEpsg] := '0';
+      project.MapEPSG := StrToInt(TmpMapExtents[mxEpsg]);
+      if  not EqualDoubleRect(MapExtentRect, MainForm.MapFrame.Map.Extent) then
+        MainForm.MapFrame.ChangeExtent(MapExtentRect);
+    end;
 
     // Convert pipe roughness values if head loss model has changed
     if ConversionType >= 0 then
@@ -208,7 +227,7 @@ begin
       SetLength(Roughness, 0);
     end;
 
-    if (not project.HasChanged) and (not project.IsEmpty) then
+    if (not project.HasChanged) and (not project.IsEmpty) and HasChanged then
       project.HasChanged := true;
     SaveDefaults := CheckBox1.Checked;
     ModalResult := mrOk;
@@ -254,6 +273,11 @@ begin
   else CanSelect := true;
 end;
 
+procedure TProjectSetupForm.ValueListEditor1StringsChange(Sender: TObject);
+begin
+  if CheckForChange then HasChanged := true;
+end;
+
 procedure TProjectSetupForm.EditIDPrefixes;
 //
 //  Set up the ValueListEditor to edit object ID prefixes.
@@ -261,6 +285,7 @@ procedure TProjectSetupForm.EditIDPrefixes;
 var
   I: Integer;
 begin
+  CheckForChange := false;
   with ValueListEditor1 do
   begin
     Clear;
@@ -269,6 +294,7 @@ begin
     RowCount := 1;
     for I := 1 to 8 do
       InsertRow(IDPrefixName[I], TmpIDprefix[I], true);
+    CheckForChange := true;
     Show;
   end;
 end;
@@ -281,6 +307,7 @@ var
   I: Integer;
   OptionList: TStringList;
 begin
+  CheckForChange := false;
   OptionList := TStringList.Create;
   try
     with ValueListEditor1 do
@@ -319,6 +346,7 @@ begin
         ReadOnly := true;
       end;
      Show;
+     CheckForChange := true;
    end;
    finally
      OptionList.Free;
@@ -332,18 +360,20 @@ procedure TProjectSetupForm.EditProperties;
 var
   I: Integer;
 begin
- with ValueListEditor1 do
- begin
-   Clear;
-   TitleCaptions[0] := rsObjProperty;
-   TitleCaptions[1] := rsValue;
-   RowCount := 1;
-   for I := 1 to 6 do
-   begin
-     InsertRow(PropertyName[I], TmpDefProps[I], true);
-   end;
-   Show;
- end;
+  CheckForChange := false;
+  with ValueListEditor1 do
+  begin
+    Clear;
+    TitleCaptions[0] := rsObjProperty;
+    TitleCaptions[1] := rsValue;
+    RowCount := 1;
+    for I := 1 to 6 do
+    begin
+      InsertRow(PropertyName[I], TmpDefProps[I], true);
+    end;
+    CheckForChange := true;
+    Show;
+  end;
 end;
 
 procedure TProjectSetupForm.EditMapExtents;
@@ -354,29 +384,31 @@ var
   I: Integer;
   OptionList: TStringList;
 begin
- OptionList := TStringList.Create;
- try
-   with ValueListEditor1 do
-   begin
-     Clear;
-     TitleCaptions[0] := rsMapProperty;
-     TitleCaptions[1] := rsValue;
-     RowCount := 1;
-     for I := 1 to 6 do
-       InsertRow(MapExtentsName[I], TmpMapExtents[I], true);
-     OptionList.AddStrings(project.MapUnitsStr, true);
-     with ItemProps[rsMapUnits] do
-     begin
-       EditStyle := esPickList;
-       PickList := OptionList;
-       ReadOnly := true;
-     end;
-     if MainForm.MapFrame.HasWebBasemap then Enabled := false;
-     Show;
-   end;
- finally
-   OptionList.Free;
- end;
+  CheckForChange := false;
+  OptionList := TStringList.Create;
+  try
+    with ValueListEditor1 do
+    begin
+      Clear;
+      TitleCaptions[0] := rsMapProperty;
+      TitleCaptions[1] := rsValue;
+      RowCount := 1;
+      for I := 1 to 6 do
+        InsertRow(MapExtentsName[I], TmpMapExtents[I], true);
+      OptionList.AddStrings(project.MapUnitsStr, true);
+      with ItemProps[rsMapUnits] do
+      begin
+        EditStyle := esPickList;
+        PickList := OptionList;
+        ReadOnly := true;
+      end;
+      if MainForm.MapFrame.HasWebBasemap then Enabled := false;
+      CheckForChange := true;
+      Show;
+    end;
+  finally
+    OptionList.Free;
+  end;
 end;
 
 function TProjectSetupForm.ValidateEditorValues: Boolean;
@@ -626,19 +658,19 @@ begin
   end;
 end;
 
-procedure ConvertHWtoDW(NumLinks: Integer; var Roughness: array of Single);
+procedure ConvertHWtoDW(NumLinks: Integer; var Roughness: array of Double);
 //
 //  Convert Hazen-Williams roughness coeffs. in Roughness to Darcy-Weisbach
 //  coeffs. for each of NumLinks links.
 //
 var
   I:   Integer;
-  X:   Single = 0;
-  D:   Single = 0;   // Pipe diameter (meters)
-  C:   Single;       // H-W C-Factor (dimensionless)
-  E:   Single;       // D-W roughness height (meters)
-  Dcf: Single;       // Pipe diameter units conversion factor
-  Ecf: Single;       // D-W roughness units conversion factor
+  X:   Double = 0;
+  D:   Double = 0;   // Pipe diameter (meters)
+  C:   Double;       // H-W C-Factor (dimensionless)
+  E:   Double;       // D-W roughness height (meters)
+  Dcf: Double;       // Pipe diameter units conversion factor
+  Ecf: Double;       // D-W roughness units conversion factor
 begin
   if GetUnitsSystem = usUS then
   begin
@@ -664,19 +696,19 @@ begin
   end;
 end;
 
-procedure ConvertDWtoHW(NumLinks: Integer; var Roughness: array of Single);
+procedure ConvertDWtoHW(NumLinks: Integer; var Roughness: array of Double);
 //
 //  Convert Darcy-Weisbach roughness coeffs. in Roughness to Hazen-Williams
 //  coeffs. for each of NumLinks links.
 //
 var
   I:   Integer;
-  X:   Single = 0;
-  D:   Single;   // Pipe diameter (meters)
-  E:   Single;   // D-W roughness height (meters)
-  C:   Single;   // H-W C-Factor (dimensionless)
-  Ecf: Single;   // D-W roughness height conversion factor
-  Dcf: Single;   // Pipe diameter units conversion factor
+  X:   Double = 0;
+  D:   Double;   // Pipe diameter (meters)
+  E:   Double;   // D-W roughness height (meters)
+  C:   Double;   // H-W C-Factor (dimensionless)
+  Ecf: Double;   // D-W roughness height conversion factor
+  Dcf: Double;   // Pipe diameter units conversion factor
 begin
   if GetUnitsSystem = usUS then
   begin
@@ -703,7 +735,7 @@ begin
 end;
 
 procedure TProjectSetupForm.ConvertRoughness(ConversionType: Integer;
-  NumLinks: Integer; var Roughness: array of Single);
+  NumLinks: Integer; var Roughness: array of Double);
 //
 //  Converts pipe roughness values from one head loss model to another.
 //
@@ -712,7 +744,7 @@ procedure TProjectSetupForm.ConvertRoughness(ConversionType: Integer;
 //
 var
   I:                Integer;
-  DefaultRoughness: Single;
+  DefaultRoughness: Double;
 begin
  if ConversionType = NoConversion then exit;
 

@@ -1,11 +1,11 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.3
+ Version:      1.0.5
  Module:       calibrationrpt
  Description:  A frame that compares computed parameter results for
                a group of objects against measured values
  License:      see LICENSE
- Last Updated: 06/19/2026
+ Last Updated: 10/23/2026
 =====================================================================}
 
 unit calibrationrpt;
@@ -361,8 +361,8 @@ end;
 procedure TCalibRptFrame.LoadMeasuredData(aSeries: TLineSeries;
   aLocation: string);
 var
-  X: Single = 0;
-  Y: Single = 0;
+  X: Double = 0;
+  Y: Double = 0;
   I: Integer;
 begin
   // Loop through each row of the DataGrid
@@ -375,7 +375,7 @@ begin
       begin
         X := utils.Str2Seconds(Cells[1,I]) / 3600.0;
         if (X >= 0)
-        and utils.Str2Float(Cells[2,I], Y) then
+        and TryStrToFloat(Cells[2,I], Y) then
           aSeries.AddXY(X, Y);
       end;
     end;
@@ -447,8 +447,8 @@ begin
       if SeriesIndex < 1 then continue;
       LocationIndex := project.GetItemIndex(ObjectType, Location);
       if LocationIndex < 1 then continue;
-      if not utils.Str2Float(Cells[1,I], T) then continue;
-      if not utils.Str2Float(Cells[2,I], X) then continue;
+      if not TryStrToFloat(Cells[1,I], T) then continue;
+      if not TryStrToFloat(Cells[2,I], X) then continue;
       Y := GetSimulatedValue(T);
       if Y = MISSING then continue;
 

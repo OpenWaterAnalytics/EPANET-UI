@@ -1,10 +1,10 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.3
+ Version:      1.0.5
  Module:       dxfloader
  Description:  reads contents of a DXF file
  License:      see LICENSE
- Last Updated: 06/19/2026
+ Last Updated: 10/17/2026
 =====================================================================}
 
 unit dxfloader;
@@ -14,7 +14,7 @@ unit dxfloader;
 interface
 
 uses
-  Classes, SysUtils, Graphics, StrUtils, Dialogs;
+  Classes, SysUtils, Graphics, StrUtils;
 
 type
   TDxfOptions = record
@@ -31,10 +31,11 @@ const
   _VERTEX     = 3;
   _SEQEND     = 4;
 
-  IN_NONE     = 0;
-  IN_POLYLINE = 1;
-  IN_LINE     = 2;
-  IN_VERTEX   = 3;
+  IN_NONE       = 0;
+  IN_POLYLINE   = 1;
+  IN_LWPOLYLINE = 2;
+  IN_LINE       = 3;
+  IN_VERTEX     = 4;
 
   luFEET   = 1;
   luMETERS = 2;
@@ -84,10 +85,14 @@ end;
 procedure DoKeyWord(Kw: Integer);
 begin
   case Kw of
-    _POLYLINE,
-    _LWPOLYLINE:
+    _POLYLINE:
       begin
         StatusCode := IN_POLYLINE;
+        CoordCount := 0;
+      end;
+    _LWPOLYLINE:
+      begin
+        StatusCode := IN_LWPOLYLINE;
         CoordCount := 0;
       end;
     _LINE:
@@ -135,9 +140,15 @@ var
   Code: Integer;
   S:    string;
   V:    Double = 0;
+  N:    Integer = 0;
+  CustomSettings: TFormatSettings;
 begin
-  // Initialize status variables
-  StatusCode := IN_NONE;
+  // Force use of period as decimal separator
+  CustomSettings := DefaultFormatSettings;
+  CustomSettings.DecimalSeparator := '.';
+
+  // Initialize status variables (preserve LWPOLYLINE status)
+  if StatusCode <> IN_LWPOLYLINE then StatusCode := IN_NONE;
   CoordCount := 0;
   Vcount := 0;
 
@@ -157,23 +168,30 @@ begin
       0: // Key word text
         DoKeyWord(AnsiIndexText(S, Keywords));
 
-
-      8: // Layer name
-        if (StatusCode in [IN_LINE,IN_POLYLINE])
+      8: // Layer name - check that it belongs to selected layers
+        if (StatusCode in [IN_LINE, IN_LWPOLYLINE, IN_POLYLINE])
         and (Layers.Count > 0) then
         begin
           if (Layers.IndexOf(S) < 0) then StatusCode := IN_NONE;
         end;
 
+      90: // Number of vertices in a LWPOLYLINE
+         if (StatusCode = IN_LWPOLYLINE) then
+         begin
+           if not TryStrToInt(S, N) then StatusCode := IN_NONE;
+         end;
 
       10, 11, 20, 21: // Coordinate vertex value
         begin
-          utils.Str2Float(S, V);
-          if (StatusCode = IN_LINE)
-          or (StatusCode = IN_VERTEX) then
+          if not TryStrToFloat(S, V, CustomSettings) then StatusCode := IN_NONE;
+          if StatusCode in [IN_LINE, IN_LWPOLYLINE, IN_VERTEX] then
             AddVertex(Code,V,Vx,Vy,Vcount);
         end;
     end;
+
+    // Check if reached end of LINE or LWPOLYLINE being processed
+    if (StatusCode = IN_LINE) and (Code = 21) then exit;
+    if (StatusCode = IN_LWPOLYLINE) and (Vcount = N) then exit;
   end;
 end;
 

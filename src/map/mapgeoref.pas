@@ -1,10 +1,10 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.3
+ Version:      1.0.5
  Module:       mapgeoref
  Description:  a frame used to georeference a basemap image
  License:      see LICENSE
- Last Updated: 06/19/2026
+ Last Updated: 10/23/2026
 =====================================================================}
 {
   The mapgeoref frame contains a TNotebook with 5 pages that are
@@ -415,7 +415,8 @@ begin
     CtrlPt[3] := CtrlPt[1];
     AnchorPt.X := LowerLeftEditX.Value;
     AnchorPt.Y := LowerLeftEditY.Value;
-    Distance := WorldPerPixelEdit.Value * Abs((CtrlPt[2].X - CtrlPt[1].X));
+    Distance := WorldPerPixelEdit.Value *
+                MainForm.MapFrame.Map.Basemap.Picture.Width;
     Result := true;
   end;
 end;
@@ -458,7 +459,7 @@ begin
     begin
       K := 0;
       for I := 0 to 5 do
-        if Utils.Str2Float(Lines[I], X[I]) then Inc(K);
+        if TryStrToFloat(Lines[I], X[I]) then Inc(K);
       if K = 6 then
       begin
         WorldPerPixelEdit.Value := X[0];
@@ -550,6 +551,7 @@ begin
     Cells[1,2] := Format('%.4f', [NewExtent.UpperRight.X]);
     Cells[1,3] := Format('%.4f', [NewExtent.UpperRight.Y]);
   end;
+  if project.IsEmpty then MainForm.MapFrame.SetExtent(NewExtent);
 end;
 
 function TGeoRefFrame.GetWorldPerPixel: Double;

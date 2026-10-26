@@ -29,7 +29,7 @@ const
 
 var
   Energy:   array[eInflows..eMinUse] of Double;
-  Preq:     Single;
+  Preq:     Double;
   PreqStr:  string;
   Tsum:     Integer;
 
@@ -48,7 +48,7 @@ const
   MperFT = 0.3048;
 
 var
-  SpGrav: Single;
+  SpGrav: Double;
 
 procedure Start;
 //
@@ -57,9 +57,9 @@ procedure Start;
 var
   I: Integer;
   DmndModel: Integer = 0;
-  Pmin: Single = 0;
-  Pexp: Single = 0;
-  Punits: Single = 0;
+  Pmin: Double = 0;
+  Pexp: Double = 0;
+  Punits: Double = 0;
 begin
   Tsum := 0;
   SpGrav := 1;
@@ -112,12 +112,12 @@ procedure UpdateNodeEnergy(Dt: Integer);
 var
   I:    Integer;
   N:    Integer;
-  E:    Single;
-  Qd:   Single = 0;
-  Ql:   Single = 0;
-  H:    Single = 0;
-  El:   Single = 0;
-  Hmin: Single = 0;
+  E:    Double;
+  Qd:   Double = 0;
+  Ql:   Double = 0;
+  H:    Double = 0;
+  El:   Double = 0;
+  Hmin: Double = 0;
 begin
   // Hmin is the lowest negative head in the network
   N := project.GetItemCount(ctNodes);
@@ -192,10 +192,10 @@ var
   N:  Integer;
   N1: Integer = 0;
   N2: Integer = 0;
-  Q:  Single = 0;
-  H1: Single = 0;
-  H2: Single = 0;
-  P:  Single;
+  Q:  Double = 0;
+  H1: Double = 0;
+  H2: Double = 0;
+  P:  Double;
 begin
   N := project.GetItemCount(ctLinks);
   for I := 1 to N do

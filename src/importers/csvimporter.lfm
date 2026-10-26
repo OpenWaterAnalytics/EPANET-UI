@@ -18,8 +18,8 @@ object CsvImporterForm: TCsvImporterForm
     Align = alBottom
     BevelOuter = bvNone
     BorderStyle = bsSingle
-    ClientHeight = 61
-    ClientWidth = 457
+    ClientHeight = 57
+    ClientWidth = 453
     TabOrder = 0
     object HelpBtn: TButton
       Left = 16
@@ -73,42 +73,42 @@ object CsvImporterForm: TCsvImporterForm
     Height = 425
     Top = 0
     Width = 457
-    ActivePage = ReviewTabSheet
+    ActivePage = NodesTabSheet
     Align = alClient
     ShowTabs = False
-    TabIndex = 3
+    TabIndex = 1
     TabOrder = 1
     object IntroTabSheet: TTabSheet
       Caption = 'IntroTabSheet'
-      ClientHeight = 421
-      ClientWidth = 453
+      ClientHeight = 417
+      ClientWidth = 449
       object Panel1: TPanel
         Left = 0
-        Height = 421
+        Height = 417
         Top = 0
-        Width = 453
+        Width = 449
         Align = alClient
         BevelOuter = bvNone
-        ClientHeight = 421
-        ClientWidth = 453
+        ClientHeight = 417
+        ClientWidth = 449
         TabOrder = 0
         object Panel2: TPanel
           Left = 0
-          Height = 421
+          Height = 417
           Top = 0
           Width = 161
           Align = alLeft
           BevelOuter = bvNone
           BorderStyle = bsSingle
           Caption = 'Panel2'
-          ClientHeight = 421
-          ClientWidth = 161
+          ClientHeight = 413
+          ClientWidth = 157
           TabOrder = 0
           object Image1: TImage
             Left = 0
-            Height = 419
+            Height = 413
             Top = 0
-            Width = 159
+            Width = 157
             Align = alClient
             Center = True
             Picture.Data = {
@@ -1189,9 +1189,9 @@ object CsvImporterForm: TCsvImporterForm
         end
         object Label1: TLabel
           Left = 200
-          Height = 34
+          Height = 32
           Top = 24
-          Width = 208
+          Width = 200
           Caption = 'CSV File Importer'
           Font.CharSet = ANSI_CHARSET
           Font.Height = -24
@@ -1215,14 +1215,14 @@ object CsvImporterForm: TCsvImporterForm
     end
     object NodesTabSheet: TTabSheet
       Caption = 'Nodes'
-      ClientHeight = 421
-      ClientWidth = 453
+      ClientHeight = 417
+      ClientWidth = 449
       TabVisible = False
       object Panel4: TPanel
         Left = 0
         Height = 80
         Top = 0
-        Width = 453
+        Width = 449
         Align = alTop
         Alignment = taLeftJustify
         BevelOuter = bvNone
@@ -1235,15 +1235,15 @@ object CsvImporterForm: TCsvImporterForm
       end
       object Label6: TLabel
         Left = 16
-        Height = 18
+        Height = 15
         Top = 103
-        Width = 67
+        Width = 58
         Caption = 'Nodes File:'
         ParentColor = False
       end
       object NodesFileEdit: TEdit
         Left = 108
-        Height = 26
+        Height = 23
         Top = 95
         Width = 250
         ReadOnly = True
@@ -1253,7 +1253,7 @@ object CsvImporterForm: TCsvImporterForm
       object NodesFileBtn: TBitBtn
         Left = 361
         Height = 30
-        Hint = 'Open a shapefile with Node data'
+        Hint = 'Open a CSV text file with Node data'
         Top = 91
         Width = 36
         GlyphShowMode = gsmAlways
@@ -1269,7 +1269,7 @@ object CsvImporterForm: TCsvImporterForm
       object ClearNodesBtn: TBitBtn
         Left = 400
         Height = 30
-        Hint = 'Clear the choice of shapefile'
+        Hint = 'Clear the choice of CSV Node file'
         Top = 91
         Width = 36
         GlyphShowMode = gsmAlways
@@ -1310,9 +1310,9 @@ object CsvImporterForm: TCsvImporterForm
       object ViewNodeCsvFile: TLabel
         Cursor = crHandPoint
         Left = 359
-        Height = 18
+        Height = 15
         Top = 389
-        Width = 80
+        Width = 70
         Caption = 'View CSV File'
         Font.Color = clBlue
         Font.Style = [fsUnderline]
@@ -1323,14 +1323,14 @@ object CsvImporterForm: TCsvImporterForm
     end
     object PipesTabSheet: TTabSheet
       Caption = 'Pipes'
-      ClientHeight = 421
-      ClientWidth = 453
+      ClientHeight = 417
+      ClientWidth = 449
       TabVisible = False
       object Panel3: TPanel
         Left = 0
         Height = 80
         Top = 0
-        Width = 453
+        Width = 449
         Align = alTop
         Alignment = taLeftJustify
         BevelOuter = bvNone
@@ -1343,15 +1343,15 @@ object CsvImporterForm: TCsvImporterForm
       end
       object Label4: TLabel
         Left = 16
-        Height = 18
+        Height = 15
         Top = 103
-        Width = 61
+        Width = 52
         Caption = 'Pipes File:'
         ParentColor = False
       end
       object PipesFileEdit: TEdit
         Left = 104
-        Height = 26
+        Height = 23
         Top = 95
         Width = 250
         ReadOnly = True
@@ -1361,7 +1361,7 @@ object CsvImporterForm: TCsvImporterForm
       object PipesFileBtn: TBitBtn
         Left = 357
         Height = 30
-        Hint = 'Open a shapefile with Link data'
+        Hint = 'Open a CSV text with Pipe data'
         Top = 91
         Width = 36
         GlyphShowMode = gsmAlways
@@ -1377,7 +1377,7 @@ object CsvImporterForm: TCsvImporterForm
       object ClearPipesBtn: TBitBtn
         Left = 396
         Height = 30
-        Hint = 'Clear the choice of shapefile'
+        Hint = 'Clear the choice of CSV Pipe file'
         Top = 91
         Width = 36
         GlyphShowMode = gsmAlways
@@ -1418,9 +1418,9 @@ object CsvImporterForm: TCsvImporterForm
       object ViewPipeCsvFile: TLabel
         Cursor = crHandPoint
         Left = 359
-        Height = 18
+        Height = 15
         Top = 388
-        Width = 80
+        Width = 70
         Caption = 'View CSV File'
         Font.Color = clBlue
         Font.Style = [fsUnderline]
@@ -1431,18 +1431,18 @@ object CsvImporterForm: TCsvImporterForm
     end
     object ReviewTabSheet: TTabSheet
       Caption = 'Review'
-      ClientHeight = 421
-      ClientWidth = 453
+      ClientHeight = 417
+      ClientWidth = 449
       TabVisible = False
       object Panel5: TPanel
         Left = 0
-        Height = 421
+        Height = 417
         Top = 0
-        Width = 453
+        Width = 449
         Align = alClient
         BevelOuter = bvNone
-        ClientHeight = 421
-        ClientWidth = 453
+        ClientHeight = 417
+        ClientWidth = 449
         TabOrder = 0
         object ReviewGrid: TStringGrid
           Left = 56
@@ -1461,22 +1461,22 @@ object CsvImporterForm: TCsvImporterForm
           TabOrder = 0
           OnPrepareCanvas = ReviewGridPrepareCanvas
           ColWidths = (
-            172
-            171
+            163
+            163
           )
         end
         object Label8: TLabel
           Left = 170
-          Height = 18
+          Height = 15
           Top = 15
-          Width = 137
+          Width = 117
           Caption = 'Import Data Summary'
         end
         object NoDataLabel: TLabel
           Left = 125
-          Height = 18
+          Height = 15
           Top = 371
-          Width = 239
+          Width = 206
           Caption = 'No data were selected for importing.'
           Font.Color = clRed
           Font.Style = [fsBold]

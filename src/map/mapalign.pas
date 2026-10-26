@@ -1,10 +1,10 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.3
+ Version:      1.0.5
  Module:       mapalign
  Description:  a frame used to align a network with a basemap image
  License:      see LICENSE
- Last Updated: 06/19/2026
+ Last Updated: 10/13/2026
 =====================================================================}
 
 unit mapalign;
@@ -102,7 +102,8 @@ var
 begin
   ScalingChanged := false;
   mapcoords.DoScalingTransform(S2, S1, false);
-  SF := 1 + (TrackBar1.Position / 100);
+  SF := 1 + (Abs(TrackBar1.Position) / 100);
+  if TrackBar1.Position < 0 then SF := 1 / SF;
   S2.WP := SF * S1.WP;
   mapcoords.DoScalingTransform(S1, S2, false);
   MainForm.MapFrame.DrawFullExtent;

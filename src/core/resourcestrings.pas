@@ -1,10 +1,10 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.4
+ Version:      1.0.5
  Module:       resourcestrings
  Description:  contains text for internationalizing all project strings
  License:      see LICENSE
- Last Updated: 06/19/2026
+ Last Updated: 10/11/2026
 =====================================================================}
 
 unit resourcestrings;
@@ -211,7 +211,7 @@ resourcestring
                     'Bulk Coeff.'#13'Wall Coeff.'#13'Leak Area'#13'Leak Expansion';
   rsFilters       = 'Equal To'#13'Below'#13'Above';
   rsActions       = 'Replace'#13'Multiply'#13'Add To';
-  rsBadPattern    = 'Invalid Patten ID';
+  rsBadPattern    = 'Invalid Pattern ID';
   rsBadNumber     = 'Invalid number.';
   rsBadTag        = 'Tags cannot contain spaces or semi-colons.';
   rsClose         = 'Close';
@@ -320,6 +320,7 @@ resourcestring
   rsCsvFiles      = 'CSV Files|*.csv';
   rsNodesCsvFile  = 'Select a Nodes CSV File';
   rsPipesCsvFile  = 'Select a Pipes CSV File';
+  rsCsvInvalid    = ' is not a valid CSV file.';
 
   // csvviewer.pas
   rsNoCsvDisplay  = 'Unable to display CSV file.';
@@ -438,7 +439,7 @@ resourcestring
   rsBadID         = 'ID names cannot contain spaces or semi-colons.';
   rsBlankID       = 'ID names cannot be blank or exceed %d characters.';
   rsUsedID        = 'ID name already in use.';
-  rsNoDelSource   = 'Cannot delete Node %s  because it is a source tracing node.';
+  rsNoDelSource   = 'Cannot delete Node %s because it is a source tracing node.';
   rsNoDelNode     = 'Error %d deleting Node %s';
 
   rsJunction      = 'Junction';
@@ -893,7 +894,7 @@ resourcestring
   rsMsxSave        = 'Save Msx Data';
 
   // about.pas
-  rsVersions       = 'EPANET-UI Version 1.0.4' + LineEnding + LineEnding +
+  rsVersions       = 'EPANET-UI Version 1.0.5' + LineEnding + LineEnding +
                      'OWA-EPANET Version 2.3.6' + LineEnding + LineEnding +
                      'EPANET-MSX Version 2.0-dev';
   rsAbout          = 'A graphical user interface for the Open Water Analytics' +

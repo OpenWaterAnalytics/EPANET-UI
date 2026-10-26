@@ -41,12 +41,12 @@ type
     procedure RunHydraulics;
     procedure RunQuality;
     procedure RunMsxQuality;
-    procedure SaveDemandDeficit(var F: TFileStream; var Deficits: array of Single;
-      var Demands: array of Single);
-    procedure SaveEmitterFlow(var F: TFileStream; var Flows: array of Single);
-    procedure SaveNodeLeakage(var F: TFileStream; var Leakages: array of Single);
-    procedure SavePipeLeakage(var F: TFileStream; var Leakages: array of Single);
-    procedure SaveLinkEnergy(var F: TFileStream; var Energy: array of Single);
+    procedure SaveDemandDeficit(var F: TFileStream; var Deficits: array of Double;
+      var Demands: array of Double);
+    procedure SaveEmitterFlow(var F: TFileStream; var Flows: array of Double);
+    procedure SaveNodeLeakage(var F: TFileStream; var Leakages: array of Double);
+    procedure SavePipeLeakage(var F: TFileStream; var Leakages: array of Double);
+    procedure SaveLinkEnergy(var F: TFileStream; var Energy: array of Double);
 
   public
 
@@ -194,9 +194,9 @@ var
   rptStep:   TimeType;
   F:         TFileStream;
   N:         Integer;
-  NodeFlows: array of Single;
-  LinkArray: array of Single;
-  DmndDefs:  array of Single;
+  NodeFlows: array of Double;
+  LinkArray: array of Double;
+  DmndDefs:  array of Double;
 begin
   // Create arrays to hold node flows and pipe leakage flow
   epanet2.ENgetcount(EN_NODECOUNT, N);
@@ -359,7 +359,7 @@ begin
 end;
 
 procedure TSimulationForm.SaveDemandDeficit(var F: TFileStream;
-  var Deficits: array of Single; var Demands: array of Single);
+  var Deficits: array of Double; var Demands: array of Double);
 var
   I:          Integer;
   N:          Integer = 0;
@@ -367,7 +367,7 @@ var
 begin
   if F = nil then exit;
   ENgetcount(EN_NODECOUNT, N);
-  ByteCount := N * sizeof(Single);
+  ByteCount := N * sizeof(Double);
   epanet2.ENgetnodevalues(EN_DEMANDDEFICIT, Deficits);
   epanet2.ENgetnodevalues(EN_FULLDEMAND, Demands);
   for I := 0 to N-1 do
@@ -382,53 +382,53 @@ begin
 end;
 
 procedure TSimulationForm.SaveEmitterFlow(var F: TFileStream;
-  var Flows: array of Single);
+  var Flows: array of Double);
 var
   N:         Integer = 0;
   ByteCount: Integer;
 begin
   if F = nil then exit;
   epanet2.ENgetcount(EN_NODECOUNT, N);
-  ByteCount := N * sizeof(Single);
+  ByteCount := N * sizeof(Double);
   epanet2.ENgetnodevalues(EN_EMITTERFLOW, Flows);
   F.Write(Flows[0], ByteCount);
 end;
 
 procedure TSimulationForm.SaveNodeLeakage(var F: TFileStream;
-  var Leakages: array of Single);
+  var Leakages: array of Double);
 var
   N:         Integer = 0;
   ByteCount: Integer;
 begin
   if F = nil then exit;
   epanet2.ENgetcount(EN_NODECOUNT, N);
-  ByteCount := N * sizeof(Single);
+  ByteCount := N * sizeof(Double);
   epanet2.ENgetnodevalues(EN_LEAKAGEFLOW, Leakages);
   F.Write(Leakages[0], ByteCount);
 end;
 
 procedure TSimulationForm.SavePipeLeakage(var F: TFileStream;
-  var Leakages: array of Single);
+  var Leakages: array of Double);
 var
   N:         Integer = 0;
   ByteCount: Integer;
 begin
   if F = nil then exit;
   epanet2.ENgetcount(EN_LINKCOUNT, N);
-  ByteCount := N * sizeof(Single);
+  ByteCount := N * sizeof(Double);
   epanet2.ENgetlinkvalues(EN_LINK_LEAKAGE, Leakages);
   F.Write(Leakages[0], ByteCount);
 end;
 
 procedure TSimulationForm.SaveLinkEnergy(var F: TFileStream;
-  var Energy: array of Single);
+  var Energy: array of Double);
 var
   N:         Integer = 0;
   ByteCount: Integer;
 begin
   if F = nil then exit;
   epanet2.ENgetcount(EN_LINKCOUNT, N);
-  ByteCount := N * sizeof(Single);
+  ByteCount := N * sizeof(Double);
   epanet2.ENgetlinkvalues(EN_ENERGY, Energy);
   F.Write(Energy[0], ByteCount);
 end;

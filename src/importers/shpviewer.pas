@@ -217,8 +217,10 @@ begin
   LinkShp := nil;
   NodeShp := nil;
   try
-    LinkShp := shpapi.SHPOpen(PAnsiChar(LinkFile), 'rb');
-    NodeShp := shpapi.SHPOpen(PAnsiChar(NodeFile), 'rb');
+    if FileExists(LinkFile) then
+      LinkShp := shpapi.SHPOpen(PAnsiChar(LinkFile), 'rb');
+    if FileExists(NodeFile) then
+      NodeShp := shpapi.SHPOpen(PAnsiChar(NodeFile), 'rb');
     if (LinkShp = nil)
     and (NodeShp = nil) then
       exit;

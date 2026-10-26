@@ -1,10 +1,10 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.3
+ Version:      1.0.5
  Module:       project
  Description:  sets, saves and retrieves project data
  License:      see LICENSE
- Last Updated: 06/19/2026
+ Last Updated: 10/23/2026
 =====================================================================}
 
 unit project;
@@ -278,9 +278,9 @@ function  GetPatternNames: string;
 function  GetCurveNames(aCurveType: Integer): string;
 function  GetCurveType(CurveIndex: Integer): Integer;
 
-function  GetNodeParam(NodeIndex: Integer; Param: Integer): Single;
-function  GetLinkParam(LinkIndex: Integer; Param: Integer): Single;
-function  GetSourceQual(NodeIndex: Integer): Single;
+function  GetNodeParam(NodeIndex: Integer; Param: Integer): Double;
+function  GetLinkParam(LinkIndex: Integer; Param: Integer): Double;
+function  GetSourceQual(NodeIndex: Integer): Double;
 function  GetPumpResultsCount: Integer;
 function  GetUnitsSystem: Integer;
 function  GetResultIndex(Category: Integer; Index: Integer): Integer;
@@ -665,7 +665,7 @@ begin
   end;
 end;
 
-function  GetSourceQual(NodeIndex: Integer): Single;
+function  GetSourceQual(NodeIndex: Integer): Double;
 begin
   Result := 0;
   epanet2.ENgetnodevalue(NodeIndex, EN_SOURCEQUAL, Result);
@@ -755,13 +755,13 @@ begin
   end;
 end;
 
-function  GetNodeParam(NodeIndex: Integer; Param: Integer): Single;
+function  GetNodeParam(NodeIndex: Integer; Param: Integer): Double;
 begin
   Result := 0;
   epanet2.ENgetnodevalue(NodeIndex, Param, Result);
 end;
 
-function  GetLinkParam(LinkIndex: Integer; Param: Integer): Single;
+function  GetLinkParam(LinkIndex: Integer; Param: Integer): Double;
 begin
   Result := 0;
   epanet2.ENgetlinkvalue(LinkIndex, Param, Result);
@@ -901,9 +901,9 @@ end;
 procedure SetDemandModel(NewModel: Integer);
 var
   OldModel: Integer = 0;
-  Pmin:     Single = 0;
-  Preq:     Single = 0;
-  Pexp:     Single = 0;
+  Pmin:     Double = 0;
+  Preq:     Double = 0;
+  Pexp:     Double = 0;
 begin
   if (NewModel < Low(DemandModelStr))
   or (NewModel > High(DemandModelStr)) then exit;
@@ -999,7 +999,7 @@ end;
 function Load(FileName: string): Integer;
 var
   Extent: TDoubleRect;
-  X:      Single = 0;
+  X:      Double = 0;
 begin
   // Read contents of input file
   Clear;
@@ -1086,7 +1086,7 @@ end;
 procedure GetDefHydOptions(var Options: TDefOptions);
 var
   I: Integer = 0;
-  X: Single = 0;
+  X: Double = 0;
 begin
   epanet2.ENgetflowunits(I);
   Options[htFlowUnits] := FlowUnitsStr[I];
@@ -1098,22 +1098,22 @@ begin
   Options[htHlossModel] := HLossModelStr[Round(X)];
 
   epanet2.ENgetoption(EN_SP_GRAVITY, X);
-  Options[htSpGravity] := utils.Float2Str(X, 3);
+  Options[htSpGravity] := utils.Float2StrG(X);
 
   epanet2.ENgetoption(EN_SP_VISCOS, X);
-  Options[htSpViscos] := utils.Float2Str(X, 3);
+  Options[htSpViscos] := utils.Float2StrG(X);
 
   epanet2.ENgetoption(EN_TRIALS, X);
   Options[htMaxTrials] := IntToStr(Round(X));
 
   epanet2.ENgetoption(EN_ACCURACY, X);
-  Options[htAccuracy] := utils.Float2Str(X, 8);
+  Options[htAccuracy] := utils.Float2StrG(X);
 
   epanet2.ENgetoption(EN_HEADERROR, X);
-  Options[htHeadTol] := utils.Float2Str(X, 8);
+  Options[htHeadTol] := utils.Float2StrG(X);
 
   epanet2.ENgetoption(EN_FLOWCHANGE, X);
-  Options[htFlowTol] := utils.Float2Str(X, 8);
+  Options[htFlowTol] := utils.Float2StrG(X);
 end;
 
 procedure SetDefHydOptions(const Options: TDefOptions);
@@ -1141,7 +1141,7 @@ end;
 
 function  GetHlossModelStr: string;
 var
-  Value: Single = 0;
+  Value: Double = 0;
 begin
   epanet2.ENgetoption(EN_HEADLOSSFORM, Value);
   Result := HlossModelStr[Round(Value)];
@@ -1150,9 +1150,9 @@ end;
 function  GetDemandModelStr: string;
 var
   I:    Integer = 0;
-  Pmin: Single = 0;
-  Preq: Single = 0;
-  Pexp: Single = 0;
+  Pmin: Double = 0;
+  Preq: Double = 0;
+  Pexp: Double = 0;
 begin
   epanet2.ENgetdemandmodel(I, Pmin, Preq, Pexp);
   Result := DemandModelStr[I];
@@ -1199,7 +1199,7 @@ var
   Dx: Double;
   Dy: Double;
 begin
-  if (MapUnits = muDegrees) or (MainForm.MapFrame.HasWebBasemap) then
+  if (MapUnits = muDegrees) then
     Distance := utils.Haversine(X1, Y1, X2, Y2)
   else
   begin

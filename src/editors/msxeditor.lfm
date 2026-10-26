@@ -2,11 +2,11 @@ object MsxEditorForm: TMsxEditorForm
   Left = 810
   Height = 510
   Top = 343
-  Width = 900
+  Width = 896
   BorderStyle = bsDialog
   Caption = 'MSX Editor'
   ClientHeight = 510
-  ClientWidth = 900
+  ClientWidth = 896
   ParentFont = True
   Position = poMainFormCenter
   LCLVersion = '4.4.0.0'
@@ -63,16 +63,16 @@ object MsxEditorForm: TMsxEditorForm
     Left = 0
     Height = 48
     Top = 462
-    Width = 900
+    Width = 896
     Align = alBottom
     ClientHeight = 48
-    ClientWidth = 900
+    ClientWidth = 896
     TabOrder = 2
     object CloseBtn: TButton
       Left = 687
       Height = 25
       Top = 12
-      Width = 112
+      Width = 108
       Anchors = [akTop, akLeft, akRight]
       Caption = 'Save and Close'
       TabOrder = 4
@@ -82,7 +82,7 @@ object MsxEditorForm: TMsxEditorForm
       Left = 810
       Height = 25
       Top = 12
-      Width = 72
+      Width = 68
       Anchors = [akTop, akLeft, akRight]
       Caption = 'Cancel'
       TabOrder = 5
@@ -129,17 +129,17 @@ object MsxEditorForm: TMsxEditorForm
     Left = 120
     Height = 462
     Top = 0
-    Width = 600
+    Width = 596
     Align = alClient
     ClientHeight = 462
-    ClientWidth = 600
+    ClientWidth = 596
     TabOrder = 1
     object Notebook1: TNotebook
       Left = 1
       Height = 370
       Top = 45
-      Width = 598
-      PageIndex = 2
+      Width = 594
+      PageIndex = 1
       Align = alClient
       TabOrder = 0
       object Overview: TPage
@@ -147,7 +147,7 @@ object MsxEditorForm: TMsxEditorForm
           Left = 0
           Height = 48
           Top = 0
-          Width = 598
+          Width = 594
           Align = alTop
           BevelOuter = bvNone
           Caption = 'Multi-Species Water Quality Editor'
@@ -161,12 +161,12 @@ object MsxEditorForm: TMsxEditorForm
           Left = 0
           Height = 168
           Top = 48
-          Width = 598
+          Width = 594
           Align = alTop
           BevelOuter = bvNone
           BorderStyle = bsSingle
-          ClientHeight = 166
-          ClientWidth = 596
+          ClientHeight = 164
+          ClientWidth = 590
           Color = clWindow
           ParentBackground = False
           ParentColor = False
@@ -175,7 +175,7 @@ object MsxEditorForm: TMsxEditorForm
             Left = 0
             Height = 168
             Top = 0
-            Width = 596
+            Width = 590
             Align = alTop
             Center = True
             Picture.Data = {
@@ -739,11 +739,11 @@ object MsxEditorForm: TMsxEditorForm
           Left = 0
           Height = 154
           Top = 216
-          Width = 598
+          Width = 594
           Align = alClient
           BevelOuter = bvNone
           ClientHeight = 154
-          ClientWidth = 598
+          ClientWidth = 594
           ParentBackground = False
           TabOrder = 2
           object HtmlViewer1a: THtmlViewer
@@ -769,7 +769,7 @@ object MsxEditorForm: TMsxEditorForm
             Left = 365
             Height = 154
             Top = 0
-            Width = 233
+            Width = 229
             BorderStyle = htNone
             DefBackground = 14745599
             DefFontName = ' Segoe UI'
@@ -795,8 +795,8 @@ object MsxEditorForm: TMsxEditorForm
           Width = 533
           BevelOuter = bvNone
           BorderStyle = bsSingle
-          ClientHeight = 316
-          ClientWidth = 533
+          ClientHeight = 312
+          ClientWidth = 529
           Color = clWindow
           ParentBackground = False
           ParentColor = False
@@ -1073,7 +1073,7 @@ object MsxEditorForm: TMsxEditorForm
           Left = 0
           Height = 370
           Top = 0
-          Width = 598
+          Width = 586
           Align = alClient
           AutoAdvance = aaNone
           ColCount = 7
@@ -1121,7 +1121,7 @@ object MsxEditorForm: TMsxEditorForm
             end          
             item
               Title.Caption = 'Comment'
-              Width = 367
+              Width = 363
             end>
           DefaultRowHeight = 25
           FixedColor = clDefault
@@ -1141,7 +1141,7 @@ object MsxEditorForm: TMsxEditorForm
             64
             64
             64
-            367
+            363
           )
         end
       end
@@ -1175,7 +1175,7 @@ object MsxEditorForm: TMsxEditorForm
             end          
             item
               Title.Caption = 'Comment'
-              Width = 295
+              Width = 291
             end>
           DefaultRowHeight = 25
           FixedColor = clDefault
@@ -1192,7 +1192,7 @@ object MsxEditorForm: TMsxEditorForm
             82
             91
             310
-            295
+            291
           )
         end
       end
@@ -1218,7 +1218,7 @@ object MsxEditorForm: TMsxEditorForm
             end          
             item
               Title.Caption = 'Bulk Specie'
-              Width = 100
+              Width = 91
             end          
             item
               Title.Caption = 'Reaction Expression'
@@ -1226,7 +1226,7 @@ object MsxEditorForm: TMsxEditorForm
             end          
             item
               Title.Caption = 'Comment'
-              Width = 285
+              Width = 291
             end>
           DefaultRowHeight = 25
           FixedColor = clDefault
@@ -1241,9 +1241,9 @@ object MsxEditorForm: TMsxEditorForm
           OnSelectEditor = StringGrid3SelectEditor
           ColWidths = (
             82
-            100
+            91
             310
-            285
+            291
           )
         end
       end
@@ -1253,7 +1253,7 @@ object MsxEditorForm: TMsxEditorForm
           Left = 0
           Height = 370
           Top = 0
-          Width = 598
+          Width = 594
           Align = alClient
           AutoAdvance = aaNone
           ColCount = 3
@@ -1268,7 +1268,7 @@ object MsxEditorForm: TMsxEditorForm
             end          
             item
               Title.Caption = 'Comment'
-              Width = 339
+              Width = 335
             end>
           DefaultRowHeight = 25
           FixedColor = clDefault
@@ -1283,7 +1283,7 @@ object MsxEditorForm: TMsxEditorForm
           ColWidths = (
             101
             338
-            339
+            335
           )
         end
       end
@@ -1318,7 +1318,7 @@ object MsxEditorForm: TMsxEditorForm
             end          
             item
               Title.Caption = 'Comment'
-              Width = 475
+              Width = 471
             end>
           DefaultRowHeight = 25
           FixedColor = clDefault
@@ -1334,7 +1334,7 @@ object MsxEditorForm: TMsxEditorForm
             111
             101
             91
-            475
+            471
           )
         end
       end
@@ -1373,7 +1373,7 @@ object MsxEditorForm: TMsxEditorForm
             end          
             item
               Title.Caption = 'Comment'
-              Width = 394
+              Width = 382
             end>
           DefaultRowHeight = 25
           FixedColor = clDefault
@@ -1390,7 +1390,7 @@ object MsxEditorForm: TMsxEditorForm
             101
             101
             91
-            394
+            382
           )
         end
       end
@@ -1400,7 +1400,7 @@ object MsxEditorForm: TMsxEditorForm
           Left = 0
           Height = 370
           Top = 0
-          Width = 598
+          Width = 594
           Align = alClient
           AutoAdvance = aaNone
           Columns = <          
@@ -1430,7 +1430,7 @@ object MsxEditorForm: TMsxEditorForm
             end          
             item
               Title.Caption = 'Comment'
-              Width = 394
+              Width = 370
             end>
           DefaultRowHeight = 25
           FixedColor = clDefault
@@ -1447,7 +1447,7 @@ object MsxEditorForm: TMsxEditorForm
             107
             91
             91
-            394
+            370
           )
         end
       end
@@ -1457,7 +1457,7 @@ object MsxEditorForm: TMsxEditorForm
           Left = 0
           Height = 370
           Top = 0
-          Width = 598
+          Width = 586
           Align = alClient
           AutoAdvance = aaNone
           ColCount = 6
@@ -1495,7 +1495,7 @@ object MsxEditorForm: TMsxEditorForm
             end          
             item
               Title.Caption = 'Comment'
-              Width = 340
+              Width = 330
             end>
           DefaultColWidth = 62
           DefaultRowHeight = 25
@@ -1516,21 +1516,21 @@ object MsxEditorForm: TMsxEditorForm
       Left = 1
       Height = 46
       Top = 415
-      Width = 598
+      Width = 594
       Align = alBottom
       Alignment = taLeftJustify
       BorderStyle = bsSingle
-      ClientHeight = 44
-      ClientWidth = 596
+      ClientHeight = 42
+      ClientWidth = 590
       Color = 14745599
       ParentBackground = False
       ParentColor = False
       TabOrder = 1
       object InstructTextPanel: TPanel
         Left = 9
-        Height = 42
+        Height = 40
         Top = 1
-        Width = 586
+        Width = 580
         Align = alClient
         Alignment = taLeftJustify
         BorderSpacing.Left = 8
@@ -1545,7 +1545,7 @@ object MsxEditorForm: TMsxEditorForm
       Left = 1
       Height = 44
       Top = 1
-      Width = 598
+      Width = 594
       ButtonHeight = 44
       ButtonWidth = 42
       Images = MaterialImageList
@@ -1634,7 +1634,7 @@ object MsxEditorForm: TMsxEditorForm
     end
   end
   object SymbolsPanel: TPanel
-    Left = 720
+    Left = 716
     Height = 462
     Top = 0
     Width = 180

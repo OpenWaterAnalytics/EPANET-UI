@@ -25,7 +25,7 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, ExtCtrls, Menus, Grids, Buttons,
   TAGraph, TASeries, TATransformations, TAIntervalSources, TAGUIConnectorBGRA,
-  TAChartUtils, LCLType, Types, Clipbrd, ComCtrls, StrUtils;
+  TAChartUtils, LCLType, Types, Clipbrd, ComCtrls, StrUtils,    Dialogs;
 
 const
   MaxSeries = 6;
@@ -97,6 +97,7 @@ type
     procedure GetDataGridContents(Slist: TStringList);
     procedure FillLineSeries(aLineSeries: TLineSeries; ObjType: Integer;
       ObjParam: Integer; ResultIndex: Integer);
+    procedure RemoveStaleDataSeries;
     procedure SetupChart;
     procedure SaveChart;
     procedure SaveTable;
@@ -342,8 +343,42 @@ begin
     end;
   end;
   PlotTimeOfDay := NewPlotTimeOfDay;
-  SetupChart;
   RefreshReport;
+end;
+
+procedure TTimeSeriesFrame.RemoveStaleDataSeries;
+//
+//  Remove time series for objects that no longer exist
+//
+var
+  I, N: Integer;
+  TmpDataSeries: array[0..MaxSeries-1] of TDataSeries;
+begin
+  // Add DataSeries with existing objects into the TmpDataSeries
+  N := 0;
+  for I := 0 to High(DataSeries) do
+  begin
+    if DataSeries[I].ObjType < 0 then continue;
+    if (DataSeries[I].ObjType >= 0) and
+       (DataSeries[I].ObjType <> ctSystem) then
+    begin
+      if project.GetItemIndex(DataSeries[I].ObjType, DataSeries[I].ObjID) <= 0
+      then continue;
+    end;
+    TmpDataSeries[N] := DataSeries[I];
+    Inc(N);
+  end;
+
+  // Refill DataSeries with the N valid TmpDataSeries entries
+  if N <> Nseries then
+  begin
+    Nseries := N;
+    for I := 0 to High(DataSeries) do
+    begin
+      if I < N then DataSeries[I] := TmpDataSeries[I]
+      else DataSeries[I].ObjType := -1;
+    end;
+  end;
 end;
 
 function TTimeSeriesFrame.GetObjStr(ObjType: Integer; Item: Integer): string;
@@ -632,6 +667,9 @@ var
   I: Integer;
 begin
   ClearReport;
+  RemoveStaleDataSeries;
+  SetupChart;
+
   Xstart := results.Rstart / 3600;
   Xstep := results.Rstep / 3600;
   if PlotTimeOfDay then

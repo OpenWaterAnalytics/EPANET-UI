@@ -178,8 +178,8 @@ object CalibRptFrame: TCalibRptFrame
           BorderSpacing.Around = 8
           BevelOuter = bvNone
           BorderStyle = bsSingle
-          ClientHeight = 347
-          ClientWidth = 531
+          ClientHeight = 351
+          ClientWidth = 535
           TabOrder = 1
           object TimeSeriesChart: TChart
             Left = 0
@@ -254,8 +254,8 @@ object CalibRptFrame: TCalibRptFrame
         BorderSpacing.Around = 8
         BevelOuter = bvNone
         BorderStyle = bsSingle
-        ClientHeight = 347
-        ClientWidth = 643
+        ClientHeight = 351
+        ClientWidth = 647
         TabOrder = 0
         object CorrelationPlot: TChart
           Left = 0
@@ -322,8 +322,8 @@ object CalibRptFrame: TCalibRptFrame
         BorderSpacing.Around = 8
         BevelOuter = bvNone
         BorderStyle = bsSingle
-        ClientHeight = 347
-        ClientWidth = 643
+        ClientHeight = 351
+        ClientWidth = 647
         TabOrder = 0
         object ErrorStatsMemo: TMemo
           Left = 0

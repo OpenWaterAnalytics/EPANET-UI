@@ -43,15 +43,19 @@ type
 implementation
 
 uses
- mvde_intfgraphics, mvdlefpc; // Additional units in lazMapViewerPkg
+ utils, mvde_intfgraphics, mvdlefpc; // Additional units in lazMapViewerPkg
 
 constructor TMapServer.Create(AOwner: TComponent);
+var
+  CacheDir: string;
 begin
   inherited Create(AOwner);
   Width := 300;
   Height := 300;
   Engine := TMapViewerEngine.Create(self);
-  Engine.CachePath := SysUtils.GetTempDir(false) + 'cache/';
+  CacheDir := utils.CreateTempDir('cache');
+  if Length(CacheDir) > 0 then
+    Engine.CachePath := CacheDir + '/';
   Engine.CacheOnDisk := true;
   Engine.UseThreads := true;
   Engine.MapProvider:= 'OpenStreetMap Standard';

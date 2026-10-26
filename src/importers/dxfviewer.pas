@@ -1,10 +1,10 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.3
+ Version:      1.0.5
  Module:       dxviewer
  Description:  draws pipe network from a DXF file onto a bitmap.
  License:      see LICENSE
- Last Updated: 06/19/2026
+ Last Updated: 10/17/2026
 =====================================================================}
 
 unit dxfviewer;
@@ -14,7 +14,7 @@ unit dxfviewer;
 interface
 
 uses
-  Classes, SysUtils, Graphics;
+  Classes, SysUtils, Graphics, Math,  Dialogs;
 
 function  ViewDxfFile(DxfFileName: string; Layers: TStringList;
             var Bitmap: TBitmap): Boolean;
@@ -22,7 +22,7 @@ function  ViewDxfFile(DxfFileName: string; Layers: TStringList;
 implementation
 
 uses
-  project, utils, dxfloader;
+  project, dxfloader;
 
 var
   Xmin:     Double;
@@ -79,47 +79,49 @@ begin
   else WPP := WPPx;
 end;
 
-function ReadXY(var F: TextFile; var X: Double; var Y: Double): Boolean;
+function GetExtents(var F: TextFile; Layers: TStringList): Boolean;
 var
-  Code: Integer;
-  S: string;
+  Vx: array[0..Project.MAX_VERTICES] of Double;
+  Vy: array[0..Project.MAX_VERTICES] of Double;
+  Vcount: Integer;
+  I: Integer;
+  Bufr: Double;
 begin
+  // Locate ENTITIES section in the DXF file
   Result := false;
-  ReadLn(F, Code);
-  ReadLn(F, S);
-  if not utils.Str2Float(S, X) then exit;
-  ReadLn(F, Code);
-  ReadLn(F, S);
-  if not utils.Str2Float(S, Y) then exit;
-  Result := true;
-end;
+  if not dxfloader.FindEntitiesSection(F) then exit;
 
-function GetExtents(var F: TextFile): Boolean;
-var
-  ExtMinFound: Boolean = false;
-  ExtMaxFound: Boolean = false;
-  Code: Integer;
-  Value: string;
-begin
-  Result := false;
+  // Initialize extents
+  Xmin := math.MaxDouble;
+  Ymin := Xmin;
+  Xmax := -math.MaxDouble;
+  Ymax := Xmax;
+
+  // Read coordinates of each vertex point
   while not Eof(F) do
   begin
-    ReadLn(F, Code);
-    ReadLn(F, Value);
-    if Code = 9 then
+    dxfloader.GetLinkVertices(F, Layers, Vx, Vy, Vcount);
+
+    // Update extents
+    for I := 0 to Vcount - 1 do
     begin
-      if SameText(Value, '$EXTMIN') then
-        ExtMinFound := ReadXY(F, Xmin, Ymin)
-      else if SameText(Value, '$EXTMAX') then
-        ExtMaxFound := ReadXY(F, Xmax, Ymax);
-      if ExtMinFound
-      and ExtMaxFound then
-      begin
-        Result := true;
-        exit;
-      end;
+      Xmin := Min(Xmin, Vx[I]);
+      Ymin := Min(Ymin, Vy[I]);
+      Xmax := Max(Xmax, Vx[I]);
+      Ymax := Max(Ymax, Vy[I]);
     end;
   end;
+
+  // Expand extents by a 5% buffer
+  Bufr := 0.05 * (Xmax - Xmin);
+  if Bufr = 0 then Bufr := 10;
+  Xmin := Xmin - Bufr;
+  Xmax := Xmax + Bufr;
+  Bufr := 0.05 * (Ymax - Ymin);
+  if Bufr = 0 then Bufr := 10;
+  Ymin := Ymin - Bufr;
+  Ymax := Ymax + Bufr;
+  Result := true;
 end;
 
 function  ViewDxfFile(DxfFileName: string; Layers: TStringList;
@@ -142,7 +144,10 @@ begin
   try
     // Get drawing extents
     Reset(F);
-    if not GetExtents(F) then exit;
+    if not GetExtents(F, Layers) then exit;
+
+    // Locate ENTITIES section of file
+    Reset(F);
     if not dxfloader.FindEntitiesSection(F) then exit;
 
     // Scale Bitmap pixels to drawing extents

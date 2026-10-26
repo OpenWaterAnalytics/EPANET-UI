@@ -1,11 +1,11 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.3
+ Version:      1.0.5
  Module:       mapthemes
  Description:  Manages the display of node and link themes on
                the pipe network map
  License:      see LICENSE
- Last Updated: 06/19/2026
+ Last Updated: 10/23/2026
 =====================================================================}
 
 unit mapthemes;
@@ -207,6 +207,7 @@ function  GetNodeValue(NodeIndex: Integer; aTheme: Integer;
 var
   ParamIndex:   Integer;
   ResultIndex:  Integer;
+  X: Double;
 begin
   if aTheme <= 0 then
     Result := MISSING
@@ -216,7 +217,8 @@ begin
     if aTheme < FirstNodeResultTheme then
     begin
       ParamIndex := NodeThemes[aTheme].SourceIndex;
-      Result := project.GetNodeParam(NodeIndex, ParamIndex)
+      X := project.GetNodeParam(NodeIndex, ParamIndex);
+      Result := X;
     end
 
     // Project has no simulation results
@@ -243,21 +245,30 @@ begin
         else if (aTheme = ntDmndDfct) then
         begin
           if OutFile2Opened then
-            Result := results.GetDmndDfctValue(ResultIndex, aTimePeriod)
+          begin
+            X := results.GetDmndDfctValue(ResultIndex, aTimePeriod);
+            Result := X;
+          end
           else
             Result := MISSING
         end
         else if (aTheme = ntEmittance) then
         begin
           if OutFile2Opened then
-            Result := results.GetEmitterFlowValue(ResultIndex, aTimePeriod)
+          begin
+            X := results.GetEmitterFlowValue(ResultIndex, aTimePeriod);
+            Result := X;
+          end
           else
             Result := MISSING
         end
         else if (aTheme = ntLeakage) then
         begin
           if OutFile2Opened then
-            Result := results.GetNodeLeakageValue(ResultIndex, aTimePeriod)
+          begin
+            X := results.GetNodeLeakageValue(ResultIndex, aTimePeriod);
+            Result := X;
+          end
           else
             Result := MISSING
         end
@@ -277,6 +288,7 @@ end;
 function GetLinkResultFromFile(ResultIndex, aTheme, aTimePeriod: Integer): Single;
 var
   ParamIndex: Integer = -1;
+  X: Double;
 begin
   // Theme results reside in the MSX output file
   Result := MISSING;
@@ -289,21 +301,25 @@ begin
     exit;
   end;
 
-  // Theme results reside in the secondary output file
+  // Theme results reside in the secondary output file (saved as Doubles)
   if aTheme = ltLeakage then
   begin
     if OutFile2Opened then
     begin
-      Result := results.GetLinkLeakageValue(ResultIndex, aTimePeriod);
+      X := results.GetLinkLeakageValue(ResultIndex, aTimePeriod);
+      Result := X;
       exit;
     end;
   end;
   if aTheme = ltEnergy then
   begin
     if OutFile2Opened then
-      Result := results.GetLinkEnergyValue(ResultIndex, aTimePeriod);
+    begin
+      X := results.GetLinkEnergyValue(ResultIndex, aTimePeriod);
+      Result := X;
       exit;
     end;
+  end;
 
   // Theme results reside in the primary output file
   if OutFileOpened then
@@ -324,6 +340,7 @@ end;
 function  GetLinkValue(LinkIndex, aTheme, aTimePeriod: Integer): Single;
 var
   ResultIndex: Integer;
+  X: Double;
 begin
   Result := MISSING;
   if aTheme <= 0 then exit;
@@ -331,7 +348,8 @@ begin
   // Theme is a design parameter (diameter, length, etc.)
   if aTheme < FirstLinkResultTheme then
   begin
-    Result := project.GetLinkParam(LinkIndex, LinkThemes[aTheme].SourceIndex);
+    X := project.GetLinkParam(LinkIndex, LinkThemes[aTheme].SourceIndex);
+    Result := X;
     exit;
   end;
 
@@ -394,7 +412,7 @@ begin
       S := NodeThemes[I].DefIntervals[J];
       S := StringReplace(S, '.', DS, []);
       NodeIntervals[I].Labels[J] := S;
-      utils.Str2Float(S, NodeIntervals[I].Values[J]);
+      TryStrToFloat(S, NodeIntervals[I].Values[J]);
     end;
   end;
 
@@ -413,7 +431,7 @@ begin
       S := LinkThemes[I].DefIntervals[J];
       S := StringReplace(S, '.', DS, []);
       LinkIntervals[I].Labels[J] := S;
-      utils.Str2Float(S, LinkIntervals[I].Values[J]);
+      TryStrToFloat(S, LinkIntervals[I].Values[J]);
     end;
   end;
   InitColors;

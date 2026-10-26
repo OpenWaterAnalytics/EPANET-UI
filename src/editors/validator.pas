@@ -1,11 +1,11 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.0
+ Version:      1.0.5
  Module:       validator
  Description:  validates entries made in the main form's
                PropEditor control
  License:      see LICENSE
- Last Updated: 03/07/2026
+ Last Updated: 10/23/2026
 =====================================================================}
 
 unit validator;
@@ -155,13 +155,13 @@ end;
 procedure ValidateHydraulOption(const Prop: Integer;
           const OldValue: string; var NewValue: string);
 var
-  X: Single = 0;
+  X: Double = 0;
   I: Integer;
 begin
   // Numerical property indices in properties.HydOptionsProps
   if (Prop in [1, 2, 3, 4, 7, 8, 9]) then
   begin
-    if utils.Str2Float(NewValue, X) = false then
+    if TryStrToFloat(NewValue, X) = false then
     begin
       ShowError(NewValue + rsInvalidNumber, OldValue, NewValue);
       exit;
@@ -249,17 +249,17 @@ end;
 procedure ValidateDemandOption(const Prop: Integer;
           const OldValue: string; var NewValue: string);
 var
-  X: Single = 0;
+  X: Double = 0;
   I: Integer;
   Model: Integer = 0;
-  Pmin: Single = 0;
-  Preq: Single = 0;
-  Pexp: Single = 0;
+  Pmin: Double = 0;
+  Preq: Double = 0;
+  Pexp: Double = 0;
 begin
   // Numerical property indices in properties.DemandOptionsProps
   if Prop in [3..7] then
   begin
-    if utils.Str2Float(NewValue, X) = false then
+    if TryStrToFloat(NewValue, X) = false then
     begin
       ShowError(NewValue + rsInvalidNumber, OldValue, NewValue);
       exit;
@@ -353,13 +353,13 @@ end;
 procedure ValidateEnergyOption(const Prop: Integer;
           const OldValue: string; var NewValue: string);
 var
-  X: Single = 0;
+  X: Double = 0;
   I: Integer;
 begin
   // Numerical property indices in properties.EnergyOptionsProps
   if (Prop in [1, 2, 4]) then
   begin
-    if (not utils.Str2Float(NewValue, X))
+    if (not TryStrToFloat(NewValue, X))
     or (X < 0) then
     begin
       ShowError(NewValue + rsInvalidNumber, OldValue, NewValue);
@@ -479,7 +479,7 @@ begin
   begin
     LinkType := Project.GetLinkType(Index);
     case LinkType of
-      ltPipe:
+      ltCVPipe, ltPipe:
         ValidatePipe(Index, Prop, OldValue, NewValue);
       ltPump:
         ValidatePump(Index, Prop, OldValue, NewValue);
@@ -492,13 +492,13 @@ end;
 procedure ValidateJunc(const Index: Integer; const Prop: Integer;
           const OldValue: string; var NewValue: string);
 var
-  X: Single = 0;
+  X: Double = 0;
   I: Integer;
 begin
   // Numerical property indices in properties.JunctionProps
   if (Prop in [4, 5, 8, 9]) then
   begin
-    if not utils.Str2Float(NewValue, X) then
+    if not TryStrToFloat(NewValue, X) then
     begin
       ShowError(NewValue + rsInvalidNumber, OldValue, NewValue);
       exit;
@@ -537,7 +537,7 @@ begin
     10:
        begin
          epanet2.ENgetnodevalue(Index, EN_SOURCEQUAL, X);
-         NewValue := utils.Float2Str(X, 4);
+         NewValue := utils.Float2StrG(X);
        end;
   end;
 end;
@@ -545,10 +545,10 @@ end;
 procedure ValidateResv(const Index: Integer; const Prop: Integer;
           const OldValue: string; var NewValue: string);
 var
-  X: Single = 0;
+  X: Double = 0;
   I: Integer;
 begin
-  if (Prop in [4, 6]) and (not utils.Str2Float(NewValue, X)) then
+  if (Prop in [4, 6]) and (not TryStrToFloat(NewValue, X)) then
   begin
     ShowError(NewValue + rsInvalidNumber, OldValue, NewValue);
     exit;
@@ -585,13 +585,13 @@ end;
 procedure ValidateTank(const Index: Integer; const Prop: Integer;
           const OldValue: string; var NewValue: string);
 var
-  X: Single = 0;
+  X: Double = 0;
   I: Integer;
 begin
   // Numerical property indices in properties.TankProps
   if Prop in [4..9, 13..15] then
   begin
-    if not utils.Str2Float(NewValue, X) then
+    if not TryStrToFloat(NewValue, X) then
     begin
       ShowError(NewValue + rsInvalidNumber, OldValue, NewValue);
       exit;
@@ -671,12 +671,12 @@ end;
 procedure ValidatePipe(Index: Integer; const Prop: Integer;
           const OldValue: string; var NewValue: string);
 var
-  X: Single = 0;
+  X: Double = 0;
 begin
   // Numerical property indices in properties.PipeProps
   if Prop in [6, 7, 8, 9, 11, 12, 13, 14] then
   begin
-    if not utils.Str2Float(NewValue, X) then
+    if not TryStrToFloat(NewValue, X) then
     begin
       ShowError(NewValue + rsInvalidNumber, OldValue, NewValue);
       exit;
@@ -743,13 +743,13 @@ end;
 procedure ValidatePump(Index: Integer; const Prop: Integer;
           const OldValue: string; var NewValue: string);
 var
-  X: Single = 0;
+  X: Double = 0;
   I: Integer;
 begin
   // Numerical property indices in properties.PumpProps
   if Prop in [7, 8, 12] then
   begin
-    if not utils.Str2Float(NewValue, X) then
+    if not TryStrToFloat(NewValue, X) then
     begin
       ShowError(NewValue + rsInvalidNumber, OldValue, NewValue);
       exit;
@@ -830,7 +830,7 @@ end;
 procedure ValidateValve(Index: Integer; const Prop: Integer;
           const OldValue: string; var NewValue: string);
 var
-  X: Single = 0;
+  X: Double = 0;
   I: Integer = 0;
   J: Integer = 0;
   K: Integer;
@@ -841,7 +841,7 @@ begin
   S := Trim(NewValue);
   if Prop in [6, 8, 9] then
   begin
-    if (not utils.Str2Float(S, X))
+    if (not TryStrToFloat(S, X))
     and (J <> EN_GPV) then
     begin
       ShowError(NewValue + rsInvalidNumber, OldValue, NewValue);

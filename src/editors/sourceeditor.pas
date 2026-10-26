@@ -128,7 +128,7 @@ end;
 
 procedure TSourceEditorForm.LoadSource(const Index: Integer);
 var
-  V: Single = 0;
+  V: Double = 0;
 begin
   NodeIndex := Index;
   SourceTypeCombo.ItemIndex := 0;
@@ -145,7 +145,7 @@ end;
 
 function TSourceEditorForm.GetSourceStrength: string;
 begin
-  Result := utils.Float2Str(StrengthEdit.Value, 4);
+  Result := utils.Float2StrG(StrengthEdit.Value);
 end;
 
 end.

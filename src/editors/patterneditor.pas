@@ -1,10 +1,10 @@
 {====================================================================
  Project:      EPANET-UI
- Version:      1.0.3
+ Version:      1.0.5
  Module:       patterneditor
  Description:  a form that manages a project's set of Time Patterns
  License:      see LICENSE
- Last Updated: 06/19/2026
+ Last Updated: 10/23/2026
 =====================================================================}
 
 unit patterneditor;
@@ -270,10 +270,10 @@ procedure TPatternEditorForm.PlotPattern(PatIndex: Integer);
 var
   I:  Integer;
   N:  Integer;
-  X:  Single = 0;
-  Y:  Single = 0;
+  X:  Double = 0;
+  Y:  Double = 0;
   T:  TimeType = 3600;
-  DT: Single;
+  DT: Double;
 begin
   // Get pattern length
   epanet2.ENgetpatternlen(PatIndex, N);
@@ -302,7 +302,7 @@ end;
 
 procedure TPatternEditorForm.AcceptBtnClick(Sender: TObject);
 begin
-  // Retrieve edited curve data and update its display in the CurvesGrid
+  // Retrieve edited pattern data and update its display in the PatternsGrid
   if GetPatternData then
   begin
     ShowPatternProperties(PatternIndex + 1);
@@ -351,12 +351,12 @@ procedure TPatternEditorForm.DataGridValidateEntry(Sender: TObject; aCol,
   aRow: Integer; const OldValue: string; var NewValue: String);
 var
   S: string;
-  Y: Single = 0;
+  Y: Double = 0;
 begin
   S := Trim(NewValue);
   if Length(S) > 0 then
   begin
-    if utils.Str2Float(S, Y) then
+    if TryStrToFloat(S, Y) then
       PlotPattern2
     else
     begin
@@ -417,7 +417,7 @@ procedure TPatternEditorForm.SetMultipliers;
 var
   I: Integer;
   Imax: Integer = 0;
-  V: Single;
+  V: Double;
 begin
   if PatternIndex > 0 then
   begin
@@ -433,7 +433,7 @@ begin
       begin
         V := 0;
         epanet2.ENgetpatternvalue(PatternIndex, I, V);
-        Cells[I,1] := Float2Str(V, 4);
+        Cells[I,1] := FloatToStrF(V, ffGeneral, 12, 10);
       end;
       EndUpdate;
     end;
@@ -442,7 +442,7 @@ end;
 
 procedure TPatternEditorForm.GetMultipliers;
 var
-  Multipliers: array of Single;
+  Multipliers: array of Double;
   I: Integer;
   N: Integer;
 begin
@@ -455,13 +455,21 @@ begin
   end
   else
   begin
-    SetLength(Multipliers, N);
-    for I := 0 to N -1 do
+    N := 0;
+    with DataGrid do
     begin
-      Multipliers[I] := Single(Chart2AreaSeries.GetYValue(I));
+      SetLength(Multipliers, ColCount - 1);
+      for I := 1 to ColCount-1 do
+      begin
+        if Length(Trim(Cells[I,1])) > 0 then
+        begin
+          Multipliers[N] := StrToFloatDef(Cells[I,1], 0);
+          Inc(N);
+        end;
+      end;
     end;
   end;
-  ENsetpattern(PatternIndex, Multipliers, N);
+  ENsetpattern(PatternIndex, Multipliers[0], N);
 end;
 
 procedure TPatternEditorForm.InitDataGrid;
@@ -572,10 +580,10 @@ var
   M, N, J:   Integer;
   I1, I2:    Integer;
   PatStep:   TimeType;
-  Ratio:     Single;
-  SrcIndex:  Single;
-  Fraction:  Single;
-  V, V1, V2: Single;
+  Ratio:     Double;
+  SrcIndex:  Double;
+  Fraction:  Double;
+  V, V1, V2: Double;
 begin
   epanet2.ENgettimeparam(EN_PATTERNSTEP, PatStep);
   M := (24 * 3600) div PatStep;
@@ -613,7 +621,7 @@ var
   I: Integer;
   J: Integer;
   K: Integer;
-  Y: Single;
+  Y: Double;
   Lines: TStringList;
 begin
   Lines := TStringList.Create;
@@ -631,7 +639,7 @@ begin
         for I := 1 to K do
         begin
           Cells[I, 0] := IntToStr(I);
-          if not utils.Str2Float(Lines[J], Y) then
+          if not TryStrToFloat(Lines[J], Y) then
             Cells[I, 1] := '0.0000'
           else
             Cells[I, 1] := Lines[J];
